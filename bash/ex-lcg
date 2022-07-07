@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+
+source incl/lcg.bash
+
+lcg_set_seed "$(get_uid)"
+
+for kk in {1..5}; do
+    lcg_port
+done
+
