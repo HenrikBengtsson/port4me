@@ -31,6 +31,8 @@ $ port4me --count=5 --all
 31212
 ```
 
+Thus, the user is likely to get assigned the same small set of ports, and often the same one, over and over, even on multi-tenant systems.  This increases the chances for them to be able to reuse the same command-line commands already available in their command-line history without having to edit port numbers.
+
 This random sequence is initiated by a random seed that can be set via the hashcode of a seed string.  For example, we can base it of the name of the current user:
 
 ```sh
