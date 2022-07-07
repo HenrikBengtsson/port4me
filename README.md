@@ -20,7 +20,10 @@ $ port4me
 61003
 ```
 
-To see the first five ports that are always scanned in order, do:
+If it's common that the first port is occupied, then the user can set `PORT4ME_SKIP=1` to tell the algorithm to always ignore the first one, and start from the second one.
+
+
+To see the first five ports scanned, use:
 
 ```sh
 $ port4me --count=5 --all
@@ -85,6 +88,8 @@ $ bundle exec jekyll serve --port "$(port4me --tool=jupyter)"
 * At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, _without_ the need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetics, may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
 
 * The implementations should be written such that they work also when sourced, or copy'and'pasted into source code elsewhere, e.g. in R and Python scripts.
+
+* The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`.
 
 
 ## Design
