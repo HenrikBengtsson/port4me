@@ -4,7 +4,13 @@ source incl/lcg.bash
 
 lcg_set_seed "$(get_uid)"
 
+skip=${PORT4ME_SKIP:-0}
+
 for kk in {1..5}; do
-    lcg_port
+    if [[ $kk -le $skip ]]; then
+        lcg_port > /dev/null
+    else
+        lcg_port
+    fi
 done
 
