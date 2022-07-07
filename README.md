@@ -1,4 +1,7 @@
-# port4me - Get the Same, Personal, Free TCP Port over and over
+# [PROTOTYPE] port4me - Get the Same, Personal, Free TCP Port over and over
+
+_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed.  It is not ready for use. /Henrik 2022-07-07_
+
 
 There exist many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
 
@@ -78,21 +81,31 @@ and
 $ bundle exec jekyll serve --port "$(port4me --tool=jupyter)"
 ```
 
+## Roadmap 
 
-# The port4me Algorithm
+* [ ] Identify essential features
+* [ ] Implement `port4me` command-line tool in Bash
+* [ ] Implement a `port4me` API in R
 
-## Requirements
+
+## The port4me Algorithm
+
+### Requirements
 
 * It should be possible to implement the algorithm using 32-bit _signed_ integer arithmetics.  One must not assume that the largest represented integer can exceed 2^31-1.
 
 * At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, _without_ the need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetics, may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
 
+* All programming languages should produce the exact same pseudo-random port sequences given the same random seed.
+
 * The implementations should be written such that they work also when sourced, or copy'and'pasted into source code elsewhere, e.g. in R and Python scripts.
 
 * The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`.
 
+* The user should be able to skip a predefined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
 
-## Design
+
+### Design
 
 * A [Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator) will be used to generate the psuedo-random port sequence
 
