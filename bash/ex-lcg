@@ -5,6 +5,7 @@ source incl/lcg.bash
 lcg_set_seed "$(get_uid)"
 
 skip=${PORT4ME_SKIP:-0}
+exclude=${PORT4ME_EXCLUDE}
 
 for kk in {1..5}; do
     if [[ $kk -le $skip ]]; then
