@@ -21,48 +21,25 @@ lcg_get_seed() {
 }
 
 lcg() {
-    local modulus=${1:-${LCG_PARAMS_MODULUS:-65537}}
-    local a=${2:-${LCG_PARAMS_A:-75}}
-    local c=${3:-${LCG_PARAMS_C:-74}}
-    local seed=${LCG_SEED:?}
-    local x=$((a * seed + c))
-    LCG_SEED=$((x - modulus * (x / modulus)))
+    local -i modulus=${1:-${LCG_PARAMS_MODULUS:-65537}}
+    local -i a=${2:-${LCG_PARAMS_A:-75}}
+    local -i c=${3:-${LCG_PARAMS_C:-74}}
+    local -i seed=${LCG_SEED:?}
+    LCG_SEED=$(( (a * seed + c) % modulus ))
     echo "${LCG_SEED}"
 }
 
 lcg_integer() {
-    local min=${1:?}
-    local max=${2:?}
-    local seed
+    local -i min=${1:?}
+    local -i max=${2:?}
+    local -i seed
     seed=$(lcg)
     LCG_SEED=${seed}
     bc <<< "${seed} % (${max} - ${min}) + ${min}"
 }
 
 lcg_port() {
-    local min=${1:-1024}
-    local max=${2:-65535}
+    local -i min=${1:-1024}
+    local -i max=${2:-65535}
     lcg_integer "${min}" "${max}"
-}
-
-
-get_uid() {
-    id -u
-}
-
-
-#' Check if TCP Port is Free
-#'
-#' Examples:
-#' is_port_free 4001
-#' is_free=$?
-#'
-#' Requirements:
-#' * nc
-is_port_free() {
-    local port=${1:?}
-    if nc -z 127.0.0.1 "$port"; then
-        return 1
-    fi
-    return 0
 }
