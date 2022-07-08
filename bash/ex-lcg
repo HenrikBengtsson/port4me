@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 
 source incl/lcg.bash
+source incl/system.bash
 
 lcg_set_seed "$(get_uid)"
 
