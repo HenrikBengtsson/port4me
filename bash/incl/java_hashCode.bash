@@ -35,34 +35,11 @@ java_hashCode() {
         ## ASCII character to ASCII value
         LC_TYPE=C printf -v byte "%d" "'${str:$kk:1}"
         hash=$(( 31 * hash + byte ))
-        
         ## Corce to signed int32 [-2^31,+2^31-1]
         hash=$(( (hash - MIN_INT) % MAX_UINT ))
         (( hash < 0 )) && hash=$(( hash + MAX_UINT ))
         hash=$(( hash + MIN_INT ))
 #        printf "%2d. byte=%3d, hash=%.0f\n" $kk $byte $hash
-    done
-    
-    printf "%d" $hash
-}
-
-java_hashCode_uint32() {
-    local str="$1"
-    local -i MAX_UINT=$(( 2**32 ))
-    local -i MAX_INT=2147483647   ## +2^31-1
-    local -i MIN_INT=-2147483648  ## -2^31
-    local -i kk byte
-    local -i hash=0
-
-    for ((kk = 0; kk < ${#str}; kk++)); do
-        ## ASCII character to ASCII value
-        LC_TYPE=C printf -v byte "%d" "'${str:$kk:1}"
-        hash=$(( 31 * hash + byte ))
-        if (( hash > MAX_INT )); then
-            hash=$(( (hash + MIN_INT) % -MIN_INT ))
-        elif (( hash < MIN_INT )); then
-            hash=$(( (hash - MIN_INT) % -MIN_INT ))
-        fi
     done
     
     printf "%d" $hash
