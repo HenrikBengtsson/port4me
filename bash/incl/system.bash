@@ -1,10 +1,5 @@
 #! /usr/bin/env bash
 
-get_uid() {
-    id -u
-}
-
-
 #' Check if TCP Port is Free
 #'
 #' Examples:
