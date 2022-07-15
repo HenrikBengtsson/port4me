@@ -6,11 +6,7 @@ source incl/lcg.bash
 
 lcg_set_params
 
-seed=$(java_hashCode "alice,rstudio")
-if (( seed < 0 )); then
-    seed=$(( seed + 2**32 ))
-fi
-
+seed=$(string_to_uint32 "alice,rstudio")
 lcg_set_seed "$seed"
 printf "Seed: %d\n" "$(lcg_get_seed)"
 

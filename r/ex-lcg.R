@@ -2,8 +2,7 @@ source("R/is_port_free.R")
 source("R/lcg.R")
 source("R/java_hashCode.R")
 
-seed <- java_hashCode("alice,rstudio")
-if (seed < 0) seed <- seed + 2^32
+seed <- string_to_uint32("alice,rstudio")
 lcg_set_seed(seed)
 message(sprintf("Seed: %.0f", lcg_get_seed()))
 
