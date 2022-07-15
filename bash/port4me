@@ -1,0 +1,31 @@
+#! /usr/bin/env bash
+
+source incl/is_port_free.bash
+source incl/java_hashCode.bash
+source incl/lcg.bash
+source incl/port4me.bash
+
+
+
+lcg_set_params
+
+lcg_set_seed "$(port4me_seed)"
+
+skip=${PORT4ME_SKIP:-0}
+exclude=${PORT4ME_EXCLUDE}
+
+for kk in {1..1000}; do
+    lcg_port > /dev/null
+    if [[ $kk -le $skip ]]; then
+        continue
+    fi
+    port=${LCG_INTEGER:?}
+#    printf "%d. port=%d\n" "$kk" "$port"
+    if is_port_free "$port"; then
+        printf "%d\n" "$port"
+        break
+    fi
+    port=
+done
+
+
