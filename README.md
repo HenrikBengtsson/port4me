@@ -65,7 +65,7 @@ to the shell startup script, e.g. `~/.bashrc`.
 This increases the chances for the user to end up with the same port over time, which is convenient, because then they can reuse the exact same call, which is available in the command-line history, each time without having to modify the port parameter.
 
 
-## Semi-unique, semi-deterministict, pseudo-random port sequence
+## User-specific, deterministic, pseudo-random port sequence
 
 This random sequence is initiated by a random seed that can be set via the hashcode of a seed string.  By default, it is based on the name of the current user (e.g. environment variable `$USER`).  For example, when user `bob` uses the `port4me` tool, they see another set of ports being scanned:
 
@@ -123,9 +123,9 @@ $jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
 
 ### Requirements
 
-* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetics.  One must not assume that the largest represented integer can exceed 2^32.
+* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed 2^32.
 
-* At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, _without_ the need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetics, may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
+* At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, _without_ the need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetic, may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
 
 * All programming languages should produce the exact same pseudo-random port sequences given the same random seed.
 
@@ -135,13 +135,13 @@ $jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
 
 * The user should be able to skip a predefined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
 
-* The system adminstrator should be able to specify a predefined set of ports to be excluded by specifying environment variable `PORT4ME_EXCLUDE_SITE`, e.g. `PORT4ME_EXCLUDE_SITE=8080,4321`.  This works complementary to `PORT4ME_EXCLUDE`.
+* The system administrator should be able to specify a predefined set of ports to be excluded by specifying environment variable `PORT4ME_EXCLUDE_SITE`, e.g. `PORT4ME_EXCLUDE_SITE=8080,4321`.  This works complementary to `PORT4ME_EXCLUDE`.
 
-* New implementations should perfectly reproduce the port sequences produced by already existing implementions.
+* New implementations should perfectly reproduce the port sequences produced by already existing implementations.
 
 
 ### Design
 
-* A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the psuedo-random port sequence
+* A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
 
 * A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers instead of signed ones
