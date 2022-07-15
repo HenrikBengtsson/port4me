@@ -60,6 +60,8 @@ PORT4ME_SKIP=1
 export PORT4ME_SKIP
 ```
 
+to the shell startup script, e.g. `~/.bashrc`.
+
 This increases the chances for the user to end up with the same port over time, which is convenient, because then they can reuse the exact same call, which is available in the command-line history, each time without having to modify the port parameter.
 
 
@@ -112,7 +114,7 @@ $jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
 * [x] Identify essential features
 * [x] Prototype `port4me` command-line tool in Bash
 * [x] Prototype `port4me` API and command-line tool in R
-* [ ] Add support for `PORT4ME_EXCLUDE`
+* [ ] Add support for `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`
 * [ ] Standardize command-line interface between Bash and R implementations
 * [ ] Prototype `port4me` API and command-line tool in Python
 
@@ -132,6 +134,8 @@ $jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
 * The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`.
 
 * The user should be able to skip a predefined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
+
+* The system adminstrator should be able to specify a predefined set of ports to be excluded by specifying environment variable `PORT4ME_EXCLUDE_SITE`, e.g. `PORT4ME_EXCLUDE_SITE=8080,4321`.  This works complementary to `PORT4ME_EXCLUDE`.
 
 * New implementations should perfectly reproduce the port sequences produced by already existing implementions.
 
