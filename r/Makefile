@@ -1,2 +1,2 @@
 check:
-	(cd tests/; Rscript java_hashCode.R)
+	(cd tests/; for ff in *.R; do echo "$$ff:"; Rscript --vanilla "$$ff"; done)
