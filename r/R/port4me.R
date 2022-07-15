@@ -8,6 +8,21 @@ port4me_tool <- function() {
   res
 }
 
+port4me_seed <- function(user = NULL, tool = NULL) {
+  seed_str <- c(user, tool)
+  seed_str <- seed_str[nzchar(seed_str)]
+  if (length(seed_str) == 0) {
+    stop("At least one of arguments 'user' and 'tool' must be non-empty")
+  }
+  seed_str <- paste(seed_str, collapse = ",")
+  seed <- string_to_uint32(seed_str)
+  if (isTRUE(as.logical(Sys.getenv("PORT4ME_DEBUG", "false")))) {
+    message(sprintf("seed_str='%s'", seed_str))
+    message(sprintf("seed=%.0f", seed))
+  }
+  seed
+}
+
 port4me <- function(user = port4me_user(), tool = port4me_tool(), skip = as.integer(Sys.getenv("PORT4ME_SKIP", "0")), max_tries = 1000L, must_work = TRUE) {
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
@@ -17,14 +32,7 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), skip = as.inte
   skip <- as.integer(skip)
   stopifnot(length(must_work) == 1L, is.logical(must_work), !is.na(must_work))
 
-  seed_str <- c(user, tool)
-  seed_str <- seed_str[nzchar(seed_str)]
-  if (length(seed_str) == 0) {
-    stop("At least one of arguments 'user' and 'tool' must be non-empty")
-  }
-  seed_str <- paste(seed_str, collapse = ",")
-  seed <- string_to_uint32(seed_str)
-  lcg_set_seed(seed)
+  lcg_set_seed(port4me_seed(user = user, tool = tool))
   
   for (kk in 1:max_tries) {
     port <- lcg_port()
