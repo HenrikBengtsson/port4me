@@ -1,19 +1,35 @@
 #! /usr/bin/env bash
 
-LCG_SEED=
+declare -i LCG_SEED
+declare -i LCG_PARAMS_MODULUS
+declare -i LCG_PARAMS_A
+declare -i LCG_PARAMS_C
+declare -i LCG_INTEGER
+declare -i LCG_PORT
+
+LCG_SEED=-1
 export LCG_SEED
 
+error() {
+    >&2 echo "ERROR: $1"
+    exit 1
+}
 lcg_set_params() {
-    local modulus=${1:-65537}
-    local a=${2:-75}
-    local c=${3:-74}
+    local -i modulus=${1:-65537}
+    local -i a=${2:-75}
+    local -i c=${3:-74}
+    (( a <= 0 )) && error "LCG parameter 'a' must be positive: $a"
+    (( c <= 0 )) && error "LCG parameter 'c' must be positive: $c"
+    (( modulus <= 0 )) && error "LCG parameter 'modulus' must be positive: $modulus"
     LCG_PARAMS_MODULUS=${modulus}
     LCG_PARAMS_A=${a}
     LCG_PARAMS_C=${c}
 }
 
 lcg_set_seed() {
-    LCG_SEED=${1:?}
+    local -i seed=${1:?}
+    (( seed <= 0 )) && error "LCG seed must be positive: $seed"
+    LCG_SEED=${seed}
 }
 
 lcg_get_seed() {
@@ -25,18 +41,44 @@ lcg() {
     local -i a=${2:-${LCG_PARAMS_A:-75}}
     local -i c=${3:-${LCG_PARAMS_C:-74}}
     local -i seed=$(lcg_get_seed)
+    (( a <= 0 )) && error "LCG parameter 'a' must be positive: $a"
+    (( c <= 0 )) && error "LCG parameter 'c' must be positive: $c"
+    (( modulus <= 0 )) && error "LCG parameter 'modulus' must be positive: $modulus"
+
+    seed=$(( (a * seed + c) % modulus ))
+
+    ## Sanity checks
+    if (( seed == 0 )); then
+        error "New LCG seed is zero, which could be because non-functional LCG parameters: (a, c, modulus) = ($a, $c, $modulus)"
+    elif (( seed < 0 )); then
+        error "INTERNAL: New LCG seed is non-positive: $seed, where (a, c, modulus) = ($a, $c, $modulus)"
+    elif (( seed > modulus )); then
+        error "INTERNAL: New LCG seed is too large: $seed, where (a, c, modulus) = ($a, $c, $modulus)"
+    fi
     
-    LCG_SEED=$(( (a * seed + c) % modulus ))
+    LCG_SEED=${seed}
+    
     echo "${LCG_SEED}"
 }
 
 lcg_integer() {
     local -i min=${1:?}
     local -i max=${2:?}
-    local -i seed
+    local -i seed res
     seed=$(lcg)
     LCG_SEED=${seed}
-    bc <<< "${seed} % (${max} - ${min}) + ${min}"
+    
+    res=$(bc <<< "${seed} % (${max} - ${min}) + ${min}")
+
+    ## Sanity checks
+    if (( res < min || res > max )); then
+        error "INTERNAL: Generated LCG integer is not in [$min,$max]: $res"
+    fi
+
+    ## Export LCG integer as environment variable too
+    LCG_INTEGER=${res}
+    
+    echo "${res}"
 }
 
 lcg_port() {
