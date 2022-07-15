@@ -24,7 +24,8 @@ lcg() {
     local -i modulus=${1:-${LCG_PARAMS_MODULUS:-65537}}
     local -i a=${2:-${LCG_PARAMS_A:-75}}
     local -i c=${3:-${LCG_PARAMS_C:-74}}
-    local -i seed=${LCG_SEED:?}
+    local -i seed=$(lcg_get_seed)
+    
     LCG_SEED=$(( (a * seed + c) % modulus ))
     echo "${LCG_SEED}"
 }

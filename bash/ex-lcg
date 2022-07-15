@@ -1,18 +1,34 @@
 #! /usr/bin/env bash
 
+source incl/is_port_free.bash
+source incl/java_hashCode.bash
 source incl/lcg.bash
-source incl/system.bash
 
-lcg_set_seed "$(get_uid)"
+lcg_set_params
+
+seed=$(java_hashCode "alice,rstudio")
+if (( seed < 0 )); then
+    seed=$(( seed + 2**32 ))
+fi
+
+lcg_set_seed "$seed"
+printf "Seed: %d\n" "$(lcg_get_seed)"
 
 skip=${PORT4ME_SKIP:-0}
 exclude=${PORT4ME_EXCLUDE}
 
 for kk in {1..5}; do
+    port=$(lcg_port)
     if [[ $kk -le $skip ]]; then
-        lcg_port > /dev/null
-    else
-        lcg_port
+        continue
+    fi
+    printf "%d. port=%d\n" "$kk" "$port"
+    if [[ $(is_port_free "$port") ]]; then
+        break
     fi
 done
+
+
+
+printf "Found a free port: %d\n" "$port"
 
