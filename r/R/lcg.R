@@ -11,7 +11,7 @@ lcg <- local({
   function(modulus = getOption("lcg.params")["modulus"], a = getOption("lcg.params")["a"], c = getOption("lcg.params")["c"], seed = NULL) {
     if (!is.null(seed)) {
       if (is.na(seed)) return(.seed)
-      stopifnot(length(seed) == 1L, is.numeric(seed), !is.na(seed))
+      stopifnot(length(seed) == 1L, is.numeric(seed), !is.na(seed), seed > 0)
       .seed <<- seed
       return(invisible(.seed))
     }
@@ -30,12 +30,15 @@ lcg <- local({
     if (is.null(c)) c <- getOption("lcg.params")["c"]
 
     stopifnot(
-      length(modulus) == 1L, is.numeric(modulus), !is.na(modulus),
-      length(a) == 1L, is.numeric(a), !is.na(a),
-      length(c) == 1L, is.numeric(c), !is.na(c)
+      length(modulus) == 1L, is.numeric(modulus), !is.na(modulus), modulus > 0,
+      length(a) == 1L, is.numeric(a), !is.na(a), a > 0,
+      length(c) == 1L, is.numeric(c), !is.na(c), c > 0
     )
 
     .seed <<- (a * .seed + c) %% modulus
+
+    ## Sanity check
+    stopifnot(length(.seed) == 1L, is.numeric(.seed), !is.na(.seed), .seed > 0)
     
     .seed
   }
@@ -46,9 +49,9 @@ lcg <- local({
 #' the one used by the fabolous Sinclair ZX81.
 lcg_set_params <- function(modulus = 2^16+1, a = 75, c = 74) {
   stopifnot(
-    length(modulus) == 1L, is.numeric(modulus), !is.na(modulus),
-    length(a) == 1L, is.numeric(a), !is.na(a),
-    length(c) == 1L, is.numeric(c), !is.na(c)
+    length(modulus) == 1L, is.numeric(modulus), !is.na(modulus), modulus > 0,
+    length(a) == 1L, is.numeric(a), !is.na(a), a > 0,
+    length(c) == 1L, is.numeric(c), !is.na(c), c > 0
   )
   options(lcg.params = c(modulus = modulus, a = a, c = c))
 }
@@ -67,7 +70,15 @@ lcg_integer <- function(min, max) {
     length(max) == 1L, is.numeric(max), !is.na(max),
     min <= max
   )
-  lcg() %% (max - min) + min
+  res <- lcg() %% (max - min) + min
+  
+  ## Sanity check
+  stopifnot(
+    length(res) == 1L, is.numeric(res), !is.na(res),
+    res >= min, res <= max
+  )
+  
+  res
 }
 
 lcg_port <- function(min = 1024, max = 65535) {
