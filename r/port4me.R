@@ -1,8 +1,10 @@
-source("R/is_port_free.R")
-source("R/lcg.R")
-source("R/java_hashCode.R")
-source("R/port4me.R")
-source("R/parse_cli_args.R")
+main <- function() {
+  for (ff in dir("R", pattern = "[.]R$", full.names = TRUE)) {
+    source(ff, local = TRUE)
+  }
+  port <- do.call(port4me, args = parse_cli_args())
+  cat(sprintf("%d\n", port))
+}
 
-port <- do.call(port4me, args = parse_cli_args())
-cat(sprintf("%d\n", port))
+main()
+
