@@ -91,7 +91,7 @@ For testing and demonstration purposes, one can emulate another user by specifyi
 
 ## Different ports for different software tools
 
-Sometimes a user would like two use two, or more, ports at the same time, e.g. one port for RStudio Server and for Jupyter Hub.  In such case, they can set the optional `PORT4ME_TOOL` variable, which result in port sequence that is unique to both the user and the tool.  For example,
+Sometimes a user would like two use two, or more, ports at the same time, e.g. one port for RStudio Server and another for Jupyter Hub.  In such case, they can set the optional `PORT4ME_TOOL` variable, which result in port sequence that is unique to both the user and the tool.  For example,
 
 ```sh
 {alice}$ port4me
