@@ -1,10 +1,88 @@
 #! /usr/bin/env bash
-
+### port4me: Get the Same, Personal, Free TCP Port over and over
+### 
+### Usage:
+###  port4me [options]
+### 
+### Options:  
+###  --help              Display the full help page with examples
+###  --version           Output version of this software
+###  --debug             Output detailed debug information
+###
+###  --user=<string>     User name (default: $USER)
+###  --tool=<string>     Name of software tool (optional)
+###  --exclude=<ports>   Comma-separated list of ports to be excluded (optional)
+###  --skip=<int>        Number of ports to skip from the beginning (optional)
+###
+### Examples:
+### port4me
+### port4me --tool=rstudio
+### /path/to/yada --port="$(port4me --tool=yada)"
+###
+### Version: 0.0.0-9000
+### Copyright: Henrik Bengtsson (2022)
+### License: ISC
+source incl/cli.sh
 source incl/is_port_free.bash
 source incl/lcg.bash
 source incl/port4me.bash
 source incl/string_to_uint32.bash
 
-port4me
+action=port
+count=5
 
+parse_cli_args() {
+    local key value
+    
+    while (($# > 0)); do
+        ## Options (--flags):
+        if [[ "$1" == "--help" ]]; then
+            action=help
+        elif [[ "$1" == "--version" ]]; then
+            action=version
+        elif [[ "$1" == "--debug" ]]; then
+            PORT4ME_DEBUG=true
+        ## Options (--key=value):
+        elif [[ "$1" =~ ^--.*=.*$ ]]; then
+            key=${1//--}
+            key=${key//=*}
+            value=${1//--[[:alpha:]]*=}
+            if [[ -z ${value} ]]; then
+                error "Option '--${key}' must not be empty"
+            fi
+            if [[ "${key}" == "user" ]]; then
+                PORT4ME_USER=${value}
+            elif [[ "${key}" == "tool" ]]; then
+                PORT4ME_TOOL=${value}
+            elif [[ "${key}" == "exclude" ]]; then
+                PORT4ME_EXCLUDE=${value}
+            elif [[ "${key}" == "skip" ]]; then
+                PORT4ME_SKIP=${value}
+            elif [[ "${key}" == "list" ]]; then
+                action=list
+                count=${value}
+            else
+                error "Unknown option: $1"
+            fi
+        else
+            error "Unknown option: $1"
+        fi
+        shift
+    done              
+}
 
+parse_cli_args "$@"
+
+if [[ $action == "help" ]]; then
+    help
+elif [[ $action == "version" ]]; then
+    version
+elif [[ $action == "list" ]]; then
+    skip=0
+    while (( skip < count )); do
+        PORT4ME_SKIP="$skip" port4me
+        skip=$(( skip + 1 ))
+    done
+else
+    port4me
+fi    

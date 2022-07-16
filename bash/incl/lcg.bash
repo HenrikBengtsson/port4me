@@ -13,6 +13,7 @@ error() {
     >&2 echo "ERROR: $1"
     exit 1
 }
+
 lcg_set_params() {
     local -i modulus=${1:-65537}
     local -i a=${2:-75}
