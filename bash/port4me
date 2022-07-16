@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 
 source incl/is_port_free.bash
-source incl/java_hashCode.bash
 source incl/lcg.bash
 source incl/port4me.bash
+source incl/string_to_uint32.bash
 
 port4me
 

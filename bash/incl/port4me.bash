@@ -46,8 +46,11 @@ port4me_exclude() {
         echo ""
         return 0
     fi
-    exclude=${exclude// }
-    exclude=${exclude//,/$'\n'}
+    >&2 echo "exclude=${exclude[*]}"
+    exclude=${exclude// /}
+    >&2 echo "exclude=${exclude[*]}"
+    exclude=${exclude//,/ }
+    >&2 echo "exclude=${exclude[*]}"
     echo "${exclude}"
 }    
 

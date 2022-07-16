@@ -14,50 +14,57 @@ From a Bash shell, running as user `alice`, we get:
 
 ```sh
 {alice}$ port4me
-53637
+31869
+```
+
+As we will see later, each user on the system is likely to get their own unique port.  Because of this, it can be used to specifying a port that some software tool should use, e.g.
+
+```sh
+$jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
 ```
 
 As long as this port is available, `alice` will always get the same port across shell sessions and over time.  For example, if they return week and retry, it's likely they still get:
 
 ```sh
 {alice}$ port4me
-53637
+31869
 {alice}$ port4me
-53637
+31869
 ```
 
 However, if port 53637 is already occupied, the next port in the pseudo-random sequence is attempted, e.g.
 
 ```sh
 {alice}$ port4me
-14853
+20678
 ```
 
 To see the first five ports scanned, run:
 
 ```sh
 {alice}$ for skip in {0..4}; do PORT4ME_SKIP="$skip" port4me; done
-53637
-14853
-55218
-2354
-35311
+31869
+20678
+33334
+65016
+16297
 ```
 
-Since there is a limited set of ports available (1024-65535), there is always a risk that a port is occupied by another process.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (53637) works only one out 10 times, whereas the the second port (14853) works 99 out 100 times.  If so, they might want to always skip the first port, and always start with the more "reliable" second port.  They can do this by setting environment variable `PORT4ME_SKIP`, e.g.
+Since there is a limited set of ports available (1024-65535), there is always a risk that a port is occupied by another process.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (31869) works only one out 10 times, whereas the the second port (20678) works 99 out 100 times, and the third one (33334) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values in environment variable `PORT4ME_EXCLUDE`, e.g.
 
 ```sh
-{alice}$ PORT4ME_SKIP=1 port4me
-14853
+{alice}$ PORT4ME_EXCLUDE=31869,33334 port4me
+20678
 ```
 
-To skip the first two ports, set `PORT4ME_SKIP=2`, and so on.  To set this permanently, append:
+
+To set this permanently, append:
 
 ```sh
 ## port4me customization
 ## https://github.com/HenrikBengtsson/port4me
-PORT4ME_SKIP=1
-export PORT4ME_SKIP
+PORT4ME_EXCLUDE=31869,33334
+export PORT4ME_EXCLUDE
 ```
 
 to the shell startup script, e.g. `~/.bashrc`.
@@ -95,18 +102,13 @@ Sometimes a user would like two use two, or more, ports at the same time, e.g. o
 
 ```sh
 {alice}$ port4me
-53637
+31869
 {alice}$ PORT4ME_TOOL=rstudio port4me
 39273
 {alice}$ PORT4ME_TOOL=jupyter port4me
 1147
 ```
 
-This can be used to specify the port a specific software will use, e.g.
-
-```sh
-$jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
-```
 
 
 ## Roadmap 
@@ -114,7 +116,8 @@ $jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
 * [x] Identify essential features
 * [x] Prototype `port4me` command-line tool in Bash
 * [x] Prototype `port4me` API and command-line tool in R
-* [ ] Add support for `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`
+* [x] Add support for `PORT4ME_EXCLUDE`
+* [ ] Add support for `PORT4ME_EXCLUDE_SITE`
 * [ ] Standardize command-line interface between Bash and R implementations
 * [ ] Prototype `port4me` API and command-line tool in Python
 
@@ -131,9 +134,9 @@ $jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
 
 * The implementations should be written such that they work also when sourced, or copy'and'pasted into source code elsewhere, e.g. in R and Python scripts.
 
-* The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`.
-
 * The user should be able to skip a predefined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
+
+* The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`.
 
 * The system administrator should be able to specify a predefined set of ports to be excluded by specifying environment variable `PORT4ME_EXCLUDE_SITE`, e.g. `PORT4ME_EXCLUDE_SITE=8080,4321`.  This works complementary to `PORT4ME_EXCLUDE`.
 
