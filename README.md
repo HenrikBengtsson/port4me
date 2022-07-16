@@ -130,6 +130,15 @@ and
 ```
 
 
+## Tips and Tricks
+
+If you'd like to see which port number was generated, you can use `tee` to send the output to _both_ standard output (stdout), which is captured by the tool, and to the standard error (stderr), which can be read in the terminal.  For example,
+
+```sh
+{alice}$ jupyter notebook --port "$(port4me --tool=jupyter | tee /dev/stderr)"
+55266
+```
+
 
 ## Roadmap 
 
