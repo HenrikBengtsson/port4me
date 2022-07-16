@@ -23,11 +23,31 @@ port4me_seed <- function(user = NULL, tool = NULL) {
   seed
 }
 
-port4me <- function(user = port4me_user(), tool = port4me_tool(), skip = as.integer(Sys.getenv("PORT4ME_SKIP", "0")), max_tries = 1000L, must_work = TRUE) {
+port4me_exclude <- function() {
+  exclude0 <- exclude <- Sys.getenv("PORT4ME_EXCLUDE", "")
+  exclude <- gsub(" ", "", exclude, fixed = TRUE)
+  exclude <- unlist(strsplit(exclude, split = ","))
+  bad <- grep("^[[:digit:]]+$", exclude, invert = TRUE, value = TRUE)
+  if (length(bad) > 0) {
+    stop(sprintf("Syntax error in 'exclude' argument: %s", exclude0))
+  }
+  exclude <- as.integer(exclude)
+  stopifnot(!anyNA(exclude))
+  exclude
+}
+
+port4me_skip <- function() {
+  skip <- as.integer(Sys.getenv("PORT4ME_SKIP", "0"))
+  stopifnot(!is.na(skip))
+  skip
+}
+
+port4me <- function(user = port4me_user(), tool = port4me_tool(), exclude = port4me_exclude(), skip = port4me_skip(), max_tries = 1000L, must_work = TRUE) {
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
   stopifnot(length(max_tries) == 1L, is.numeric(max_tries), !is.na(max_tries), max_tries > 0, is.finite(max_tries))
   max_tries <- as.integer(max_tries)
+  stopifnot(is.numeric(exclude), !anyNA(exclude), all(exclude > 0), all(exclude <= 65535))
   stopifnot(length(skip) == 1L, is.numeric(skip), !is.na(skip), skip >= 0, is.finite(skip), skip < max_tries)
   skip <- as.integer(skip)
   stopifnot(length(must_work) == 1L, is.logical(must_work), !is.na(must_work))
@@ -37,6 +57,7 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), skip = as.inte
   for (kk in 1:max_tries) {
     port <- lcg_port()
     if (kk <= skip) next
+    if (port %in% exclude) next
     if (is_port_free(port)) return(port)
   }
 

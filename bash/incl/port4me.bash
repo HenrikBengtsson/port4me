@@ -39,14 +39,26 @@ port4me_seed() {
     echo "$seed"
 }
 
+port4me_exclude() {
+    local exclude=${PORT4ME_EXCLUDE}
+    ## Nothing to do?
+    if [[ -z ${exclude} ]]; then
+        echo ""
+        return 0
+    fi
+    exclude=${exclude// }
+    exclude=${exclude//,/$'\n'}
+    echo "${exclude}"
+}    
 
 port4me() {
     local -i skip=${PORT4ME_SKIP:-0}
-    local -i exclude=${PORT4ME_EXCLUDE}
+    local exclude
+    mapfile -t exclude < <(port4me_exclude)
     local -i count
     local -i max_tries=${PORT4ME_MAX_TRIES:-1000}
     local must_work=${PORT4ME_MUST_WORK:-true}
-    
+
     lcg_set_params
     lcg_set_seed "$(port4me_seed)"
 
@@ -55,13 +67,22 @@ port4me() {
         lcg_port > /dev/null
 
         count=$((count + 1))
+        
         ## Skip?
         if (( count <= skip )); then
             continue
         fi
         
         port=${LCG_INTEGER:?}
-        ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$kk" "$port"
+        ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
+
+        ## Skip?
+        if (( ${#exclude[@]} > 0 )); then
+            if [[ " ${exclude[*]} " == *" $port "* ]]; then
+                ${PORT4ME_DEBUG:-false} && >&2 printf "Port excluded: %d\n" "$port"
+                continue
+            fi
+        fi
         
         if is_port_free "$port"; then
             printf "%d\n" "$port"
