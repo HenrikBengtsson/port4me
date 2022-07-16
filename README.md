@@ -139,7 +139,7 @@ and
 * [x] Add support for `PORT4ME_EXCLUDE`
 * [x] Add support for `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
-* [ ] The string-to-seed algorithm rely on [0,2^32-1] integer arithmetic; can this be lowered to [0,2^16-1] = [0,65535] given we're dealing with TCP ports, which has the latter range?
+* [ ] The string-to-seed algorithm rely on $[0,2^{32}-1]$ integer arithmetic; can this be lowered to $[0,2^{16}-1] = [0,65535]$ given we're dealing with TCP ports, which has the latter range?
 * [ ] Prototype `port4me` API and command-line tool in Python
 
 
@@ -167,6 +167,6 @@ and
 ### Design
 
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
-  - the current implementation use the "ZX81" LCG with parameters $m=2^16 + 1$, $a=75$, and $c=74$.
+  - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$.
 
-* A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^32-1]$, instead of signed ones in $[-2^31,2^31-1]$
+* A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
