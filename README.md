@@ -20,7 +20,7 @@ From a Bash shell, running as user `alice`, we get:
 As we will see later, each user on the system is likely to get their own unique port.  Because of this, it can be used to specifying a port that some software tool should use, e.g.
 
 ```sh
-$jupyter notebook --port "$(PORT4ME_TOOL=jupyter port4me)"
+{alice}$ jupyter notebook --port "$(port4me)"
 ```
 
 As long as this port is available, `alice` will always get the same port across shell sessions and over time.  For example, if they return week and retry, it's likely they still get:
@@ -42,7 +42,7 @@ However, if port 53637 is already occupied, the next port in the pseudo-random s
 To see the first five ports scanned, run:
 
 ```sh
-{alice}$ for skip in {0..4}; do PORT4ME_SKIP="$skip" port4me; done
+{alice}$ port4me --list=5
 31869
 20678
 33334
@@ -50,13 +50,19 @@ To see the first five ports scanned, run:
 16297
 ```
 
-Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (31869) works only one out 10 times, whereas the second port (20678) works 99 out 100 times, and the third one (33334) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values in environment variable `PORT4ME_EXCLUDE`, e.g.
+Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (31869) works only one out 10 times, whereas the second port (20678) works 99 out 100 times, and the third one (33334) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via option `--exclude`, e.g.
+
+```sh
+{alice}$ port4me --exclude=31869,33334
+20678
+```
+
+An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
 
 ```sh
 {alice}$ PORT4ME_EXCLUDE=31869,33334 port4me
 20678
 ```
-
 
 To set this permanently, append:
 
@@ -77,7 +83,7 @@ This increases the chances for the user to end up with the same port over time, 
 This random sequence is initiated by a random seed that can be set via the hashcode of a seed string.  By default, it is based on the name of the current user (e.g. environment variable `$USER`).  For example, when user `bob` uses the `port4me` tool, they see another set of ports being scanned:
 
 ```sh
-{bob}$ for skip in {0..4}; do PORT4ME_SKIP="$skip" port4me; done
+{bob}$ port4me --list=5
 55266
 5954
 43163
@@ -85,28 +91,40 @@ This random sequence is initiated by a random seed that can be set via the hashc
 56731
 ```
 
-For testing and demonstration purposes, one can emulate another user by specifying environment variable `PORT4ME_USER`, e.g.
+For testing and demonstration purposes, one can emulate another user by specifying option `--user`, e.g.
 
 ```sh
 {alice}$ port4me
 53637
-{alice}$ PORT4ME_USER=bob port4me
+{alice}$ port4me --user=bob
 56731
-{alice}$ PORT4ME_USER=carol port4me
+{alice}$ port4me --user=carol
 35331
 ```
 
 ## Different ports for different software tools
 
-Sometimes a user would like to use two, or more, ports at the same time, e.g. one port for RStudio Server and another for Jupyter Hub.  In such case, they can set the optional `PORT4ME_TOOL` variable, which results in a port sequence that is unique to both the user and the tool.  For example,
+Sometimes a user would like to use two, or more, ports at the same time, e.g. one port for RStudio Server and another for Jupyter Hub.  In such case, they can specify option `--tool`, which results in a port sequence that is unique to both the user and the tool.  For example,
 
 ```sh
 {alice}$ port4me
 31869
-{alice}$ PORT4ME_TOOL=rstudio port4me
+{alice}$ port4me --tool=rstudio
 39273
-{alice}$ PORT4ME_TOOL=jupyter port4me
+{alice}$ port4me --tool=jupyter
 1147
+```
+
+This allows us to do:
+
+```sh
+{alice}$ rserver --www-port "$(port4me --tool=rstudio)"
+```
+
+and
+
+```sh
+{alice}$ jupyter notebook --port "$(port4me --tool=jupyter)"
 ```
 
 
