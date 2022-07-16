@@ -4,7 +4,7 @@ setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
     load "${BATS_FILE_HOME:?}/load.bash"
-    source ../incl/java_hashCode.bash
+    source ../incl/string_to_uint32.bash
 }
 
 @test "string_to_uint32" {
