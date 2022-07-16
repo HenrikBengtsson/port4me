@@ -27,7 +27,6 @@
 java_hashCode() {
     local str="$1"
     local -i MAX_UINT=$(( 2**32 ))
-    local -i MAX_INT=2147483647   ## +2^31-1
     local -i MIN_INT=-2147483648  ## -2^31
     local -i kk byte
     local -i hash=0

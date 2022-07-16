@@ -5,7 +5,6 @@ declare -i LCG_PARAMS_MODULUS
 declare -i LCG_PARAMS_A
 declare -i LCG_PARAMS_C
 declare -i LCG_INTEGER
-declare -i LCG_PORT
 
 LCG_SEED=-1
 export LCG_SEED
@@ -36,11 +35,14 @@ lcg_get_seed() {
     echo "${LCG_SEED:?}"
 }
 
+
+# shellcheck disable=SC2120
 lcg() {
     local -i modulus=${1:-${LCG_PARAMS_MODULUS:-65537}}
     local -i a=${2:-${LCG_PARAMS_A:-75}}
     local -i c=${3:-${LCG_PARAMS_C:-74}}
-    local -i seed=$(lcg_get_seed)
+    local -i seed
+    seed=$(lcg_get_seed)
     (( a <= 0 )) && error "LCG parameter 'a' must be positive: $a"
     (( c <= 0 )) && error "LCG parameter 'c' must be positive: $c"
     (( modulus <= 0 )) && error "LCG parameter 'modulus' must be positive: $modulus"
@@ -76,6 +78,7 @@ lcg_integer() {
     fi
 
     ## Export LCG integer as environment variable too
+    # shellcheck disable=SC2034
     LCG_INTEGER=${res}
     
     echo "${res}"
