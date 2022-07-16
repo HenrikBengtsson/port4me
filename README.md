@@ -1,6 +1,8 @@
-# [PROTOTYPE] port4me - Get the Same, Personal, Free TCP Port over and over
+![lifecycle: experimental](images/lifecycle-experimental-orange.svg)
 
-_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed.  It is not ready for use. /Henrik 2022-07-15_
+# port4me - Get the Same, Personal, Free TCP Port over and over
+
+_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-16_
 
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
@@ -132,11 +134,12 @@ and
 ## Roadmap 
 
 * [x] Identify essential features
-* [x] Prototype `port4me` command-line tool in Bash
-* [x] Prototype `port4me` API and command-line tool in R
+* [x] Prototype `port4me` command-line tool in Bash, e.g. `port4me --list=5`
+* [x] Prototype `port4me` API and command-line tool in R, e.g. `Rscript port4me.R --list=5`
 * [x] Add support for `PORT4ME_EXCLUDE`
 * [x] Add support for `PORT4ME_EXCLUDE_SITE`
-* [ ] Standardize command-line interface between Bash and R implementations
+* [x] Standardize command-line interface between Bash and R implementations
+* [ ] The string-to-seed algorithm rely on [0,2^32-1] integer arithmetic; can this be lowered to [0,2^16-1] = [0,65535] given we're dealing with TCP ports, which has the latter range?
 * [ ] Prototype `port4me` API and command-line tool in Python
 
 
@@ -164,5 +167,6 @@ and
 ### Design
 
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
+  - the current implementation use the "ZX81" LCG with parameters $m=2^16 + 1$, $a=75$, and $c=74$.
 
-* A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers instead of signed ones
+* A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^32-1]$, instead of signed ones in $[-2^31,2^31-1]$
