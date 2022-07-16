@@ -1,4 +1,4 @@
-source("../R/java_hashCode.R")
+source("../R/string_to_uint32.R")
 
 message("* string_to_uint32() ...")
 
