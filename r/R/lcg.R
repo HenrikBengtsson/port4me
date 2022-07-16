@@ -82,5 +82,5 @@ lcg_integer <- function(min, max) {
 }
 
 lcg_port <- function(min = 1024, max = 65535) {
-  lcg_integer(min = min, max = max)
+  as.integer(lcg_integer(min = min, max = max))
 }

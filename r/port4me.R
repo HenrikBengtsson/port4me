@@ -3,7 +3,7 @@ main <- function() {
     source(ff, local = TRUE)
   }
   port <- do.call(port4me, args = parse_cli_args())
-  cat(sprintf("%d\n", port))
+  cat(sprintf("%d\n", port), sep = "")
 }
 
 main()
