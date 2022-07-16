@@ -135,7 +135,7 @@ and
 * [x] Prototype `port4me` command-line tool in Bash
 * [x] Prototype `port4me` API and command-line tool in R
 * [x] Add support for `PORT4ME_EXCLUDE`
-* [ ] Add support for `PORT4ME_EXCLUDE_SITE`
+* [x] Add support for `PORT4ME_EXCLUDE_SITE`
 * [ ] Standardize command-line interface between Bash and R implementations
 * [ ] Prototype `port4me` API and command-line tool in Python
 

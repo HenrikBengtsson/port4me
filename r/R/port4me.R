@@ -24,15 +24,23 @@ port4me_seed <- function(user = NULL, tool = NULL) {
 }
 
 port4me_exclude <- function() {
-  exclude0 <- exclude <- Sys.getenv("PORT4ME_EXCLUDE", "")
-  exclude <- gsub(" ", "", exclude, fixed = TRUE)
-  exclude <- unlist(strsplit(exclude, split = ","))
-  bad <- grep("^[[:digit:]]+$", exclude, invert = TRUE, value = TRUE)
-  if (length(bad) > 0) {
-    stop(sprintf("Syntax error in 'exclude' argument: %s", exclude0))
+  exclude <- NULL
+
+  for (name in c("PORT4ME_EXCLUDE", "PORT4ME_EXCLUDE_SITE")) {
+    arg <- Sys.getenv(name, "")
+    ports <- arg
+    ports <- gsub(" ", "", ports, fixed = TRUE)
+    ports <- unlist(strsplit(ports, split = ","))
+    bad <- grep("^[[:digit:]]+$", ports, invert = TRUE, value = TRUE)
+    if (length(bad) > 0) {
+      stop(sprintf("Syntax error in 'exclude' argument: %s", arg))
+    }
+    ports <- as.integer(ports)
+    stopifnot(!anyNA(ports))
+    exclude <- c(exclude, ports)
   }
-  exclude <- as.integer(exclude)
-  stopifnot(!anyNA(exclude))
+  exclude <- unique(exclude)
+  
   exclude
 }
 

@@ -40,17 +40,9 @@ port4me_seed() {
 }
 
 port4me_exclude() {
-    local exclude=${PORT4ME_EXCLUDE}
-    ## Nothing to do?
-    if [[ -z ${exclude} ]]; then
-        echo ""
-        return 0
-    fi
-    >&2 echo "exclude=${exclude[*]}"
+    local exclude="${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
     exclude=${exclude// /}
-    >&2 echo "exclude=${exclude[*]}"
     exclude=${exclude//,/ }
-    >&2 echo "exclude=${exclude[*]}"
     echo "${exclude}"
 }    
 
