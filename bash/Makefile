@@ -6,4 +6,5 @@ check:
 
 shellcheck:
 	shellcheck incl/*.bash
+	shellcheck -x port4me
 

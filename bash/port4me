@@ -15,18 +15,38 @@
 ###  --skip=<int>        Number of ports to skip from the beginning (optional)
 ###
 ### Examples:
+### port4me --version
+###
 ### port4me
 ### port4me --tool=rstudio
-### /path/to/yada --port="$(port4me --tool=yada)"
+###
+### rserver --www-port "$(port4me --tool=rstudio)"
+### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
 ### Version: 0.0.0-9000
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
-source incl/cli.sh
-source incl/is_port_free.bash
-source incl/lcg.bash
-source incl/port4me.bash
-source incl/string_to_uint32.bash
+
+this="${BASH_SOURCE%/}"
+[[ -L "${this}" ]] && this=$(readlink "${this}")
+
+## Import bash utility functions
+incl="$(dirname "${this}")/incl"
+
+# shellcheck source=incl/cli.sh
+source "${incl}/cli.sh"
+
+# shellcheck source=incl/is_port_free.bash
+source "${incl}/is_port_free.bash"
+
+# shellcheck source=incl/lcg.bash
+source "${incl}/lcg.bash"
+
+# shellcheck source=incl/port4me.bash
+source "${incl}/port4me.bash"
+
+# shellcheck source=incl/string_to_uint32.bash
+source "${incl}/string_to_uint32.bash"
 
 action=port
 count=5
@@ -74,7 +94,7 @@ parse_cli_args() {
 parse_cli_args "$@"
 
 if [[ $action == "help" ]]; then
-    help
+    help ""
 elif [[ $action == "version" ]]; then
     version
 elif [[ $action == "list" ]]; then
