@@ -161,7 +161,7 @@ export PORT4ME_EXCLUDE_SITE
 
 ## Tips and Tricks
 
-If you'd like to see which port number was generated, you can use `tee` to send the output to _both_ standard output (stdout), which is captured by the tool, and to the standard error (stderr), which can be read in the terminal.  For example,
+All **port4me** implementations output the identified port to standard output (stdout). This makes it easy to capture by standard shell methods, e.g. `port="$(port4me)"`.  If you'd like to see which port number was generated, use `tee` to send the port also to the standard error (stderr), which can be seen in the terminal. For example,
 
 ```sh
 {alice}$ jupyter notebook --port "$(port4me --tool=jupyter | tee /dev/stderr)"
@@ -192,6 +192,8 @@ If you'd like to see which port number was generated, you can use `tee` to send 
 * All programming languages should produce the exact same pseudo-random port sequences given the same random seed.
 
 * The implementations should be written such that they work also when sourced, or copy'and'pasted into source code elsewhere, e.g. in R and Python scripts.
+
+* The identified, free port should be outputted to the standard output (stdout) as digits only, without any prefix or suffix symbols.
 
 * The user should be able to skip a pre-defined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
 
