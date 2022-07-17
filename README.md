@@ -7,7 +7,7 @@ _WARNING: This is an experimental project under development. It is currently in 
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
 
-To address this, **port4me** attempts, with high probability, to provide the user with the same port each time, even when used on different days.  It achieves this by scanning the same deterministic, pseudo-random sequence of ports and return the first free port detected.  Each user gets their own random port sequence, lowering the risk for any two users to request the same port.  The randomness is initiated with a random seed that is a function of the user's name (`USER`), and, optionally, the name of the software where we use the port.
+In contrast, **port4me** attempts, with high probability, to provide the user with the same port each time, even when used on different days.  It achieves this by scanning the same deterministic, pseudo-random sequence of ports and return the first free port detected.  Each user gets their own random port sequence, lowering the risk for any two users to request the same port.  The randomness is initiated with a random seed that is a function of the user's name (`USER`), and, optionally, the name of the software where we use the port.
 
 The **port4me** algorithm can be implemented in most known programming languages, producing perfectly reproducable sequencing regardless of implementation language.
 
