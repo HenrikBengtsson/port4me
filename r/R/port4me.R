@@ -23,20 +23,25 @@ port4me_seed <- function(user = NULL, tool = NULL) {
   seed
 }
 
+parse_ports <- function(ports) {
+  ports <- paste(ports, collapse = ",")
+  ports <- gsub(" ", "", ports, fixed = TRUE)
+  ports <- unlist(strsplit(ports, split = ","))
+  bad <- grep("^[[:digit:]]+$", ports, invert = TRUE, value = TRUE)
+  if (length(bad) > 0) {
+    stop(sprintf("Syntax error in 'exclude' argument: %s", arg))
+  }
+  ports <- as.integer(ports)
+  stopifnot(!anyNA(ports))
+  ports
+}
+
 port4me_exclude <- function() {
   exclude <- NULL
 
   for (name in c("PORT4ME_EXCLUDE", "PORT4ME_EXCLUDE_SITE")) {
     arg <- Sys.getenv(name, "")
-    ports <- arg
-    ports <- gsub(" ", "", ports, fixed = TRUE)
-    ports <- unlist(strsplit(ports, split = ","))
-    bad <- grep("^[[:digit:]]+$", ports, invert = TRUE, value = TRUE)
-    if (length(bad) > 0) {
-      stop(sprintf("Syntax error in 'exclude' argument: %s", arg))
-    }
-    ports <- as.integer(ports)
-    stopifnot(!anyNA(ports))
+    ports <- parse_ports(arg)
     exclude <- c(exclude, ports)
   }
   exclude <- unique(exclude)
@@ -58,6 +63,7 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), exclude = port
   }
   stopifnot(length(max_tries) == 1L, is.numeric(max_tries), !is.na(max_tries), max_tries > 0, is.finite(max_tries))
   max_tries <- as.integer(max_tries)
+  if (is.character(exclude)) exclude <- parse_ports(exclude)
   stopifnot(is.numeric(exclude), !anyNA(exclude), all(exclude > 0), all(exclude <= 65535))
   stopifnot(length(skip) == 1L, is.numeric(skip), !is.na(skip), skip >= 0, is.finite(skip), skip < max_tries)
   skip <- as.integer(skip)
@@ -69,11 +75,13 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), exclude = port
     return(vapply(seq_len(list), FUN.VALUE = NA_integer_,
                     FUN = function(kk) lcg_port()))
   }
-  
-  for (kk in 1:max_tries) {
+
+  count <- 0L
+  while (count <= max_tries) {
     port <- lcg_port()
-    if (kk <= skip) next
     if (port %in% exclude) next
+    count <- count + 1L
+    if (count <= skip) next
     if (is_port_free(port)) return(port)
   }
 

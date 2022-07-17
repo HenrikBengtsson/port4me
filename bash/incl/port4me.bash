@@ -60,16 +60,7 @@ port4me() {
     count=0
     while (( count < max_tries )); do
         lcg_port > /dev/null
-
-        count=$((count + 1))
-        
-        ## Skip?
-        if (( count <= skip )); then
-            continue
-        fi
-        
         port=${LCG_INTEGER:?}
-        ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
 
         ## Skip?
         if (( ${#exclude[@]} > 0 )); then
@@ -78,7 +69,16 @@ port4me() {
                 continue
             fi
         fi
+
+        count=$((count + 1))
         
+        ## Skip?
+        if (( count <= skip )); then
+            continue
+        fi
+        
+        ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
+
         if is_port_free "$port"; then
             printf "%d\n" "$port"
             return 0
