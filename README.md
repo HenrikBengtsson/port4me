@@ -135,6 +135,29 @@ to the shell startup script, e.g. `~/.bashrc`.
 This increases the chances for the user to end up with the same port over time, which is convenient, because then they can reuse the same call, which is available in the command-line history, each time without having to change the port parameter.
 
 
+The environment variable `PORT4ME_EXCLUDE` is intended to be used by the individual user.  To specify a set of ports to be excluded regardless of user, set `PORT4ME_EXCLUDE_SITE`.  For example, the systems administrator, can choose to exclude an additional set of ports by adding the following to file `/etc/profile.d/port4me.sh`:
+
+```sh
+## port4me: always exclude commonly used ports
+## https://github.com/HenrikBengtsson/port4me
+
+PORT4ME_EXCLUDE_SITE=
+
+## MySQL
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:3306
+
+## ZeroMQ
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:5670
+
+## Redis
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:6379
+
+## Jupyter
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:8888
+
+export PORT4ME_EXCLUDE_SITE
+```
+
 
 ## Tips and Tricks
 
