@@ -27,7 +27,7 @@ As we will see later, each user on the system is likely to get their own unique 
 {alice}$ jupyter notebook --port "$(port4me)"
 ```
 
-As long as this port is available, `alice` will always get the same port across shell sessions and over time.  For example, if they return week and retry, it's likely they still get:
+As long as this port is available, `alice` will always get the same port across shell sessions and over time.  For example, if they return next week and retry, it's likely they still get:
 
 ```sh
 {alice}$ port4me
