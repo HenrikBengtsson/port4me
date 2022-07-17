@@ -7,12 +7,14 @@ _WARNING: This is an experimental project under development. It is currently in 
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
 
-To address this, **port4me** is a language-agnostic algorithm that attempts, with high probability, to provide the user with the same port each time, even when used on different days.  It achieves this by scanning the same sequence of ports, where the random seed is a function of the user's name (`USER`) on the system, and, optionally, the name of the software where we use the port.  The algorithm that **port4me** use for generating the determisitic, pseudo-random port sequence is designed such that it can be reproduced perfectly in most known programming languages.
+To address this, **port4me** attempts, with high probability, to provide the user with the same port each time, even when used on different days.  It achieves this by scanning the same deterministic, pseudo-random sequence of ports and return the first free port detected.  Each user gets their own random port sequence, lowering the risk for any two users to request the same port.  The randomness is initiated with a random seed that is a function of the user's name (`USER`), and, optionally, the name of the software where we use the port.
+
+The **port4me** algorithm can be implemented in most known programming languages, producing perfectly reproducable sequencing regardless of implementation language.
 
 
-## Example
+## A quick introduction
 
-From a Bash shell, running as user `alice`, we get:
+Assuming we're logged in as user `alice` in a Bash shell, calling `port4me` without arguments gives us a free port:
 
 ```sh
 {alice}$ port4me
@@ -51,33 +53,6 @@ To see the first five ports scanned, run:
 65016
 16297
 ```
-
-Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (31869) works only one out 10 times, whereas the second port (20678) works 99 out 100 times, and the third one (33334) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via option `--exclude`, e.g.
-
-```sh
-{alice}$ port4me --exclude=31869,33334
-20678
-```
-
-An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
-
-```sh
-{alice}$ PORT4ME_EXCLUDE=31869,33334 port4me
-20678
-```
-
-To set this permanently, append:
-
-```sh
-## port4me customization
-## https://github.com/HenrikBengtsson/port4me
-PORT4ME_EXCLUDE=31869,33334
-export PORT4ME_EXCLUDE
-```
-
-to the shell startup script, e.g. `~/.bashrc`.
-
-This increases the chances for the user to end up with the same port over time, which is convenient, because then they can reuse the same call, which is available in the command-line history, each time without having to change the port parameter.
 
 
 ## User-specific, deterministic, pseudo-random port sequence
@@ -128,6 +103,37 @@ and
 ```sh
 {alice}$ jupyter notebook --port "$(port4me --tool=jupyter)"
 ```
+
+
+## Avoid using ports commonly used elsewhere
+
+Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (31869) works only one out 10 times, whereas the second port (20678) works 99 out 100 times, and the third one (33334) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via option `--exclude`, e.g.
+
+```sh
+{alice}$ port4me --exclude=31869,33334
+20678
+```
+
+An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
+
+```sh
+{alice}$ PORT4ME_EXCLUDE=31869,33334 port4me
+20678
+```
+
+To set this permanently, append:
+
+```sh
+## port4me customization
+## https://github.com/HenrikBengtsson/port4me
+PORT4ME_EXCLUDE=31869,33334
+export PORT4ME_EXCLUDE
+```
+
+to the shell startup script, e.g. `~/.bashrc`.
+
+This increases the chances for the user to end up with the same port over time, which is convenient, because then they can reuse the same call, which is available in the command-line history, each time without having to change the port parameter.
+
 
 
 ## Tips and Tricks
