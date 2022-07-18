@@ -179,6 +179,7 @@ All **port4me** implementations output the identified port to standard output (s
 * [x] Standardize command-line interface between Bash and R implementations
 * [ ] The string-to-seed algorithm rely on $[0,2^{32}-1]$ integer arithmetic; can this be lowered to $[0,2^{16}-1] = [0,65535]$ given we're dealing with TCP ports, which has the latter range?
 * [ ] Prototype `port4me` API and command-line tool in Python
+* [ ] Freeze the algorithm and the parameters
 
 
 ## The port4me Algorithm
