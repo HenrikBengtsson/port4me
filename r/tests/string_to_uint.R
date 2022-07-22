@@ -1,5 +1,7 @@
 source("../R/string_to_uint.R")
 
+Sys.setenv(PORT4ME_MAX_UINT = "4294967296")  ## = 2^32
+
 message("* string_to_uint() ...")
 
 hash <- string_to_uint("")
