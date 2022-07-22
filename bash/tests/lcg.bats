@@ -50,10 +50,6 @@ setup() {
     run lcg 65537 75 0
     assert_failure
     assert_output --partial "'c' must be positive"
-
-    run lcg 1 1 1
-    assert_failure
-    assert_output --partial "New LCG seed is zero"
 }
 
 @test "lcg_set_seed" {
