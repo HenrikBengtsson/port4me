@@ -53,9 +53,7 @@ lcg() {
     seed_next=$(( (a * seed + c) % modulus ))
 
     ## Sanity checks
-    if (( seed_next == 0 )); then
-        error "New LCG seed is zero, which could be because non-functional LCG parameters: (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
-    elif (( seed_next < 0 )); then
+    if (( seed_next < 0 )); then
         error "INTERNAL: New LCG seed is non-positive: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     elif (( seed_next > modulus )); then
         error "INTERNAL: New LCG seed is too large: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
