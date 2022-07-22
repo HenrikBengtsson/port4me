@@ -2,7 +2,7 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-16_
+_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-22_
 
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
@@ -87,9 +87,9 @@ Sometimes a user would like to use two, or more, ports at the same time, e.g. on
 {alice}$ port4me
 31869
 {alice}$ port4me --tool=rstudio
-39273
+23510
 {alice}$ port4me --tool=jupyter
-1147
+48491
 ```
 
 This allows us to do:
@@ -165,7 +165,7 @@ All **port4me** implementations output the identified port to standard output (s
 
 ```sh
 {alice}$ jupyter notebook --port "$(port4me --tool=jupyter | tee /dev/stderr)"
-55266
+48491
 ```
 
 
