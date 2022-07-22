@@ -45,6 +45,8 @@ lcg <- local({
         stop(sprintf("New LCG seed is negative (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, .seed))
     } else if (seed_next > modulus) {
         stop(sprintf("New LCG seed is too large (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, .seed))
+    } else if (seed_next  == .seed) {
+        stop(sprintf("New LCG seed is same a current seed, with (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", a, c, modulus, .seed))
     }
 
     .seed <<- seed_next

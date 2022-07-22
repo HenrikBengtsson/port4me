@@ -57,6 +57,8 @@ lcg() {
         error "INTERNAL: New LCG seed is non-positive: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     elif (( seed_next > modulus )); then
         error "INTERNAL: New LCG seed is too large: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
+    elif (( seed_next == seed )); then
+        error "INTERNAL: New LCG seed is same a current seed, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     fi
     
     LCG_SEED=${seed_next}
