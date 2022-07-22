@@ -81,7 +81,7 @@ lcg_integer <- function(min, max) {
     length(max) == 1L, is.numeric(max), !is.na(max),
     min <= max
   )
-  res <- lcg() %% (max - min) + min
+  res <- lcg() %% (max - min + 1) + min
   
   ## Sanity check
   stopifnot(

@@ -73,7 +73,7 @@ lcg_integer() {
     seed=$(lcg)
     LCG_SEED=${seed}
     
-    res=$(bc <<< "${seed} % (${max} - ${min}) + ${min}")
+    res=$(bc <<< "${seed} % (${max} - ${min} + 1) + ${min}")
 
     ## Sanity checks
     if (( res < min || res > max )); then

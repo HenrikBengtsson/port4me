@@ -84,12 +84,12 @@ setup() {
     lcg_set_seed 42
     run lcg_integer 0 100
     assert_success
-    assert_output "24"
+    assert_output "93"
 
     lcg_set_seed 42
     run lcg_integer 0 100
     assert_success
-    assert_output "24"
+    assert_output "93"
 
     lcg_set_seed 42   
     run lcg_integer 0 100000
