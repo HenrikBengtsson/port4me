@@ -1,4 +1,6 @@
-source("../R/string_to_uint.R")
+for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
+  source(ff, local = TRUE)
+}
 
 Sys.setenv(PORT4ME_MAX_UINT = "4294967296")  ## = 2^32
 

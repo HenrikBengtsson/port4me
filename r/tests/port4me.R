@@ -1,4 +1,4 @@
-for (ff in dir("R", pattern = "[.]R$", full.names = TRUE)) {
+for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
   source(ff, local = TRUE)
 }
 
