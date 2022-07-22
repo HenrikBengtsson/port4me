@@ -1,7 +1,7 @@
 port4me_max_uint <- local({
   max <- NULL
-  function() {
-    if (is.null(max)) {
+  function(reset = FALSE) {
+    if (is.null(max) || isTRUE(reset)) {
       value <- Sys.getenv("PORT4ME_MAX_UINT", "4294967296") ## = 2^32
       value <- as.numeric(value)
       stopifnot(is.finite(value))
