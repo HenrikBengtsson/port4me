@@ -177,7 +177,7 @@ All **port4me** implementations output the identified port to standard output (s
 * [x] Add support for `PORT4ME_EXCLUDE`
 * [x] Add support for `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
-* [ ] The string-to-seed algorithm rely on $[0,2^{32}-1]$ integer arithmetic; can this be lowered to $[0,2^{16}-1] = [0,65535]$ given we're dealing with TCP ports, which has the latter range? UPDATE 2022-07-22: It can, but then the seed will be in $[0,65535]$, but the current ZX81 LCG parameters allows for an LCG seed in $[0,65535+1]$, so we're excluding one out of 65537 seeds doing so.
+* [ ] The string-to-seed algorithm rely on $[0,2^{32}-1]$ integer arithmetic; can this be lowered to $[0,2^{16}-1] = [0,65535]$ given we're dealing with TCP ports, which has the latter range? UPDATE 2022-07-22: It can, but then the seed will be in $[0,65535]$, but the current ZX81 LCG parameters allows for an LCG seed in $[0,65535+1]$, so we're excluding one out of 65537 seeds doing so. OTH, the LCG algoritm requires 32-bit integer arithmetic, so there's really no gain in limiting the seed generatic algoritm to something less
 * [ ] Prototype `port4me` API and command-line tool in Python
 * [ ] Freeze the algorithm and the parameters
 
@@ -186,7 +186,7 @@ All **port4me** implementations output the identified port to standard output (s
 
 ### Requirements
 
-* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed 2^32.
+* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed 2^32 - 1.
 
 * At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, with _no_ need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetic may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
 
@@ -208,6 +208,6 @@ All **port4me** implementations output the identified port to standard output (s
 ### Design
 
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
-  - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$. This requires 32-bit integer arithmetic, because the modulus parameter $m > 2^{16}$.
+  - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$. This requires 32-bit integer arithmetic, because the modulus parameter $m > 2^{16}$
 
 * A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
