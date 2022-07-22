@@ -1,6 +1,23 @@
-string_to_uint <- function(str, max_uint = 2^32) {
+port4me_max_uint <- local({
+  max <- NULL
+  function() {
+    if (is.null(max)) {
+      value <- Sys.getenv("PORT4ME_MAX_UINT", NA_character_)
+      if (is.na(value)) {
+        value <- 2^32
+      } else {
+        value <- as.numeric(value)
+        stopifnot(is.finite(value))
+      }
+      max <<- value
+    }
+    max
+  }
+})
+
+string_to_uint <- function(str) {
   stopifnot(is.character(str), length(str) == 1L, !is.na(str))
-  stopifnot(is.numeric(max_uint), length(max_uint) == 1L, is.finite(max_uint), max_uint > 0)
+  max_uint <- port4me_max_uint()
   
   #  The hashcode for a character string is computed as
   #

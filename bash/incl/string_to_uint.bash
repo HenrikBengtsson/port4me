@@ -4,7 +4,7 @@
 #' integers
 string_to_uint() {
     local str="$1"
-    local -i MAX_UINT=${MAX_UINT:-$(( 2**32 ))}
+    local -i MAX_UINT=${PORT4ME_MAX_UINT:-$(( 2**32 ))}
     local -i kk byte
     local -i hash=0
     for ((kk = 0; kk < ${#str}; kk++)); do
