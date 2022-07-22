@@ -45,8 +45,8 @@ source "${incl}/lcg.bash"
 # shellcheck source=incl/port4me.bash
 source "${incl}/port4me.bash"
 
-# shellcheck source=incl/string_to_uint32.bash
-source "${incl}/string_to_uint32.bash"
+# shellcheck source=incl/string_to_uint.bash
+source "${incl}/string_to_uint.bash"
 
 action=port
 count=0

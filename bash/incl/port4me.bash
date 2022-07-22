@@ -29,7 +29,7 @@ port4me_seed() {
         error "At least one of arguments 'user' and 'tool' must be non-empty"
     fi
 
-    seed=$(string_to_uint32 "$seed_str")
+    seed=$(string_to_uint "$seed_str")
 
     if ${PORT4ME_DEBUG:-false}; then
        >&2 printf "seed_str='%s'\n" "$seed_str"

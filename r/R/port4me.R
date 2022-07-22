@@ -15,7 +15,7 @@ port4me_seed <- function(user = NULL, tool = NULL) {
     stop("At least one of arguments 'user' and 'tool' must be non-empty")
   }
   seed_str <- paste(seed_str, collapse = ",")
-  seed <- string_to_uint32(seed_str)
+  seed <- string_to_uint(seed_str)
   if (isTRUE(as.logical(Sys.getenv("PORT4ME_DEBUG", "false")))) {
     message(sprintf("seed_str='%s'", seed_str))
     message(sprintf("seed=%.0f", seed))
