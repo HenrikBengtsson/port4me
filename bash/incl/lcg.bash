@@ -43,23 +43,25 @@ lcg() {
     local -i a=${2:-${LCG_PARAMS_A:-75}}
     local -i c=${3:-${LCG_PARAMS_C:-74}}
     local -i seed
-    seed=$(lcg_get_seed)
+    local -i seed_next
+
     (( a <= 0 )) && error "LCG parameter 'a' must be positive: $a"
     (( c <= 0 )) && error "LCG parameter 'c' must be positive: $c"
     (( modulus <= 0 )) && error "LCG parameter 'modulus' must be positive: $modulus"
 
-    seed=$(( (a * seed + c) % modulus ))
+    seed=$(lcg_get_seed)
+    seed_next=$(( (a * seed + c) % modulus ))
 
     ## Sanity checks
-    if (( seed == 0 )); then
-        error "New LCG seed is zero, which could be because non-functional LCG parameters: (a, c, modulus) = ($a, $c, $modulus)"
-    elif (( seed < 0 )); then
-        error "INTERNAL: New LCG seed is non-positive: $seed, where (a, c, modulus) = ($a, $c, $modulus)"
-    elif (( seed > modulus )); then
-        error "INTERNAL: New LCG seed is too large: $seed, where (a, c, modulus) = ($a, $c, $modulus)"
+    if (( seed_next == 0 )); then
+        error "New LCG seed is zero, which could be because non-functional LCG parameters: (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
+    elif (( seed_next < 0 )); then
+        error "INTERNAL: New LCG seed is non-positive: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
+    elif (( seed_next > modulus )); then
+        error "INTERNAL: New LCG seed is too large: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     fi
     
-    LCG_SEED=${seed}
+    LCG_SEED=${seed_next}
     
     echo "${LCG_SEED}"
 }

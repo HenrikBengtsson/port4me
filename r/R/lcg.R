@@ -35,10 +35,21 @@ lcg <- local({
       length(c) == 1L, is.numeric(c), !is.na(c), c > 0
     )
 
-    .seed <<- (a * .seed + c) %% modulus
+    seed_next <- (a * .seed + c) %% modulus
 
     ## Sanity check
-    stopifnot(length(.seed) == 1L, is.numeric(.seed), !is.na(.seed), .seed > 0)
+    stopifnot(length(seed_next) == 1L, is.numeric(seed_next), !is.na(seed_next))
+
+    ## Sanity checks
+    if (seed_next == 0) {
+        stop(sprintf("New LCG seed is zero, which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", a, c, modulus, .seed))
+    } else if (seed_next < 0) {
+        stop(sprintf("New LCG seed is negative (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, .seed))
+    } else if (seed_next > modulus) {
+        stop(sprintf("New LCG seed is too large (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, .seed))
+    }
+
+    .seed <<- seed_next
     
     .seed
   }
