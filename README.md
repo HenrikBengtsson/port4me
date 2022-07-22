@@ -177,7 +177,7 @@ All **port4me** implementations output the identified port to standard output (s
 * [x] Add support for `PORT4ME_EXCLUDE`
 * [x] Add support for `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
-* [ ] The string-to-seed algorithm rely on $[0,2^{32}-1]$ integer arithmetic; can this be lowered to $[0,2^{16}-1] = [0,65535]$ given we're dealing with TCP ports, which has the latter range?
+* [ ] The string-to-seed algorithm rely on $[0,2^{32}-1]$ integer arithmetic; can this be lowered to $[0,2^{16}-1] = [0,65535]$ given we're dealing with TCP ports, which has the latter range? UPDATE 2022-07-22: It can, but then the seed will be in $[0,65535]$, but the current ZX81 LCG parameters allows for an LCG seed in $[0,65535+1]$, so we're excluding one out of 65537 seeds doing so.
 * [ ] Prototype `port4me` API and command-line tool in Python
 * [ ] Freeze the algorithm and the parameters
 
