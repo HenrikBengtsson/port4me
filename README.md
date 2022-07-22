@@ -208,6 +208,6 @@ All **port4me** implementations output the identified port to standard output (s
 ### Design
 
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
-  - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$.
+  - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$. This requires 32-bit integer arithmetic, because the modulus parameter $m > 2^{16}$.
 
 * A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
