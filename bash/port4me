@@ -12,10 +12,13 @@
 ###  --user=<string>     User name (default: $USER)
 ###  --tool=<string>     Name of software tool (optional)
 ###  --exclude=<ports>   Comma-separated list of ports to be excluded (optional)
-###  --skip=<int>        Number of ports to skip from the beginning (optional)
+###
+###  --list=<n>          List the first 'n', non-excluded ports scanned
 ###
 ### Examples:
 ### port4me --version
+###
+### port4me --list=5
 ###
 ### port4me
 ### port4me --tool=rstudio
