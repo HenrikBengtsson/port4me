@@ -51,9 +51,14 @@ port4me() {
     local exclude
     mapfile -t exclude < <(port4me_exclude)
     local -i count
+    local -i list=${PORT4ME_LIST:-0}
     local -i max_tries=${PORT4ME_MAX_TRIES:-1000}
     local must_work=${PORT4ME_MUST_WORK:-true}
 
+    if (( list > 0 )); then
+        max_tries=${list}
+    fi
+    
     lcg_set_params
     lcg_set_seed "$(port4me_seed)"
 
@@ -71,25 +76,32 @@ port4me() {
         fi
 
         count=$((count + 1))
-        
-        ## Skip?
-        if (( count <= skip )); then
-            continue
-        fi
-        
-        ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
 
-        if is_port_free "$port"; then
+        if (( list > 0 )); then
             printf "%d\n" "$port"
-            return 0
+        else            
+            ## Skip?
+            if (( count <= skip )); then
+                continue
+            fi
+            
+            ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
+    
+            if is_port_free "$port"; then
+                printf "%d\n" "$port"
+                return 0
+            fi
+            port=
         fi
-        port=
     done
 
-    if $must_work; then
-        error "Failed to find a free TCP port"
-    fi
+    if (( list == 0 )); then
+        if $must_work; then
+            error "Failed to find a free TCP port"
+        fi
 
-    printf "%d\n" "-1"
+        printf "%d\n" "-1"
+    fi
+    
     return 0
 }

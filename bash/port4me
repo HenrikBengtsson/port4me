@@ -49,7 +49,7 @@ source "${incl}/port4me.bash"
 source "${incl}/string_to_uint32.bash"
 
 action=port
-count=5
+count=0
 
 parse_cli_args() {
     local key value
@@ -98,11 +98,7 @@ if [[ $action == "help" ]]; then
 elif [[ $action == "version" ]]; then
     version
 elif [[ $action == "list" ]]; then
-    skip=0
-    while (( skip < count )); do
-        PORT4ME_SKIP="$skip" port4me
-        skip=$(( skip + 1 ))
-    done
+    PORT4ME_LIST=${count} port4me
 else
     port4me
 fi    
