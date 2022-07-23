@@ -1,8 +1,12 @@
 ![lifecycle: experimental](images/lifecycle-experimental-orange.svg)
+[![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
+[![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
+[![check-R](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml)
+
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-22_
+_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-23_
 
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
@@ -169,6 +173,26 @@ All **port4me** implementations output the identified port to standard output (s
 ```
 
 
+## Installation
+
+To install the Bash version of **portme**, do:
+
+```sh
+VERSION=0.0.2
+curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
+tar -x -f "${VERSION}.tar.gz"
+(cd "port4me-${VERSION}"; make install PREFIX=/path/to/port4me)
+```
+
+Then run it as:
+
+```sh
+$ export PATH=/path/to/port4me/bin:$PATH
+$ port4me --version
+0.0.2
+```
+
+
 ## Roadmap 
 
 * [x] Identify essential features
@@ -177,7 +201,6 @@ All **port4me** implementations output the identified port to standard output (s
 * [x] Add support for `PORT4ME_EXCLUDE`
 * [x] Add support for `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
-* [ ] The string-to-seed algorithm rely on $[0,2^{32}-1]$ integer arithmetic; can this be lowered to $[0,2^{16}-1] = [0,65535]$ given we're dealing with TCP ports, which has the latter range? UPDATE 2022-07-22: It can, but then the seed will be in $[0,65535]$, but the current ZX81 LCG parameters allows for an LCG seed in $[0,65535+1]$, so we're excluding one out of 65537 seeds doing so. OTH, the LCG algoritm requires 32-bit integer arithmetic, so there's really no gain in limiting the seed generatic algoritm to something less
 * [ ] Prototype `port4me` API and command-line tool in Python
 * [ ] Freeze the algorithm and the parameters
 
@@ -186,7 +209,7 @@ All **port4me** implementations output the identified port to standard output (s
 
 ### Requirements
 
-* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed 2^32 - 1.
+* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed $2^{32} - 1$.
 
 * At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, with _no_ need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetic may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
 
@@ -196,11 +219,11 @@ All **port4me** implementations output the identified port to standard output (s
 
 * The identified, free port should be outputted to the standard output (stdout) as digits only, without any prefix or suffix symbols.
 
-* The user should be able to skip a pre-defined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
+* The user should be able to exclude a pre-defined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
 
 * The system administrator should be able to specify a pre-defined set of ports to be excluded by specifying environment variable `PORT4ME_EXCLUDE_SITE`, e.g. `PORT4ME_EXCLUDE_SITE=8080,4321`.  This works complementary to `PORT4ME_EXCLUDE`.
 
-* The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`.
+* The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`. Skipping should apply _after_ ports are excluding by `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`.
 
 * New implementations should perfectly reproduce the port sequences produced by already existing implementations.
 
@@ -208,6 +231,12 @@ All **port4me** implementations output the identified port to standard output (s
 ### Design
 
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
-  - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$. This requires 32-bit integer arithmetic, because the modulus parameter $m > 2^{16}$
+  - the next seed is calculated based on the current seed $s$ and parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
 
-* A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
+  - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
+
+  - Choice of LCG parameters: $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81"), which requires only 32-bit integer arithmetic, because $m < 2^{32}$
+  
+* A _32-bit integer string hashcode_ will be used to generate an integer in $[0,2^{32}-1]$ from an ASCII string with any number of characters. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
+
+* The string hashcode is used as the initial LCG seed.  Since the LCG seed should be in $[0,m-1]$, modulo $m$ must be applied to the the string hashcode before being assigned to the LCG seed

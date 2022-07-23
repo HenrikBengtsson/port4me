@@ -1,0 +1,35 @@
+on: [push, pull_request]
+
+name: check-bash
+
+jobs:
+  checks:
+    if: "! contains(github.event.head_commit.message, '[ci skip]')"
+
+    timeout-minutes: 10
+
+    runs-on: ubuntu-20.04
+    
+    name: check-bash
+
+    strategy:
+      fail-fast: false
+      
+    steps:
+    - name: Checkout git repository
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.7.0.tar.gz && tar xf v1.7.0.tar.gz
+        curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
+        curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.0.0.tar.gz && tar xf v2.0.0.tar.gz
+        BATS_SUPPORT_HOME=bats-support-0.3.0 BATS_ASSERT_HOME=bats-assert-2.0.0 PATH="bats-core-1.7.0/bin:$PATH" bats --version
+
+    - name: Check with Bats
+      run: |
+        export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
+        export BATS_ASSERT_HOME=$PWD/bats-assert-2.0.0
+        export PATH=$PWD/bats-core-1.7.0/bin:$PATH
+        cd bash/tests/
+        bats *.bats
