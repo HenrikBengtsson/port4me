@@ -4,7 +4,6 @@ setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
     source ../incl/string_to_uint.bash
-    export PORT4ME_MAX_UINT=4294967296  ## = 2^32
 }
 
 @test "string_to_uint" {
