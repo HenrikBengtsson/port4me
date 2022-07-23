@@ -1,4 +1,5 @@
 ![lifecycle: experimental](images/lifecycle-experimental-orange.svg)
+[![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
