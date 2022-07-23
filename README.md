@@ -2,7 +2,7 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-22_
+_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-23_
 
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
@@ -197,7 +197,6 @@ $ port4me --version
 * [x] Add support for `PORT4ME_EXCLUDE`
 * [x] Add support for `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
-* [ ] The string-to-seed algorithm rely on $[0,2^{32}-1]$ integer arithmetic; can this be lowered to $[0,2^{16}-1] = [0,65535]$ given we're dealing with TCP ports, which has the latter range? UPDATE 2022-07-22: It can, but then the seed will be in $[0,65535]$, but the current ZX81 LCG parameters allows for an LCG seed in $[0,65535+1]$, so we're excluding one out of 65537 seeds doing so. OTH, the LCG algoritm requires 32-bit integer arithmetic, so there's really no gain in limiting the seed generatic algoritm to something less
 * [ ] Prototype `port4me` API and command-line tool in Python
 * [ ] Freeze the algorithm and the parameters
 
@@ -216,11 +215,11 @@ $ port4me --version
 
 * The identified, free port should be outputted to the standard output (stdout) as digits only, without any prefix or suffix symbols.
 
-* The user should be able to skip a pre-defined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
+* The user should be able to exclude a pre-defined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
 
 * The system administrator should be able to specify a pre-defined set of ports to be excluded by specifying environment variable `PORT4ME_EXCLUDE_SITE`, e.g. `PORT4ME_EXCLUDE_SITE=8080,4321`.  This works complementary to `PORT4ME_EXCLUDE`.
 
-* The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`.
+* The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`. Skipping should apply _after_ ports are excluding by `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`.
 
 * New implementations should perfectly reproduce the port sequences produced by already existing implementations.
 
@@ -229,6 +228,8 @@ $ port4me --version
 
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
   - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$. This requires 32-bit integer arithmetic, because the modulus parameter $m > 2^{16}$
-  - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should modulo $m$ on the seed first to avoid integer overflow
+  - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
 
-* A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
+* A _32-bit integer string hashcode_ will be used to generate an integer in $[0,2^{32}-1]$ from an ASCII string with any number of characters. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
+
+* The string hashcode is used as the initial LCG seed.  Since the LCG seed should be in $[0,m-1]$, modulo $m$ must be applied to the the string hashcode before being assigned to the LCG seed
