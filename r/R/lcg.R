@@ -9,17 +9,6 @@ lcg <- local({
   .seed <- NULL
   
   function(modulus = getOption("lcg.params")["modulus"], a = getOption("lcg.params")["a"], c = getOption("lcg.params")["c"], seed = NULL) {
-    if (!is.null(seed)) {
-      if (is.na(seed)) return(.seed)
-      stopifnot(length(seed) == 1L, is.numeric(seed), !is.na(seed), seed > 0)
-      .seed <<- seed
-      return(invisible(.seed))
-    }
-    
-    if (is.null(.seed)) {
-      stop("Argument 'seed' must be specified at least once")
-    }
-
     ## Set default LCG parameters, if not already set
     if (is.null(getOption("lcg.params"))) {
       lcg_set_params()
@@ -35,18 +24,32 @@ lcg <- local({
       length(c) == 1L, is.numeric(c), !is.na(c), c > 0
     )
 
-    seed_next <- (a * .seed + c) %% modulus
+    if (!is.null(seed)) {
+      if (is.na(seed)) return(.seed)
+      stopifnot(length(seed) == 1L, is.numeric(seed), !is.na(seed), seed > 0)
+      ## Make sure seed is within [0,modulus-1] to avoid integer overflow
+      seed <- seed %% modulus
+      .seed <<- seed
+      return(invisible(.seed))
+    }
+    
+    if (is.null(.seed)) {
+      stop("Argument 'seed' must be specified at least once")
+    }
+
+    seed <- .seed
+    seed_next <- (a * seed + c) %% modulus
 
     ## Sanity check
     stopifnot(length(seed_next) == 1L, is.numeric(seed_next), !is.na(seed_next))
 
     ## Sanity checks
     if (seed_next < 0) {
-        stop(sprintf("New LCG seed is negative (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, .seed))
+        stop(sprintf("New LCG seed is negative (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, seed))
     } else if (seed_next > modulus) {
-        stop(sprintf("New LCG seed is too large (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, .seed))
-    } else if (seed_next  == .seed) {
-        stop(sprintf("New LCG seed is same a current seed, with (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", a, c, modulus, .seed))
+        stop(sprintf("New LCG seed is too large (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, seed))
+    } else if (seed_next  == seed) {
+        stop(sprintf("New LCG seed is same a current seed, with (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", a, c, modulus, seed))
     }
 
     .seed <<- seed_next
