@@ -50,9 +50,20 @@ lcg() {
     (( modulus <= 0 )) && error "LCG parameter 'modulus' must be positive: $modulus"
 
     seed=$(lcg_get_seed)
+
     ## Make sure seed is within [0,modulus-1] to avoid integer overflow
     seed=$(( seed % modulus ))
+
     seed_next=$(( (a * seed + c) % modulus ))
+
+    ## For certain LCG parameter settings, we might end up in the same
+    ## LCG state. For example, this can happen when (a-c) = 1 and
+    ## seed = modulus-1. To make sure we handle any parameter setup, we
+    ## detect this manually, increment the seed, and recalculate.
+    if (( seed_next == seed )); then
+        seed=$(( seed + 1 ))
+        seed_next=$(( (a * seed + c) % modulus ))
+    fi
 
     ## Sanity checks
     if (( seed_next < 0 )); then

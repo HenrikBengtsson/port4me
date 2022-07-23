@@ -20,8 +20,8 @@ lcg <- local({
 
     stopifnot(
       length(modulus) == 1L, is.numeric(modulus), !is.na(modulus), modulus > 0,
-      length(a) == 1L, is.numeric(a), !is.na(a), a > 0,
-      length(c) == 1L, is.numeric(c), !is.na(c), c > 0
+      length(a) == 1L, is.numeric(a), !is.na(a), a > 0, a < modulus,
+      length(c) == 1L, is.numeric(c), !is.na(c), c >= 0, c < modulus
     )
 
     if (!is.null(seed)) {
@@ -39,6 +39,15 @@ lcg <- local({
 
     seed <- .seed
     seed_next <- (a * seed + c) %% modulus
+
+    ## For certain LCG parameter settings, we might end up in the same
+    ## LCG state. For example, this can happen when (a-c) = 1 and
+    ## seed = modulus-1. To make sure we handle any parameter setup, we
+    ## detect this manually, increment the seed, and recalculate.
+    if (seed_next == seed) {
+        seed <- seed + 1
+        seed_next <- (a * seed + c) %% modulus
+    }
 
     ## Sanity check
     stopifnot(length(seed_next) == 1L, is.numeric(seed_next), !is.na(seed_next))

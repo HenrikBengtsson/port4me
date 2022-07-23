@@ -51,6 +51,16 @@ setup() {
     assert_output --partial "'c' must be positive"
 }
 
+@test "lcg with initial seed = m - (a-c) (special case)" {
+    lcg_set_params
+    lcg_set_seed 65536
+    
+    run lcg
+    assert_success
+    assert_output "74"
+}
+
+
 @test "lcg_set_seed" {
     run lcg_set_seed 42
     assert_success

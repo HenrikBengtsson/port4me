@@ -2,6 +2,11 @@
 
 ## Bug Fixes
 
+* The LCG algorithm can get stuck and produce an constant stream for
+  certain values of LCG seed and LCG parameters.  To avoid this, we
+  detect when it happens, and increment the LCG seed by one, and
+  generate the next LCG seed.
+
 * The Bash implementation produced an error if the LCG seed was 0.
 
 
