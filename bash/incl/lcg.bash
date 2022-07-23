@@ -28,7 +28,7 @@ lcg_set_params() {
 
 lcg_set_seed() {
     local -i seed=${1:?}
-    (( seed <= 0 )) && error "LCG seed must be positive: $seed"
+    (( seed < 0 )) && error "LCG seed must be non-negative: $seed"
     LCG_SEED=${seed}
 }
 

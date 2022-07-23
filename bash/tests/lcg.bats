@@ -55,7 +55,7 @@ setup() {
     run lcg_set_seed 42
     assert_success
 
-    run lcg_set_seed 0
+    run lcg_set_seed -1
     assert_failure
     assert_output --partial "ERROR"
 

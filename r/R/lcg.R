@@ -26,7 +26,7 @@ lcg <- local({
 
     if (!is.null(seed)) {
       if (is.na(seed)) return(.seed)
-      stopifnot(length(seed) == 1L, is.numeric(seed), !is.na(seed), seed > 0)
+      stopifnot(length(seed) == 1L, is.numeric(seed), !is.na(seed), seed >= 0)
       ## Make sure seed is within [0,modulus-1] to avoid integer overflow
       seed <- seed %% modulus
       .seed <<- seed

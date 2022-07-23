@@ -1,6 +1,8 @@
 # Version (development version)
 
-* ...
+## Bug Fixes
+
+* The Bash implementation produced an error if the LCG seed was 0.
 
 
 # Version 0.0.2 [2022-07-23]
