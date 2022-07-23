@@ -178,7 +178,7 @@ All **port4me** implementations output the identified port to standard output (s
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.0.2
+VERSION=0.0.3
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me   ## must be an absolute path
@@ -190,7 +190,7 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.0.2
+0.0.3
 ```
 
 
@@ -236,8 +236,17 @@ $ port4me --version
 
   - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
 
-  - Choice of LCG parameters: $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81"), which requires only 32-bit integer arithmetic, because $m < 2^{32}$
+  - the LCG algorithm may produce the same output seed as input seed. To avoid this resulting in a constant LCG stream, increment the seed by one and recalculate whenever this happens
+
+  - Choice of LCG parameters: $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81")
+  
+     - this requires only 32-bit integer arithmetic, because $m < 2^{32}$
+     
+     - if the initial seed is $s = m - (a - c) = m - 1 = 2^{16}$, then the next LCG seed will be the same, which is then handled by the above increment-by-one workaround
   
 * A _32-bit integer string hashcode_ will be used to generate an integer in $[0,2^{32}-1]$ from an ASCII string with any number of characters. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
 
-* The string hashcode is used as the initial LCG seed.  Since the LCG seed should be in $[0,m-1]$, modulo $m$ must be applied to the the string hashcode before being assigned to the LCG seed
+* The string hashcode is used as the initial LCG seed:
+  - the LCG seed should be in $[0,m-1]$
+  
+  - given hashcode $h$, we can generate the initial LCG seed as $h$ modulo $m$
