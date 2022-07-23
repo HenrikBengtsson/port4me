@@ -235,14 +235,18 @@ $ port4me --version
   - the next seed is calculated based on the current seed $s$ and parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
 
   - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
-  - the initial LCG seed must _not_ be $s = m - (a - c)$, because then the next seed becomes the same, resulting in a constant LCG stream
+
+  - the LCG algorithm may produce the same output seed as input seed. To avoid this resulting in a constant LCG stream, increment the seed by one and recalculate whenever this happens
 
   - Choice of LCG parameters: $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81")
+  
      - this requires only 32-bit integer arithmetic, because $m < 2^{32}$
-     - the initial seed must _not_ be $s = m - (a - c) = m - 1 = 2^{16}$
+     
+     - if the initial seed is $s = m - (a - c) = m - 1 = 2^{16}$, then the next LCG seed will be the same, which is then handled by the above increment-by-one workaround
   
 * A _32-bit integer string hashcode_ will be used to generate an integer in $[0,2^{32}-1]$ from an ASCII string with any number of characters. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
 
 * The string hashcode is used as the initial LCG seed:
-  - the LCG seed should be in $[0,m-2]$, not $[0,m-1]$ because $m-1$ is not allowed (see above)
-  - given hashcode $h$, we can generate the LCG seed as $h$ modulo $(m-1)$, which is in $[0, m-2]$
+  - the LCG seed should be in $[0,m-1]$
+  
+  - given hashcode $h$, we can generate the initial LCG seed as $h$ modulo $m$
