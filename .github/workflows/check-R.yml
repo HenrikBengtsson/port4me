@@ -23,5 +23,5 @@ jobs:
 
     - name: Check with R
       run: |
-        cd tests/
+        cd r/tests/
         for ff in *.R; do echo "$$ff:"; Rscript --vanilla "$$ff"; done
