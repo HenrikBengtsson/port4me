@@ -1,6 +1,8 @@
 # Version (development version)
 
-* ...
+## New Features
+
+* Add `port4me --test=<port>` to check if a port is free or not.
 
 
 # Version 0.0.3 [2022-07-23]

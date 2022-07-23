@@ -15,10 +15,10 @@
 ###
 ###  --list=<n>          List the first 'n', non-excluded ports scanned
 ###
+###  --test=<port>       Return 0 if port is available, otherwise 1
+###
 ### Examples:
 ### port4me --version
-###
-### port4me --list=5
 ###
 ### port4me
 ### port4me --tool=rstudio
@@ -26,7 +26,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.0.3-9000
+### Version: 0.0.3-9001
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -53,6 +53,7 @@ source "${incl}/string_to_uint.bash"
 
 action=port
 count=0
+port=-1
 
 parse_cli_args() {
     local key value
@@ -82,8 +83,11 @@ parse_cli_args() {
             elif [[ "${key}" == "skip" ]]; then
                 PORT4ME_SKIP=${value}
             elif [[ "${key}" == "list" ]]; then
-                action=list
+                action="list"
                 count=${value}
+            elif [[ "${key}" == "test" ]]; then
+                action="test"
+                port=${value}
             else
                 error "Unknown option: $1"
             fi
@@ -102,6 +106,8 @@ elif [[ $action == "version" ]]; then
     version
 elif [[ $action == "list" ]]; then
     PORT4ME_LIST=${count} port4me
+elif [[ $action == "test" ]]; then
+    is_port_free "${port}" && exit 0 || exit 1
 else
     port4me
 fi    

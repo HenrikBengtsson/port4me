@@ -55,7 +55,7 @@ port4me_skip <- function() {
   skip
 }
 
-port4me <- function(user = port4me_user(), tool = port4me_tool(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, max_tries = 1000L, must_work = TRUE) {
+port4me <- function(user = port4me_user(), tool = port4me_tool(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 1000L, must_work = TRUE) {
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
   if (!is.null(list)) {
@@ -67,6 +67,11 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), exclude = port
   stopifnot(is.numeric(exclude), !anyNA(exclude), all(exclude > 0), all(exclude <= 65535))
   stopifnot(length(skip) == 1L, is.numeric(skip), !is.na(skip), skip >= 0, is.finite(skip), skip < max_tries)
   skip <- as.integer(skip)
+  if (!is.null(test)) {
+    stopifnot(length(test) == 1)
+    test <- as.integer(test)
+    stopifnot(is.finite(test), test > 0, test <= 65535)
+  }
   stopifnot(length(must_work) == 1L, is.logical(must_work), !is.na(must_work))
 
   lcg_set_seed(port4me_seed(user = user, tool = tool))
@@ -74,6 +79,8 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), exclude = port
   if (!is.null(list)) {
     return(vapply(seq_len(list), FUN.VALUE = NA_integer_,
                     FUN = function(kk) lcg_port()))
+  } else if (!is.null(test)) {
+    return(is_port_free(test))
   }
 
   count <- 0L
