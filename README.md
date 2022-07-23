@@ -245,4 +245,4 @@ $ port4me --version
 
 * The string hashcode is used as the initial LCG seed:
   - the LCG seed should be in $[0,m-2]$, not $[0,m-1]$ because $m-1$ is not allowed (see above)
-  - given hashcode $h$, we can generate the LCG seed as $s = h % (m-1)$, which is in $[0,m-2]$
+  - given hashcode $h$, we can generate the LCG seed as $h$ modulo $(m-1)$, which is in $[0, m-2]$
