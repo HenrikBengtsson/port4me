@@ -1,5 +1,10 @@
 # Version (development version)
 
+* ...
+
+
+# Version 0.0.3 [2022-07-23]
+
 ## Bug Fixes
 
 * The LCG algorithm can get stuck and produce an constant stream for
