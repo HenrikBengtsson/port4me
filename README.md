@@ -176,15 +176,14 @@ To install the Bash version of **portme**, do:
 ```sh
 VERSION=0.0.1
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
-tar -f "${VERSION}.tar.gz" --extract --wildcards "*/bash/port4me" --wildcards "*/bash/incl/*"
-mv "port4me-${VERSION}" port4me
-mv port4me/bash port4me/bin
+tar -f "${VERSION}.tar.gz"
+(cd "port4me-${VERSION}"; make install PREFIX=/path/to/port4me)
 ```
 
 Then run it as:
 
 ```sh
-$ export PATH=port4me/bin:$PATH
+$ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
 0.0.1
 ```
@@ -230,6 +229,6 @@ $ port4me --version
 
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
   - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$. This requires 32-bit integer arithmetic, because the modulus parameter $m > 2^{16}$
-  - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply $seed = seed MOD m$ first to avoid integer overflow
+  - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should modulo $m$ on the seed first to avoid integer overflow
 
 * A _32-bit integer string hashcode_ will be used to generate a valid random seed from an ASCII character string of any length. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
