@@ -1,3 +1,7 @@
+SHELL=bash
+
+test: check shellcheck
+
 check:
 	(cd bash; make check)
 	(cd r; make check)
