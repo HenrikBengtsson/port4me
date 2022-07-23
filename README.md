@@ -205,7 +205,7 @@ $ port4me --version
 
 ### Requirements
 
-* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed 2^32 - 1.
+* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed $2^{32} - 1$.
 
 * At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, with _no_ need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetic may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
 
@@ -227,9 +227,12 @@ $ port4me --version
 ### Design
 
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
-  - the current implementation uses the "ZX81" LCG parameters $m=2^{16} + 1$, $a=75$, and $c=74$. This requires 32-bit integer arithmetic, because the modulus parameter $m > 2^{16}$
+  - the next seed is calculated based on the current seed $s$ and parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
+
   - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
 
+  - Choice of LCG parameters: $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81"), which requires only 32-bit integer arithmetic, because $m < 2^{32}$
+  
 * A _32-bit integer string hashcode_ will be used to generate an integer in $[0,2^{32}-1]$ from an ASCII string with any number of characters. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
 
 * The string hashcode is used as the initial LCG seed.  Since the LCG seed should be in $[0,m-1]$, modulo $m$ must be applied to the the string hashcode before being assigned to the LCG seed
