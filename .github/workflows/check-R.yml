@@ -1,0 +1,27 @@
+on: [push, pull_request]
+
+name: check-R
+
+jobs:
+  checks:
+    if: "! contains(github.event.head_commit.message, '[ci skip]')"
+
+    timeout-minutes: 10
+
+    runs-on: ubuntu-20.04
+    
+    name: check-R
+
+    strategy:
+      fail-fast: false
+      
+    steps:
+    - name: Checkout git repository
+      uses: actions/checkout@v2
+
+    - uses: r-lib/actions/setup-r@v2
+
+    - name: Check with R
+      run: |
+        cd tests/
+        for ff in *.R; do echo "$$ff:"; Rscript --vanilla "$$ff"; done
