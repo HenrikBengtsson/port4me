@@ -8,3 +8,9 @@ check:
 
 shellcheck:
 	(cd bash; make shellcheck)
+
+install:
+	@[[ -n "$$PREFIX" ]] || >&2 echo "ERROR: Installation folder 'PREFIX' is not set"
+	mkdir -p "$$PREFIX/bin"
+	cp -R bash/{port4me,incl} "$$PREFIX/bin"
+
