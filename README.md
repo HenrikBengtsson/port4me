@@ -169,6 +169,27 @@ All **port4me** implementations output the identified port to standard output (s
 ```
 
 
+## Installation
+
+To install the Bash version of **portme**, do:
+
+```sh
+VERSION=0.0.1
+curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
+tar -f "${VERSION}.tar.gz" --extract --wildcards "*/bash/port4me" --wildcards "*/bash/incl/*"
+mv "port4me-${VERSION}" port4me
+mv port4me/bash port4me/bin
+```
+
+Then run it as:
+
+```sh
+$ export PATH=port4me/bin:$PATH
+$ port4me --version
+0.0.1
+```
+
+
 ## Roadmap 
 
 * [x] Identify essential features
