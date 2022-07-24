@@ -19,12 +19,12 @@ setup() {
 @test "port4me --user=alice --tool=rstudio" {
     run port4me --user=alice --tool=rstudio
     assert_success
-    assert_output "23510"
+    assert_output "22486"
 }
 
 @test "port4me --list=10" {
     run port4me --user=alice --list=10
     assert_success
-    truth=(31869 20678 33334 65016 16297 32444 63803 56396 25167 42324)
+    truth=(30845 19654 32310 63992 15273 31420 62779 55372 24143 41300)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }

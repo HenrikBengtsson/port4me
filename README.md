@@ -6,7 +6,7 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-23_
+_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-24_
 
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
@@ -22,7 +22,7 @@ Assuming we're logged in as user `alice` in a Bash shell, calling `port4me` with
 
 ```sh
 {alice}$ port4me
-31869
+30845
 ```
 
 As we will see later, each user on the system is likely to get their own unique port.  Because of this, it can be used to specifying a port that some software tool should use, e.g.
@@ -35,27 +35,27 @@ As long as this port is available, `alice` will always get the same port across 
 
 ```sh
 {alice}$ port4me
-31869
+30845
 {alice}$ port4me
-31869
+30845
 ```
 
 However, if port 53637 is already occupied, the next port in the pseudo-random sequence is considered, e.g.
 
 ```sh
 {alice}$ port4me
-20678
+19654
 ```
 
 To see the first five ports scanned, run:
 
 ```sh
 {alice}$ port4me --list=5
-31869
-20678
-33334
-65016
-16297
+30845
+19654
+32310
+63992
+15273
 ```
 
 
@@ -65,22 +65,22 @@ This random sequence is initiated by a random seed that can be set via the hashc
 
 ```sh
 {bob}$ port4me --list=5
-55266
-5954
-43163
-15747
-56731
+54242
+4930
+42139
+14723
+55707
 ```
 
 For testing and demonstration purposes, one can emulate another user by specifying option `--user`, e.g.
 
 ```sh
 {alice}$ port4me
-53637
+30845
 {alice}$ port4me --user=bob
-56731
+54242
 {alice}$ port4me --user=carol
-35331
+34307
 ```
 
 ## Different ports for different software tools
@@ -89,11 +89,11 @@ Sometimes a user would like to use two, or more, ports at the same time, e.g. on
 
 ```sh
 {alice}$ port4me
-31869
+30845
 {alice}$ port4me --tool=rstudio
-23510
+22486
 {alice}$ port4me --tool=jupyter
-48491
+47467
 ```
 
 This allows us to do:
@@ -111,17 +111,17 @@ and
 
 ## Avoid using ports commonly used elsewhere
 
-Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (31869) works only one out 10 times, whereas the second port (20678) works 99 out 100 times, and the third one (33334) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via option `--exclude`, e.g.
+Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (30845) works only one out 10 times, whereas the second port (19654) works 99 out 100 times, and the third one (32310) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via option `--exclude`, e.g.
 
 ```sh
-{alice}$ port4me --exclude=31869,33334
+{alice}$ port4me --exclude=30845,32310
 20678
 ```
 
 An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
 
 ```sh
-{alice}$ PORT4ME_EXCLUDE=31869,33334 port4me
+{alice}$ PORT4ME_EXCLUDE=30845,32310 port4me
 20678
 ```
 
@@ -130,7 +130,7 @@ To set this permanently, append:
 ```sh
 ## port4me customization
 ## https://github.com/HenrikBengtsson/port4me
-PORT4ME_EXCLUDE=31869,33334
+PORT4ME_EXCLUDE=30845,32310
 export PORT4ME_EXCLUDE
 ```
 
@@ -169,7 +169,7 @@ All **port4me** implementations output the identified port to standard output (s
 
 ```sh
 {alice}$ jupyter notebook --port "$(port4me --tool=jupyter | tee /dev/stderr)"
-48491
+47467
 ```
 
 
@@ -211,6 +211,8 @@ $ port4me --version
 ### Requirements
 
 * It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed $2^{32} - 1$.
+
+* The pseudo-randomized port sequence should sample ports uniformly over $[1024, 65535]$.
 
 * At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, with _no_ need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetic may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
 

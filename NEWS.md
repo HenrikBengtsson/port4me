@@ -1,3 +1,16 @@
+# Version (development version)
+
+* The new accept-reject sampling technique (see below bug fix) results
+  in different port sequences than before.
+
+## Bug Fixes
+
+* The **port4me** algorithm did not sample uniformly from
+  [1024,65535].  The was fixed by replacing the remapping from LCG
+  samples in [0, 65535] to [1024,65535] from a modulus method to using
+  an accept-reject sampling technique.
+  
+
 # Version 0.0.4 [2022-07-24]
 
 ## New Features

@@ -1,22 +1,23 @@
 #' Linear Congruential Generator
 #'
 #' @return
-#' An integer in `{0, 1, ..., modulus-1}`.
+#' An integer in `{0, 1, ..., modulus-1}`, if `standardize = FALSE`,
+#' or a numeric in `[0,1)`, if `standardize = TRUE`,
 #'
 #' @reference
 #' https://en.wikipedia.org/wiki/Linear_congruential_generator
 lcg <- local({
   .seed <- NULL
   
-  function(modulus = getOption("lcg.params")["modulus"], a = getOption("lcg.params")["a"], c = getOption("lcg.params")["c"], seed = NULL) {
+  function(modulus = getOption("lcg.params")[["modulus"]], a = getOption("lcg.params")[["a"]], c = getOption("lcg.params")[["c"]], seed = NULL) {
     ## Set default LCG parameters, if not already set
     if (is.null(getOption("lcg.params"))) {
       lcg_set_params()
     }
     
-    if (is.null(modulus)) modulus <- getOption("lcg.params")["modulus"]
-    if (is.null(a)) a <- getOption("lcg.params")["a"]
-    if (is.null(c)) c <- getOption("lcg.params")["c"]
+    if (is.null(modulus)) modulus <- getOption("lcg.params")[["modulus"]]
+    if (is.null(a)) a <- getOption("lcg.params")[["a"]]
+    if (is.null(c)) c <- getOption("lcg.params")[["c"]]
 
     stopifnot(
       length(modulus) == 1L, is.numeric(modulus), !is.na(modulus), modulus > 0,
@@ -62,8 +63,6 @@ lcg <- local({
     }
 
     .seed <<- seed_next
-    
-    .seed
   }
 })
 
@@ -93,7 +92,20 @@ lcg_integer <- function(min, max) {
     length(max) == 1L, is.numeric(max), !is.na(max),
     min <= max
   )
-  res <- lcg() %% (max - min + 1) + min
+
+  ## (a) Sample values in [0,m-2] (sic!)
+  res <- lcg()
+
+  ## (b) Normalize to [0, 1)
+  ## SPECIAL CASE: modulus - 2, is because (a-c) = 1
+  modulus <- getOption("lcg.params")[["modulus"]]
+  res <- res / (modulus - 2)
+
+  ## (c) Rescale to [min, max)
+  res <- res * (max - min) + min
+  
+  ## (d) Round to [min, max] integers
+  res <- as.integer(floor(res + 0.5))
   
   ## Sanity check
   stopifnot(
@@ -105,5 +117,10 @@ lcg_integer <- function(min, max) {
 }
 
 lcg_port <- function(min = 1024, max = 65535) {
-  as.integer(lcg_integer(min = min, max = max))
+  ## Sample values in [0,m-2] (sic!), but reject until in [1024,65535]
+  repeat {
+    res <- lcg()
+    if (res >= min && res <= max) break
+  }
+  as.integer(res)
 }
