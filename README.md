@@ -178,7 +178,7 @@ All **port4me** implementations output the identified port to standard output (s
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.0.4
+VERSION=0.1.0
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me   ## must be an absolute path
@@ -190,7 +190,7 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.0.4
+0.1.0
 ```
 
 
@@ -202,6 +202,7 @@ $ port4me --version
 * [x] Add support for `PORT4ME_EXCLUDE`
 * [x] Add support for `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
+* [x] Validate statistical properties, e.g. uniform sampling of ports
 * [ ] Prototype `port4me` API and command-line tool in Python
 * [ ] Freeze the algorithm and the parameters
 
