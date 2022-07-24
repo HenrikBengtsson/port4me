@@ -1,8 +1,15 @@
-# Version (development version)
+# Version 0.0.4 [2022-07-24]
+
+## New Features
+
+* Add `port4me --test=<port>` to check if a port is free or not.
+
+
+# Version 0.0.3 [2022-07-23]
 
 ## Bug Fixes
 
-* The LCG algorithm can get stuck and produce an constant stream for
+* The LCG algorithm can get stuck and produce a constant stream for
   certain values of LCG seed and LCG parameters.  To avoid this, we
   detect when it happens, and increment the LCG seed by one, and
   generate the next LCG seed.

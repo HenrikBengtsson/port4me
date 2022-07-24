@@ -10,6 +10,7 @@
 #' * nc
 is_port_free() {
     local -i port=${1:?}
+    (( port < 1 || port > 65535 )) && error "Port is out of range [1,65535]: ${port}"
     if nc -z 127.0.0.1 "$port"; then
         return 1
     fi
