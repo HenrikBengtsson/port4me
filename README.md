@@ -40,7 +40,7 @@ As long as this port is available, `alice` will always get the same port across 
 30845
 ```
 
-However, if port 53637 is already occupied, the next port in the pseudo-random sequence is considered, e.g.
+However, if port 30845 is already occupied, the next port in the pseudo-random sequence is considered, e.g.
 
 ```sh
 {alice}$ port4me
