@@ -1,5 +1,7 @@
 # Version (development version)
 
+## Significant Changes
+
 * The new accept-reject sampling technique (see below bug fix) results
   in different port sequences than before.
 
