@@ -65,7 +65,7 @@ port4me() {
     count=0
     while (( count < max_tries )); do
         lcg_port > /dev/null
-        port=${LCG_INTEGER:?}
+        port=${LCG_SEED:?}
 
         ## Skip?
         if (( ${#exclude[@]} > 0 )); then

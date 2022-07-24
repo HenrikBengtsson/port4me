@@ -125,7 +125,7 @@ lcg_port_times() {
     local -i res=-1
     while ((n > 0)); do
         lcg_port > /dev/null
-        res=${LCG_INTEGER}
+        res=${LCG_SEED:?}
         n=$((n - 1))
     done
     echo $res
@@ -137,12 +137,12 @@ lcg_port_times() {
     lcg_set_seed 42
     run lcg_port
     assert_success
-    assert_output "4248"
+    assert_output "3224"
 
     lcg_set_seed 42
     run lcg_port
     assert_success
-    assert_output "4248"
+    assert_output "3224"
 
     lcg_set_seed 42
     run lcg_port_times 0
@@ -152,20 +152,20 @@ lcg_port_times() {
     lcg_set_seed 42
     run lcg_port_times 1
     assert_success
-    assert_output "4248"
+    assert_output "3224"
 
     lcg_set_seed 42
     run lcg_port_times 2
     assert_success
-    assert_output "46287"
+    assert_output "45263"
 
     lcg_set_seed 42
     run lcg_port_times 2
     assert_success
-    assert_output "46287"
+    assert_output "45263"
 
     lcg_set_seed 42
     run lcg_port_times 10
     assert_success
-    assert_output "17305"
+    assert_output "16281"
 }

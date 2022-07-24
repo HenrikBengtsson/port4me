@@ -103,5 +103,15 @@ lcg_integer() {
 lcg_port() {
     local -i min=${1:-1024}
     local -i max=${2:-65535}
-    lcg_integer "${min}" "${max}"
+    local -i res
+    
+    while true; do
+        res=$(lcg)
+        LCG_SEED=${res}
+        if (( res >= min && res <= max )); then
+            break
+        fi
+    done
+    
+    echo "${res}"
 }
