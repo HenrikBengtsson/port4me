@@ -8,6 +8,18 @@
 
 _WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-07-25_
 
+## Features
+
+The **port4me** tool:
+
+* finds a free TCP port in [1024,65535] that the user can open
+* is designed to work in multi-user environments
+* gives different users, different ports
+* gives the user the same port over time with high probability
+* gives different ports for different software tools
+* No configuration needed
+
+## Introduction
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
 
