@@ -79,27 +79,6 @@ lcg() {
     echo "${LCG_SEED}"
 }
 
-lcg_integer() {
-    local -i min=${1:?}
-    local -i max=${2:?}
-    local -i seed res
-    seed=$(lcg)
-    LCG_SEED=${seed}
-    
-    res=$(bc <<< "${seed} % (${max} - ${min} + 1) + ${min}")
-
-    ## Sanity checks
-    if (( res < min || res > max )); then
-        error "INTERNAL: Generated LCG integer is not in [$min,$max]: $res"
-    fi
-
-    ## Export LCG integer as environment variable too
-    # shellcheck disable=SC2034
-    LCG_INTEGER=${res}
-    
-    echo "${res}"
-}
-
 lcg_port() {
     local -i min=${1:-1024}
     local -i max=${2:-65535}
