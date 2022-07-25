@@ -1,5 +1,11 @@
 # Version (development version)
 
+## Bug Fixes
+
+* `port4me` would give an error message if command `nc` is not
+  available, but still output a port number without validating it is
+  available.  Now it gives an informative error and terminates.
+  
 * ...
 
 

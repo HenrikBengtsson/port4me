@@ -14,8 +14,12 @@ can_port_be_opened() {
     (( port < 1 || port > 65535 )) && error "Port is out of range [1,65535]: ${port}"
     
     ## Is port occupied?
-    if nc -z 127.0.0.1 "$port"; then
-        return 1
+    if command -v nc > /dev/null; then
+        if nc -z 127.0.0.1 "$port"; then
+            return 1
+        fi
+    else
+        error "Command 'nc' is not available on this host ($HOSTNAME)"
     fi
     
     ## FIXME: A port can be free, but it might be that the user
