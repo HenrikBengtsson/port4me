@@ -1,6 +1,6 @@
 SHELL=bash
 
-test: check shellcheck
+test: shellcheck check
 
 check:
 	(cd bash; make check)

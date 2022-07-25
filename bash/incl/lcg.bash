@@ -4,7 +4,6 @@ declare -i LCG_SEED
 declare -i LCG_PARAMS_MODULUS
 declare -i LCG_PARAMS_A
 declare -i LCG_PARAMS_C
-declare -i LCG_INTEGER
 
 LCG_SEED=-1
 export LCG_SEED
