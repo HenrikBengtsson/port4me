@@ -1,3 +1,16 @@
+# Version 0.2.0 [2022-07-25]
+
+## New Features
+
+* Add `port4me --include=<ports>` to consider a given set of ports
+  _before_ considering the pseudo-random port sequence.
+
+## Bug Fixes
+
+* Bash implementation would consider a free port in 1-1023 as
+  openable, even if the user has no right to open it.
+
+
 # Version 0.1.0 [2022-07-24]
 
 ## Significant Changes
