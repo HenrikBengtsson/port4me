@@ -1,5 +1,11 @@
 # Version (development version)
 
+## New Features
+
+* Now `port4me` falls back to the `ss` command, if the `nc` command is
+  not available.  If neither are available, and informative error
+  message is produced.
+  
 ## Bug Fixes
 
 * `port4me` would give an error message if command `nc` is not

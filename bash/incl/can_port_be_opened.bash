@@ -18,8 +18,12 @@ can_port_be_opened() {
         if nc -z 127.0.0.1 "$port"; then
             return 1
         fi
+    elif command -v ss > /dev/null; then
+        if ss -H -l -n src :"$port" | grep -q -E ":$port\b"; then
+            return 1
+        fi
     else
-        error "Command 'nc' is not available on this host ($HOSTNAME)"
+        error "Neither command 'nc' nor 'ss' is available on this host ($HOSTNAME)"
     fi
     
     ## FIXME: A port can be free, but it might be that the user
