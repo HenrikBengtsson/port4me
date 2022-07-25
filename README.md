@@ -177,8 +177,8 @@ export PORT4ME_EXCLUDE_SITE
 In addition to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line option `--include`, e.g.
 
 ```sh
-{alice}$ port4me --include=10000-10999
-10966
+{alice}$ port4me --include=2000-2123,4321,10000-10999
+10451
 ```
 
 where the default corresponds to `--include=1024-65535`.  Corresponding to `--exclude`, `--include` can be specified via environment variables `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`.
