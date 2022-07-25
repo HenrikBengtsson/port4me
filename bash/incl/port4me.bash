@@ -39,36 +39,57 @@ port4me_seed() {
     echo "$seed"
 }
 
+parse_ports() {
+    local spec=${1:?}
+    local specs
+    local -a ports
+
+    ## Prune input
+    spec=${spec//,/ }
+    spec=${spec//+( )/ }
+    spec=${spec## }
+    spec=${spec%% }
+    spec=${spec// /$'\n'}
+
+    ## Split input into lines
+    mapfile -t specs <<< "${spec}"
+
+    pattern="([[:digit:]]+)"
+    for spec in "${specs[@]}"; do
+        if grep -q -E "^${pattern}-${pattern}$" <<< "$spec"; then
+            from=$(sed -E "s/${pattern}-${pattern}/\1/" <<< "$spec")
+            to=$(sed -E "s/${pattern}-${pattern}/\2/" <<< "$spec")
+            # shellcheck disable=SC2207
+            ports+=($(seq "$from" "$to"))
+        elif grep -q -E "^${pattern}$" <<< "$spec"; then
+            ports+=("$spec")
+        fi
+    done
+    
+    if (( ${#ports[@]} > 0 )); then
+        printf "%s\n" "${ports[@]}"
+    fi
+}
+
 port4me_prepend() {
-    local ports="${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}"
-    ports=${ports//,/ }
-    ports=${ports//+( )/ }
-    ports=${ports## }
-    ports=${ports%% }
-    ports=${ports// /$'\n'}
-    printf "%s" "${ports}"
+    parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}"
 }    
 
 port4me_exclude() {
-    local ports="${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
-    ports=${ports//,/ }
-    ports=${ports//+( )/ }
-    ports=${ports## }
-    ports=${ports%% }
-    ports=${ports// /$'\n'}
-    printf "%s" "${ports}"
+    parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
 }    
 
 port4me() {
     local -i skip=${PORT4ME_SKIP:-0}
-    local prepend
-    mapfile -t prepend < <(port4me_prepend)
-    local exclude
-    mapfile -t exclude < <(port4me_exclude)
+    local -i prepend
+    local -i exclude
     local -i count
     local -i list=${PORT4ME_LIST:-0}
     local -i max_tries=${PORT4ME_MAX_TRIES:-1000}
     local must_work=${PORT4ME_MUST_WORK:-true}
+
+    mapfile -t prepend < <(port4me_prepend)
+    mapfile -t exclude < <(port4me_exclude)
 
     if (( list > 0 )); then
         max_tries=${list}

@@ -4,6 +4,11 @@
 
 * Renamed `--include=<ports>` to `--prepend=<ports>`.
 
+## New Features
+
+* Now `--exclude` and `--prepend` supports port ranges to, e.g.
+  `--exclude=1024-2048,4019`.
+
 
 # Version 0.2.1 [2022-07-25]
 

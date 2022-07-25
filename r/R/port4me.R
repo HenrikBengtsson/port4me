@@ -28,39 +28,50 @@ parse_ports <- function(ports) {
   ports <- paste(ports, collapse = ",")
   ports <- gsub(" ", "", ports, fixed = TRUE)
   ports <- unlist(strsplit(ports, split = ","))
-  bad <- grep("^[[:digit:]]+$", ports, invert = TRUE, value = TRUE)
+  bad <- grep("^([[:digit:]]+|[[:digit:]]+-[[:digit:]]+)$", ports, invert = TRUE, value = TRUE)
   if (length(bad) > 0) {
     stop(sprintf("Syntax error in port specification: %s", spec))
   }
-  ports <- as.integer(ports)
+  ports <- lapply(ports, FUN = function(spec) {
+    pattern <- "^([[:digit:]]+)-([[:digit:]]+)$"
+    if (grepl(pattern, spec)) {
+      from <- as.integer(gsub(pattern, "\\1", spec))
+      to <- as.integer(gsub(pattern, "\\2", spec))
+      from:to
+    } else {
+      as.integer(spec)
+    }
+  })
+  ports <- unlist(ports, use.names = FALSE)
   stopifnot(!anyNA(ports))
+  if (is.null(ports)) ports <- integer(0L)
   ports
 }
 
 port4me_prepend <- function() {
-  prepend <- NULL
+  ports <- NULL
 
   for (name in c("PORT4ME_PREPEND", "PORT4ME_PREPEND_SITE")) {
     arg <- Sys.getenv(name, "")
     ports <- parse_ports(arg)
-    prepend <- c(prepend, ports)
+    ports <- c(ports, ports)
   }
-  prepend <- unique(prepend)
-  
-  prepend
+  ports <- unique(ports)
+
+  ports
 }
 
 port4me_exclude <- function() {
-  exclude <- NULL
+  ports <- NULL
 
   for (name in c("PORT4ME_EXCLUDE", "PORT4ME_EXCLUDE_SITE")) {
     arg <- Sys.getenv(name, "")
     ports <- parse_ports(arg)
-    exclude <- c(exclude, ports)
+    ports <- c(ports, ports)
   }
-  exclude <- unique(exclude)
+  ports <- unique(ports)
   
-  exclude
+  ports
 }
 
 port4me_skip <- function() {
