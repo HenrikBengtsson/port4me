@@ -95,6 +95,8 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), include = port
     return(can_port_be_opened(test))
   }
 
+  if (!is.null(list)) max_tries <- list + skip
+
   ports <- integer(0)
   count <- 0L
   while (count <= max_tries) {
