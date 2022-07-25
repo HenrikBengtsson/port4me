@@ -92,7 +92,7 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), include = port
   lcg_set_seed(port4me_seed(user = user, tool = tool))
 
   if (!is.null(test)) {
-    return(is_port_free(test))
+    return(can_port_be_opened(test))
   }
 
   ports <- integer(0)
@@ -108,7 +108,7 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), include = port
     count <- count + 1L
     if (count <= skip) next
     if (is.null(list)) {
-      if (is_port_free(port)) return(port)
+      if (can_port_be_opened(port)) return(port)
     } else {
       ports <- c(ports, port)
       if (length(ports) == list) return(ports)

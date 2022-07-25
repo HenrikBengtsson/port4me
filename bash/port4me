@@ -27,7 +27,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.1.0-9001
+### Version: 0.1.0-9002
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -40,8 +40,8 @@ incl="$(dirname "${this}")/incl"
 # shellcheck source=incl/cli.sh
 source "${incl}/cli.sh"
 
-# shellcheck source=incl/is_port_free.bash
-source "${incl}/is_port_free.bash"
+# shellcheck source=incl/can_port_be_opened.bash
+source "${incl}/can_port_be_opened.bash"
 
 # shellcheck source=incl/lcg.bash
 source "${incl}/lcg.bash"

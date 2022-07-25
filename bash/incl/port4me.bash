@@ -107,7 +107,7 @@ port4me() {
             
             ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
     
-            if is_port_free "$port"; then
+            if can_port_be_opened "$port"; then
                 printf "%d\n" "$port"
                 return 0
             fi
