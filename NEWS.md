@@ -1,4 +1,4 @@
-# Version (development version)
+# Version 0.2.1 [2022-07-25]
 
 ## New Features
 
@@ -12,8 +12,6 @@
   available, but still output a port number without validating it is
   available.  Now it gives an informative error and terminates.
   
-* ...
-
 
 # Version 0.2.0 [2022-07-25]
 
