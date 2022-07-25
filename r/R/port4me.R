@@ -74,13 +74,26 @@ port4me_exclude <- function() {
   ports
 }
 
+port4me_include <- function() {
+  ports <- NULL
+
+  for (name in c("PORT4ME_INCLUDE", "PORT4ME_INCLUDE_SITE")) {
+    arg <- Sys.getenv(name, "")
+    ports <- parse_ports(arg)
+    ports <- c(ports, ports)
+  }
+  ports <- unique(ports)
+  
+  ports
+}
+
 port4me_skip <- function() {
   skip <- as.integer(Sys.getenv("PORT4ME_SKIP", "0"))
   stopifnot(!is.na(skip))
   skip
 }
 
-port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port4me_prepend(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 1000L, must_work = TRUE) {
+port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port4me_prepend(), include = port4me_exclude(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 1000L, must_work = TRUE) {
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
   if (!is.null(list)) {
@@ -92,6 +105,8 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port
   stopifnot(is.numeric(prepend), !anyNA(prepend), all(prepend > 0), all(prepend <= 65535))
   if (is.character(exclude)) exclude <- parse_ports(exclude)
   stopifnot(is.numeric(exclude), !anyNA(exclude), all(exclude > 0), all(exclude <= 65535))
+  if (is.character(include)) include <- parse_ports(include)
+  stopifnot(is.numeric(include), !anyNA(include), all(include > 0), all(include <= 65535))
   stopifnot(length(skip) == 1L, is.numeric(skip), !is.na(skip), skip >= 0, is.finite(skip), skip < max_tries)
   skip <- as.integer(skip)
   if (!is.null(test)) {
@@ -119,6 +134,7 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port
       port <- lcg_port()
     }
     if (port %in% exclude) next
+    if (length(include) > 0 && (! port %in% include)) next
     count <- count + 1L
     if (count <= skip) next
     if (is.null(list)) {

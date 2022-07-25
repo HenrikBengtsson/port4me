@@ -75,21 +75,27 @@ port4me_prepend() {
     parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}"
 }    
 
+port4me_include() {
+    parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}"
+}    
+
 port4me_exclude() {
     parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
 }    
 
 port4me() {
     local -i skip=${PORT4ME_SKIP:-0}
-    local -i prepend
     local -i exclude
+    local -i include
+    local -i prepend
     local -i count
     local -i list=${PORT4ME_LIST:-0}
     local -i max_tries=${PORT4ME_MAX_TRIES:-1000}
     local must_work=${PORT4ME_MUST_WORK:-true}
 
-    mapfile -t prepend < <(port4me_prepend)
     mapfile -t exclude < <(port4me_exclude)
+    mapfile -t include < <(port4me_include)
+    mapfile -t prepend < <(port4me_prepend)
 
     if (( list > 0 )); then
         max_tries=${list}
@@ -113,6 +119,14 @@ port4me() {
         if (( ${#exclude[@]} > 0 )); then
             if [[ " ${exclude[*]} " == *" $port "* ]]; then
                 ${PORT4ME_DEBUG:-false} && >&2 printf "Port excluded: %d\n" "$port"
+                continue
+            fi
+        fi
+
+        ## Not included?
+        if (( ${#include[@]} > 0 )); then
+            if [[ " ${include[*]} " != *" $port "* ]]; then
+                ${PORT4ME_DEBUG:-false} && >&2 printf "Port not included: %d\n" "$port"
                 continue
             fi
         fi

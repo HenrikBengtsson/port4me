@@ -160,19 +160,29 @@ The environment variable `PORT4ME_EXCLUDE` is intended to be used by the individ
 PORT4ME_EXCLUDE_SITE=
 
 ## MySQL
-PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:3306
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,3306
 
 ## ZeroMQ
-PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:5670
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,5670
 
 ## Redis
-PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:6379
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,6379
 
 ## Jupyter
-PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:8888
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,8888
 
 export PORT4ME_EXCLUDE_SITE
 ```
+
+In addition to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line option `--include`, e.g.
+
+```sh
+{alice}$ port4me --include=10000-10999
+10966
+```
+
+where the default corresponds to `--include=1024-65535`.  Corresponding to `--exclude`, `--include` can be specified via environment variables `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`.
+
 
 
 ## Scan a predefined set of ports before pseudo-random ones
@@ -239,11 +249,11 @@ $ port4me --version
 * [x] Identify essential features
 * [x] Prototype `port4me` command-line tool in Bash, e.g. `port4me --list=5`
 * [x] Prototype `port4me` API and command-line tool in R, e.g. `Rscript port4me.R --list=5`
-* [x] Add support for `PORT4ME_EXCLUDE`
-* [x] Add support for `PORT4ME_EXCLUDE_SITE`
+* [x] Add support for `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
 * [x] Validate statistical properties, e.g. uniform sampling of ports
 * [x] Add support for `PORT4ME_PREPEND` and `PORT4ME_PREPEND_SITE`
+* [x] Add support for `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`
 * [ ] Prototype `port4me` API and command-line tool in Python
 * [ ] Freeze the algorithm and the parameters
 

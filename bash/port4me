@@ -11,6 +11,8 @@
 ###
 ###  --user=<string>     User name (default: $USER)
 ###  --tool=<string>     Name of software tool
+###  --include=<ports>   Comma-separated list of ports to be included
+###                      (default: 1024-65535)
 ###  --exclude=<ports>   Comma-separated list of ports to be excluded
 ###  --prepend=<ports>   Comma-separated list of ports to be checked first
 ###
@@ -27,7 +29,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.2.1-9002
+### Version: 0.2.1-9004
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -81,6 +83,8 @@ parse_cli_args() {
                 PORT4ME_TOOL=${value}
             elif [[ "${key}" == "exclude" ]]; then
                 PORT4ME_EXCLUDE=${value}
+            elif [[ "${key}" == "include" ]]; then
+                PORT4ME_INCLUDE=${value}
             elif [[ "${key}" == "prepend" ]]; then
                 PORT4ME_PREPEND=${value}
             elif [[ "${key}" == "skip" ]]; then
