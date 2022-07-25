@@ -24,12 +24,13 @@ port4me_seed <- function(user = NULL, tool = NULL) {
 }
 
 parse_ports <- function(ports) {
+  spec <- ports
   ports <- paste(ports, collapse = ",")
   ports <- gsub(" ", "", ports, fixed = TRUE)
   ports <- unlist(strsplit(ports, split = ","))
   bad <- grep("^[[:digit:]]+$", ports, invert = TRUE, value = TRUE)
   if (length(bad) > 0) {
-    stop(sprintf("Syntax error in 'exclude' argument: %s", arg))
+    stop(sprintf("Syntax error in port specification: %s", spec))
   }
   ports <- as.integer(ports)
   stopifnot(!anyNA(ports))
