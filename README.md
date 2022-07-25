@@ -6,7 +6,7 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. It is currently in a phase where features are explored and developed. Feel free to give it a spin and give feedback. /Henrik 2022-07-24_
+_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-07-25_
 
 
 There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
@@ -206,7 +206,7 @@ All **port4me** implementations output the identified port to standard output (s
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.1.0
+VERSION=0.2.0
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me   ## must be an absolute path
@@ -218,7 +218,7 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.1.0
+0.2.0
 ```
 
 
