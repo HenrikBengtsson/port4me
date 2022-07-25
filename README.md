@@ -160,27 +160,37 @@ The environment variable `PORT4ME_EXCLUDE` is intended to be used by the individ
 PORT4ME_EXCLUDE_SITE=
 
 ## MySQL
-PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:3306
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,3306
 
 ## ZeroMQ
-PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:5670
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,5670
 
 ## Redis
-PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:6379
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,6379
 
 ## Jupyter
-PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE:8888
+PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,8888
 
 export PORT4ME_EXCLUDE_SITE
 ```
 
+In addition to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line option `--include`, e.g.
+
+```sh
+{alice}$ port4me --include=2000-2123,4321,10000-10999
+10451
+```
+
+where the default corresponds to `--include=1024-65535`.  Corresponding to `--exclude`, `--include` can be specified via environment variables `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`.
+
+
 
 ## Scan a predefined set of ports before pseudo-random ones
 
-In addition to scanning the user-specific, pseudo-random port sequence for a free port, it is possible to also consider a predefined set of ports prior to the random ones by specifying command-line option `--include`, e.g.
+In addition to scanning the user-specific, pseudo-random port sequence for a free port, it is possible to also consider a predefined set of ports prior to the random ones by specifying command-line option `--prepend`, e.g.
 
 ```sh
-{alice}$ port4me --include=4321,11001 --list=5
+{alice}$ port4me --prepend=4321,11001 --list=5
 4321
 11001
 30845
@@ -188,10 +198,10 @@ In addition to scanning the user-specific, pseudo-random port sequence for a fre
 32310
 ```
 
-An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_INCLUDE`, e.g.
+An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_PREPEND`, e.g.
 
 ```sh
-{alice}$ PORT4ME_INCLUDE=4321,11001 port4me --list=5
+{alice}$ PORT4ME_PREPEND=4321,11001 port4me --list=5
 4321
 11001
 30845
@@ -199,7 +209,7 @@ An alternative to specify them via a command-line option, is to specify them via
 32310
 ```
 
-The environment variable `PORT4ME_INCLUDE` is intended to be used by the individual user.  To specify a set of ports to be included regardless of user, set `PORT4ME_INCLUDE_SITE`.
+The environment variable `PORT4ME_PREPEND` is intended to be used by the individual user.  To specify a set of ports to be prepended regardless of user, set `PORT4ME_PREPEND_SITE`.
 
 
 
@@ -218,7 +228,7 @@ All **port4me** implementations output the identified port to standard output (s
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.2.1
+VERSION=0.3.0
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me   ## must be an absolute path
@@ -230,7 +240,7 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.2.1
+0.3.0
 ```
 
 
@@ -239,10 +249,10 @@ $ port4me --version
 * [x] Identify essential features
 * [x] Prototype `port4me` command-line tool in Bash, e.g. `port4me --list=5`
 * [x] Prototype `port4me` API and command-line tool in R, e.g. `Rscript port4me.R --list=5`
-* [x] Add support for `PORT4ME_EXCLUDE`
-* [x] Add support for `PORT4ME_EXCLUDE_SITE`
+* [x] Add support for `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
 * [x] Validate statistical properties, e.g. uniform sampling of ports
+* [x] Add support for `PORT4ME_PREPEND` and `PORT4ME_PREPEND_SITE`
 * [x] Add support for `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`
 * [ ] Prototype `port4me` API and command-line tool in Python
 * [ ] Freeze the algorithm and the parameters

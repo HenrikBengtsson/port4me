@@ -39,36 +39,63 @@ port4me_seed() {
     echo "$seed"
 }
 
+parse_ports() {
+    local spec=${1:?}
+    local specs
+    local -a ports
+
+    ## Prune input
+    spec=${spec//,/ }
+    spec=${spec//+( )/ }
+    spec=${spec## }
+    spec=${spec%% }
+    spec=${spec// /$'\n'}
+
+    ## Split input into lines
+    mapfile -t specs <<< "${spec}"
+
+    pattern="([[:digit:]]+)"
+    for spec in "${specs[@]}"; do
+        if grep -q -E "^${pattern}-${pattern}$" <<< "$spec"; then
+            from=$(sed -E "s/${pattern}-${pattern}/\1/" <<< "$spec")
+            to=$(sed -E "s/${pattern}-${pattern}/\2/" <<< "$spec")
+            # shellcheck disable=SC2207
+            ports+=($(seq "$from" "$to"))
+        elif grep -q -E "^${pattern}$" <<< "$spec"; then
+            ports+=("$spec")
+        fi
+    done
+    
+    if (( ${#ports[@]} > 0 )); then
+        printf "%s\n" "${ports[@]}"
+    fi
+}
+
+port4me_prepend() {
+    parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}"
+}    
+
 port4me_include() {
-    local ports="${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}"
-    ports=${ports//,/ }
-    ports=${ports//+( )/ }
-    ports=${ports## }
-    ports=${ports%% }
-    ports=${ports// /$'\n'}
-    printf "%s" "${ports}"
+    parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}"
 }    
 
 port4me_exclude() {
-    local ports="${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
-    ports=${ports//,/ }
-    ports=${ports//+( )/ }
-    ports=${ports## }
-    ports=${ports%% }
-    ports=${ports// /$'\n'}
-    printf "%s" "${ports}"
+    parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
 }    
 
 port4me() {
     local -i skip=${PORT4ME_SKIP:-0}
-    local include
-    mapfile -t include < <(port4me_include)
-    local exclude
-    mapfile -t exclude < <(port4me_exclude)
+    local -i exclude
+    local -i include
+    local -i prepend
     local -i count
     local -i list=${PORT4ME_LIST:-0}
     local -i max_tries=${PORT4ME_MAX_TRIES:-1000}
     local must_work=${PORT4ME_MUST_WORK:-true}
+
+    mapfile -t exclude < <(port4me_exclude)
+    mapfile -t include < <(port4me_include)
+    mapfile -t prepend < <(port4me_prepend)
 
     if (( list > 0 )); then
         max_tries=${list}
@@ -79,10 +106,10 @@ port4me() {
 
     count=0
     while (( count < max_tries )); do
-        if (( ${#include[@]} > 0 )); then
-            port=${include[0]}
-            (( port < 1 || port > 65535 )) && error "Include port out of range [1,65535]: ${port}"
-            include=("${include[@]:1}") ## drop first element
+        if (( ${#prepend[@]} > 0 )); then
+            port=${prepend[0]}
+            (( port < 1 || port > 65535 )) && error "Prepended port out of range [1,65535]: ${port}"
+            prepend=("${prepend[@]:1}") ## drop first element
         else
             lcg_port > /dev/null
             port=${LCG_SEED:?}
@@ -92,6 +119,14 @@ port4me() {
         if (( ${#exclude[@]} > 0 )); then
             if [[ " ${exclude[*]} " == *" $port "* ]]; then
                 ${PORT4ME_DEBUG:-false} && >&2 printf "Port excluded: %d\n" "$port"
+                continue
+            fi
+        fi
+
+        ## Not included?
+        if (( ${#include[@]} > 0 )); then
+            if [[ " ${include[*]} " != *" $port "* ]]; then
+                ${PORT4ME_DEBUG:-false} && >&2 printf "Port not included: %d\n" "$port"
                 continue
             fi
         fi

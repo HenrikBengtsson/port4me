@@ -1,3 +1,18 @@
+# Version 0.3.0 [2022-07-25]
+
+## Significant Changes
+
+* Renamed former `--include=<ports>` to `--prepend=<ports>`.
+
+## New Features
+
+* Add `--include=<ports>` for specifying ports to be considered.
+  The default is 1024-65535.
+
+* Now `--exclude` and `--prepend` supports port ranges to, e.g.
+  `--exclude=1024-2048,4019`.
+
+
 # Version 0.2.1 [2022-07-25]
 
 ## New Features
