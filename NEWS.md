@@ -4,6 +4,11 @@
 
 * Add `port4me --include=<ports>`.
 
+## Bug Fixes
+
+* Bash implementation would consider a free port in 1-1023 as
+  openable, even if the user has no right to open it.
+
 
 # Version 0.1.0 [2022-07-24]
 

@@ -27,7 +27,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.1.0-9005
+### Version: 0.1.0-9006
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
