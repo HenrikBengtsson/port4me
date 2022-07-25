@@ -110,7 +110,7 @@ elif [[ $action == "version" ]]; then
 elif [[ $action == "list" ]]; then
     PORT4ME_LIST=${count} port4me
 elif [[ $action == "test" ]]; then
-    is_port_free "${port}" && exit 0 || exit 1
+    can_port_be_opened "${port}" && exit 0 || exit 1
 else
     port4me
 fi    
