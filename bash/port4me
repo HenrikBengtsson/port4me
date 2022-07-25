@@ -10,8 +10,9 @@
 ###  --debug             Output detailed debug information
 ###
 ###  --user=<string>     User name (default: $USER)
-###  --tool=<string>     Name of software tool (optional)
-###  --exclude=<ports>   Comma-separated list of ports to be excluded (optional)
+###  --tool=<string>     Name of software tool
+###  --exclude=<ports>   Comma-separated list of ports to be excluded
+###  --include=<ports>   Comma-separated list of ports to always be included
 ###
 ###  --list=<n>          List the first 'n', non-excluded ports scanned
 ###
@@ -26,7 +27,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.1.0
+### Version: 0.2.0
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -39,8 +40,8 @@ incl="$(dirname "${this}")/incl"
 # shellcheck source=incl/cli.sh
 source "${incl}/cli.sh"
 
-# shellcheck source=incl/is_port_free.bash
-source "${incl}/is_port_free.bash"
+# shellcheck source=incl/can_port_be_opened.bash
+source "${incl}/can_port_be_opened.bash"
 
 # shellcheck source=incl/lcg.bash
 source "${incl}/lcg.bash"
@@ -80,6 +81,8 @@ parse_cli_args() {
                 PORT4ME_TOOL=${value}
             elif [[ "${key}" == "exclude" ]]; then
                 PORT4ME_EXCLUDE=${value}
+            elif [[ "${key}" == "include" ]]; then
+                PORT4ME_INCLUDE=${value}
             elif [[ "${key}" == "skip" ]]; then
                 PORT4ME_SKIP=${value}
             elif [[ "${key}" == "list" ]]; then
