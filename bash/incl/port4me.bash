@@ -81,6 +81,7 @@ port4me() {
     while (( count < max_tries )); do
         if (( ${#include[@]} > 0 )); then
             port=${include[0]}
+            (( port < 1 || port > 65535 )) && error "Include port out of range [1,65535]: ${port}"
             include=("${include[@]:1}") ## drop first element
         else
             lcg_port > /dev/null
