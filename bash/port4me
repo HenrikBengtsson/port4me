@@ -81,6 +81,8 @@ parse_cli_args() {
                 PORT4ME_TOOL=${value}
             elif [[ "${key}" == "exclude" ]]; then
                 PORT4ME_EXCLUDE=${value}
+            elif [[ "${key}" == "include" ]]; then
+                PORT4ME_INCLUDE=${value}
             elif [[ "${key}" == "skip" ]]; then
                 PORT4ME_SKIP=${value}
             elif [[ "${key}" == "list" ]]; then

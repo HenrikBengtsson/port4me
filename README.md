@@ -163,6 +163,34 @@ export PORT4ME_EXCLUDE_SITE
 ```
 
 
+## Scan a predefined set of ports before pseudo-random ones
+
+In addition to scanning the user-specific, pseudo-random port sequence for a free port, it is possible to also consider a predefined set of ports prior to the random ones by specifying command-line option `--include`, e.g.
+
+```sh
+{alice}$ port4me --include=4321,11001 --list=5
+4321
+11001
+30845
+19654
+32310
+```
+
+An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_INCLUDE`, e.g.
+
+```sh
+{alice}$ PORT4ME_INCLUDE=4321,11001 port4me --list=5
+4321
+11001
+30845
+19654
+32310
+```
+
+The environment variable `PORT4ME_INCLUDE` is intended to be used by the individual user.  To specify a set of ports to be included regardless of user, set `PORT4ME_INCLUDE_SITE`.
+
+
+
 ## Tips and Tricks
 
 All **port4me** implementations output the identified port to standard output (stdout). This makes it easy to capture by standard shell methods, e.g. `port="$(port4me)"`.  If you'd like to see which port number was generated, use `tee` to send the port also to the standard error (stderr), which can be seen in the terminal. For example,
@@ -203,6 +231,7 @@ $ port4me --version
 * [x] Add support for `PORT4ME_EXCLUDE_SITE`
 * [x] Standardize command-line interface between Bash and R implementations
 * [x] Validate statistical properties, e.g. uniform sampling of ports
+* [x] Add support for `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`
 * [ ] Prototype `port4me` API and command-line tool in Python
 * [ ] Freeze the algorithm and the parameters
 

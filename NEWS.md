@@ -2,7 +2,8 @@
 
 ## New Features
 
-* Add `port4me --include=<ports>`.
+* Add `port4me --include=<ports>` to consider a given set of ports
+  _before_ considering the pseudo-random port sequence.
 
 ## Bug Fixes
 
