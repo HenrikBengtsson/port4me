@@ -228,7 +228,7 @@ All **port4me** implementations output the identified port to standard output (s
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.2.1
+VERSION=0.3.0
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me   ## must be an absolute path
@@ -240,7 +240,7 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.2.1
+0.3.0
 ```
 
 
