@@ -39,15 +39,30 @@ port4me_seed() {
     echo "$seed"
 }
 
+port4me_include() {
+    local ports="${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}"
+    ports=${ports//,/ }
+    ports=${ports//+( )/ }
+    ports=${ports## }
+    ports=${ports%% }
+    ports=${ports// /$'\n'}
+    printf "%s" "${ports}"
+}    
+
 port4me_exclude() {
-    local exclude="${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
-    exclude=${exclude// /}
-    exclude=${exclude//,/ }
-    echo "${exclude}"
+    local ports="${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
+    ports=${ports//,/ }
+    ports=${ports//+( )/ }
+    ports=${ports## }
+    ports=${ports%% }
+    ports=${ports// /$'\n'}
+    printf "%s" "${ports}"
 }    
 
 port4me() {
     local -i skip=${PORT4ME_SKIP:-0}
+    local include
+    mapfile -t include < <(port4me_include)
     local exclude
     mapfile -t exclude < <(port4me_exclude)
     local -i count
@@ -64,8 +79,13 @@ port4me() {
 
     count=0
     while (( count < max_tries )); do
-        lcg_port > /dev/null
-        port=${LCG_SEED:?}
+        if (( ${#include[@]} > 0 )); then
+            port=${include[0]}
+            include=("${include[@]:1}") ## drop first element
+        else
+            lcg_port > /dev/null
+            port=${LCG_SEED:?}
+        fi
 
         ## Skip?
         if (( ${#exclude[@]} > 0 )); then
