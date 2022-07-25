@@ -87,39 +87,6 @@ setup() {
 }
 
 
-@test "lcg_integer" {
-    lcg_set_params
-    
-    lcg_set_seed 42
-    run lcg_integer 0 100
-    assert_success
-    assert_output "93"
-
-    lcg_set_seed 42
-    run lcg_integer 0 100
-    assert_success
-    assert_output "93"
-
-    lcg_set_seed 42   
-    run lcg_integer 0 100000
-    assert_success
-    assert_output "3224"
-
-    lcg_set_seed 42
-    run lcg_integer 0 10000000
-    assert_success
-    assert_output "3224"
-
-    run lcg_integer
-    assert_failure
-    assert_output --partial "parameter null or not set"
-
-    run lcg_integer 0
-    assert_failure
-    assert_output --partial "parameter null or not set"
-}
-
-
 lcg_port_times() {
     local -i n=${1:?}
     local -i res=-1

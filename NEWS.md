@@ -1,3 +1,18 @@
+# Version 0.2.1 [2022-07-25]
+
+## New Features
+
+* Now `port4me` falls back to the `ss` command, if the `nc` command is
+  not available.  If neither are available, and informative error
+  message is produced.
+  
+## Bug Fixes
+
+* `port4me` would give an error message if command `nc` is not
+  available, but still output a port number without validating it is
+  available.  Now it gives an informative error and terminates.
+  
+
 # Version 0.2.0 [2022-07-25]
 
 ## New Features

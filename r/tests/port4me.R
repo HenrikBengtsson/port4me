@@ -5,7 +5,7 @@ for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
 Sys.setenv(PORT4ME_USER = "alice")
 
 
-message('- port4me(user = "alice", tool="rstudio")')
+message('- port4me(user = "alice", tool = "rstudio")')
 truth <- 22486L
 ports <- port4me(user = "alice", tool="rstudio")
 print(ports)

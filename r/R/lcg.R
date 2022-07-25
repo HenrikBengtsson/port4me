@@ -86,36 +86,6 @@ lcg_get_seed <- function() {
   lcg(seed = NA_integer_)
 }
 
-lcg_integer <- function(min, max) {
-  stopifnot(
-    length(min) == 1L, is.numeric(min), !is.na(min),
-    length(max) == 1L, is.numeric(max), !is.na(max),
-    min <= max
-  )
-
-  ## (a) Sample values in [0,m-2] (sic!)
-  res <- lcg()
-
-  ## (b) Normalize to [0, 1)
-  ## SPECIAL CASE: modulus - 2, is because (a-c) = 1
-  modulus <- getOption("lcg.params")[["modulus"]]
-  res <- res / (modulus - 2)
-
-  ## (c) Rescale to [min, max)
-  res <- res * (max - min) + min
-  
-  ## (d) Round to [min, max] integers
-  res <- as.integer(floor(res + 0.5))
-  
-  ## Sanity check
-  stopifnot(
-    length(res) == 1L, is.numeric(res), !is.na(res),
-    res >= min, res <= max
-  )
-  
-  res
-}
-
 lcg_port <- function(min = 1024, max = 65535) {
   ## Sample values in [0,m-2] (sic!), but reject until in [1024,65535]
   repeat {
