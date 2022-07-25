@@ -39,8 +39,8 @@ port4me_seed() {
     echo "$seed"
 }
 
-port4me_include() {
-    local ports="${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}"
+port4me_prepend() {
+    local ports="${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}"
     ports=${ports//,/ }
     ports=${ports//+( )/ }
     ports=${ports## }
@@ -61,8 +61,8 @@ port4me_exclude() {
 
 port4me() {
     local -i skip=${PORT4ME_SKIP:-0}
-    local include
-    mapfile -t include < <(port4me_include)
+    local prepend
+    mapfile -t prepend < <(port4me_prepend)
     local exclude
     mapfile -t exclude < <(port4me_exclude)
     local -i count
@@ -79,10 +79,10 @@ port4me() {
 
     count=0
     while (( count < max_tries )); do
-        if (( ${#include[@]} > 0 )); then
-            port=${include[0]}
-            (( port < 1 || port > 65535 )) && error "Include port out of range [1,65535]: ${port}"
-            include=("${include[@]:1}") ## drop first element
+        if (( ${#prepend[@]} > 0 )); then
+            port=${prepend[0]}
+            (( port < 1 || port > 65535 )) && error "Prepended port out of range [1,65535]: ${port}"
+            prepend=("${prepend[@]:1}") ## drop first element
         else
             lcg_port > /dev/null
             port=${LCG_SEED:?}

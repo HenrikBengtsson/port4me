@@ -1,6 +1,8 @@
 # Version (development version)
 
-* ...
+## Significant Changes
+
+* Renamed `--include=<ports>` to `--prepend=<ports>`.
 
 
 # Version 0.2.1 [2022-07-25]
