@@ -51,18 +51,6 @@ parse_ports() {
     fi
 }
 
-port4me_prepend() {
-    parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}"
-}    
-
-port4me_include() {
-    parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}"
-}    
-
-port4me_exclude() {
-    parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}"
-}    
-
 port4me() {
     local -i max_tries=${PORT4ME_MAX_TRIES:-1000}
     local must_work=${PORT4ME_MUST_WORK:-true}
@@ -71,9 +59,9 @@ port4me() {
     local -i exclude include prepend
     local -i count
 
-    mapfile -t exclude < <(port4me_exclude)
-    mapfile -t include < <(port4me_include)
-    mapfile -t prepend < <(port4me_prepend)
+    mapfile -t exclude < <(parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}")
+    mapfile -t include < <(parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}")
+    mapfile -t prepend < <(parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}")
 
     if (( list > 0 )); then
         max_tries=${list}
