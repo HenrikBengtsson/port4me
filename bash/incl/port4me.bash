@@ -46,41 +46,21 @@ can_port_be_opened() {
     return 0
 }
 
-#' Analogue to java_hashCode() but returns a non-signed integer
+#' Analogue to Java hashCode() but returns a non-signed integer
 string_to_uint() {
     local str="$1"
-    local -i MAX_UINT=${PORT4ME_MAX_UINT:-$(( 2**32 ))}
     local -i kk byte
     local -i hash=0
+    
     for ((kk = 0; kk < ${#str}; kk++)); do
         ## ASCII character to ASCII value
         LC_TYPE=C printf -v byte "%d" "'${str:$kk:1}"
         hash=$(( 31 * hash + byte ))
-        ## Corce to non-signed integer [0,MAX_UINT-1]
-        hash=$(( hash % MAX_UINT ))
-#        printf "%2d. byte=%3d, hash=%.0f\n" $kk $byte $hash
+        ## Corce to non-signed integer [0,2^32-1]
+        hash=$(( hash % 2**32 ))
     done
     
     printf "%d" $hash
-}
-
-port4me_seed() {
-    local user=${PORT4ME_USER:-${USER}}
-    local tool=${PORT4ME_TOOL}
-    local seed_str
-    
-    seed_str=
-    if [[ -n $user && -n $tool ]]; then
-        seed_str="$user,$tool"
-    elif [[ -n $user ]]; then
-        seed_str="$user"
-    elif [[ -n $tool ]]; then
-        seed_str="$tool"
-    else
-        error "At least one of arguments 'user' and 'tool' must be non-empty"
-    fi
-
-    string_to_uint "$seed_str"
 }
 
 parse_ports() {
@@ -159,6 +139,25 @@ lcg_port() {
     done
     
     echo "${LCG_SEED}"
+}
+
+port4me_seed() {
+    local user=${PORT4ME_USER:-${USER}}
+    local tool=${PORT4ME_TOOL}
+    local seed_str
+    
+    seed_str=
+    if [[ -n $user && -n $tool ]]; then
+        seed_str="$user,$tool"
+    elif [[ -n $user ]]; then
+        seed_str="$user"
+    elif [[ -n $tool ]]; then
+        seed_str="$tool"
+    else
+        error "At least one of arguments 'user' and 'tool' must be non-empty"
+    fi
+
+    string_to_uint "$seed_str"
 }
 
 port4me() {
