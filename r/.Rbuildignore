@@ -1,0 +1,7 @@
+^.git
+^.github
+^.Rhistory
+^README[.]md$
+^Makefile$
+^port4me[.]R$
+

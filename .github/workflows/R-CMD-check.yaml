@@ -67,7 +67,7 @@ jobs:
           rcmdcheck::rcmdcheck(
             path = "r",
             args = "--as-cran",
-            error_on = "note",
+            error_on = "warning",
             check_dir = "check"
           )
         shell: Rscript {0}
@@ -78,7 +78,7 @@ jobs:
           rcmdcheck::rcmdcheck(
             path = "r",
             args = c("--no-manual", "--as-cran"),
-            error_on = "note",
+            error_on = "warning",
             check_dir = "check"
           )
         shell: Rscript {0}
