@@ -29,7 +29,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.3.0-9005
+### Version: 0.3.0-9006
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -39,15 +39,39 @@ this="${BASH_SOURCE%/}"
 ## Import bash utility functions
 incl="$(dirname "${this}")/incl"
 
-# shellcheck source=incl/cli.sh
-source "${incl}/cli.sh"
-
 # shellcheck source=incl/lcg.bash
 source "${incl}/lcg.bash"
 
 # shellcheck source=incl/port4me.bash
 source "${incl}/port4me.bash"
 
+
+# -------------------------------------------------------------------------
+# CLI utility functions
+# -------------------------------------------------------------------------
+function version {
+    grep -E "^###[ ]*Version:[ ]*" "$0" | sed 's/###[ ]*Version:[ ]*//g'
+}
+
+function help {
+    local what res
+
+    what=$1
+    res=$(grep "^###" "$0" | grep -vE '^(####|### whatis: )' | cut -b 5-)
+
+    if [[ $what == "full" ]]; then
+        res=$(echo "$res" | sed '/^---/d')
+    else
+        res=$(echo "$res" | sed '/^---/Q')
+    fi
+
+    printf "%s\\n" "${res[@]}"
+}
+
+
+# -------------------------------------------------------------------------
+# Parse command-line options
+# -------------------------------------------------------------------------
 action=port
 count=0
 port=-1
@@ -101,6 +125,10 @@ parse_cli_args() {
 
 parse_cli_args "$@"
 
+
+# -------------------------------------------------------------------------
+# Main
+# -------------------------------------------------------------------------
 if [[ $action == "help" ]]; then
     help ""
 elif [[ $action == "version" ]]; then
