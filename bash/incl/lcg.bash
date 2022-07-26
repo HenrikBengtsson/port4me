@@ -44,15 +44,13 @@ lcg() {
 lcg_port() {
     local -i min=${1:-1024}
     local -i max=${2:-65535}
-    local -i res
     
     while true; do
-        res=$(lcg)
-        LCG_SEED=${res}
-        if (( res >= min && res <= max )); then
+        lcg > /dev/null
+        if (( LCG_SEED >= min && LCG_SEED <= max )); then
             break
         fi
     done
     
-    echo "${res}"
+    echo "${LCG_SEED}"
 }
