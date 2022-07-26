@@ -9,7 +9,7 @@ setup() {
 @test "lcg" {
     LCG_SEED=42
     
-    run lcg
+    run p4m_lcg
     assert_success
     assert_output "3224"
 }
@@ -17,7 +17,7 @@ setup() {
 @test "lcg with initial seed = m - (a-c) (special case)" {
     LCG_SEED=65536
     
-    run lcg
+    run p4m_lcg
     assert_success
     assert_output "74"
 }
@@ -26,7 +26,7 @@ lcg_port_times() {
     local -i n=${1:?}
     local -i res=-1
     while ((n > 0)); do
-        lcg_port > /dev/null
+        p4m_lcg_port > /dev/null
         res=${LCG_SEED:?}
         n=$((n - 1))
     done
@@ -35,12 +35,12 @@ lcg_port_times() {
 
 @test "lcg_port" {
     LCG_SEED=42
-    run lcg_port
+    run p4m_lcg_port
     assert_success
     assert_output "3224"
 
     LCG_SEED=42
-    run lcg_port
+    run p4m_lcg_port
     assert_success
     assert_output "3224"
 

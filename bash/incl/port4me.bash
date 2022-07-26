@@ -3,7 +3,7 @@
 declare -i LCG_SEED
 export LCG_SEED
 
-error() {
+p4m_error() {
     >&2 echo "ERROR: $1"
     exit 1
 }
@@ -16,10 +16,10 @@ error() {
 #'
 #' Requirements:
 #' * either 'nc' or 'ss'
-can_port_be_opened() {
+p4m_can_port_be_opened() {
     local -i port=${1:?}
     
-    (( port < 1 || port > 65535 )) && error "Port is out of range [1,65535]: ${port}"
+    (( port < 1 || port > 65535 )) && p4m_error "Port is out of range [1,65535]: ${port}"
     
     ## Is port occupied?
     if command -v nc > /dev/null; then
@@ -31,7 +31,7 @@ can_port_be_opened() {
             return 1
         fi
     else
-        error "Neither command 'nc' nor 'ss' is available on this host ($HOSTNAME)"
+        p4m_error "Neither command 'nc' nor 'ss' is available on this host ($HOSTNAME)"
     fi
     
     ## FIXME: A port can be free, but it might be that the user
@@ -47,7 +47,7 @@ can_port_be_opened() {
 }
 
 #' Analogue to Java hashCode() but returns a non-signed integer
-string_to_uint() {
+p4m_string_to_uint() {
     local str="$1"
     local -i kk byte
     local -i hash=0
@@ -63,7 +63,7 @@ string_to_uint() {
     printf "%d" $hash
 }
 
-parse_ports() {
+p4m_parse_ports() {
     local spec=${1:?}
     local specs
     local -a ports
@@ -95,7 +95,7 @@ parse_ports() {
     fi
 }
 
-lcg() {
+p4m_lcg() {
     local -i a=75 c=74 modulus=65537 seed="${LCG_SEED:?}"
     local -i seed_next
 
@@ -115,11 +115,11 @@ lcg() {
 
     ## Sanity checks
     if (( seed_next < 0 )); then
-        error "INTERNAL: New LCG seed is non-positive: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
+        p4m_error "INTERNAL: New LCG seed is non-positive: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     elif (( seed_next > modulus )); then
-        error "INTERNAL: New LCG seed is too large: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
+        p4m_error "INTERNAL: New LCG seed is too large: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     elif (( seed_next == seed )); then
-        error "INTERNAL: New LCG seed is same a current seed, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
+        p4m_error "INTERNAL: New LCG seed is same a current seed, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     fi
     
     LCG_SEED=${seed_next}
@@ -127,12 +127,12 @@ lcg() {
     echo "${LCG_SEED}"
 }
 
-lcg_port() {
+p4m_lcg_port() {
     local -i min=1024
     local -i max=65535
     
     while true; do
-        lcg > /dev/null
+        p4m_lcg > /dev/null
         if (( LCG_SEED >= min && LCG_SEED <= max )); then
             break
         fi
@@ -154,10 +154,10 @@ port4me_seed() {
     elif [[ -n $tool ]]; then
         seed_str="$tool"
     else
-        error "At least one of arguments 'user' and 'tool' must be non-empty"
+        p4m_error "At least one of arguments 'user' and 'tool' must be non-empty"
     fi
 
-    string_to_uint "$seed_str"
+    p4m_string_to_uint "$seed_str"
 }
 
 port4me() {
@@ -168,9 +168,9 @@ port4me() {
     local -i exclude include prepend
     local -i count
 
-    mapfile -t exclude < <(parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}")
-    mapfile -t include < <(parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}")
-    mapfile -t prepend < <(parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}")
+    mapfile -t exclude < <(p4m_parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}")
+    mapfile -t include < <(p4m_parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}")
+    mapfile -t prepend < <(p4m_parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}")
 
     if (( list > 0 )); then
         max_tries=${list}
@@ -182,10 +182,10 @@ port4me() {
     while (( count < max_tries )); do
         if (( ${#prepend[@]} > 0 )); then
             port=${prepend[0]}
-            (( port < 1 || port > 65535 )) && error "Prepended port out of range [1,65535]: ${port}"
+            (( port < 1 || port > 65535 )) && p4m_error "Prepended port out of range [1,65535]: ${port}"
             prepend=("${prepend[@]:1}") ## drop first element
         else
-            lcg_port > /dev/null
+            p4m_lcg_port > /dev/null
             port=${LCG_SEED:?}
         fi
 
@@ -217,7 +217,7 @@ port4me() {
             
             ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
     
-            if can_port_be_opened "$port"; then
+            if p4m_can_port_be_opened "$port"; then
                 printf "%d\n" "$port"
                 return 0
             fi
@@ -227,7 +227,7 @@ port4me() {
 
     if (( list == 0 )); then
         if $must_work; then
-            error "Failed to find a free TCP port"
+            p4m_error "Failed to find a free TCP port"
         fi
 
         printf "%d\n" "-1"
