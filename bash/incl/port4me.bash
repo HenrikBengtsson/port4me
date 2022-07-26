@@ -159,9 +159,6 @@ port4me() {
             prepend=("${prepend[@]:1}") ## drop first element
         else
             p4m_lcg > /dev/null
-            if (( LCG_SEED < 1024 || LCG_SEED > 65535 )); then
-                continue
-            fi
             port=${LCG_SEED:?}
         fi
 
@@ -179,6 +176,8 @@ port4me() {
                 ${PORT4ME_DEBUG:-false} && >&2 printf "Port not included: %d\n" "$port"
                 continue
             fi
+        elif (( LCG_SEED < 1024 || LCG_SEED > 65535 )); then
+            continue
         fi
 
         count=$((count + 1))
