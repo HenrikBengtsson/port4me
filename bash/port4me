@@ -29,7 +29,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.3.0-9003
+### Version: 0.3.0-9004
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -50,9 +50,6 @@ source "${incl}/lcg.bash"
 
 # shellcheck source=incl/port4me.bash
 source "${incl}/port4me.bash"
-
-# shellcheck source=incl/string_to_uint.bash
-source "${incl}/string_to_uint.bash"
 
 action=port
 count=0

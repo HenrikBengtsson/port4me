@@ -3,7 +3,7 @@
 setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
-    source ../incl/string_to_uint.bash
+    source ../incl/port4me.bash
 }
 
 @test "string_to_uint" {
