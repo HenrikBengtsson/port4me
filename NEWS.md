@@ -1,6 +1,9 @@
 # Version (development version)
 
-* ...
+## Design
+
+* The LCG parameters are now frozen to `modulus = 2^16+1`, `a = 75`,
+  and `c = 74`.
 
 
 # Version 0.3.0 [2022-07-25]

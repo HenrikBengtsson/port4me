@@ -101,7 +101,6 @@ port4me() {
         max_tries=${list}
     fi
     
-    lcg_set_params
     lcg_set_seed "$(port4me_seed)"
 
     count=0

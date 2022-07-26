@@ -6,7 +6,7 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-07-25_
+_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-07-26_
 
 ## Features
 
@@ -254,8 +254,8 @@ $ port4me --version
 * [x] Validate statistical properties, e.g. uniform sampling of ports
 * [x] Add support for `PORT4ME_PREPEND` and `PORT4ME_PREPEND_SITE`
 * [x] Add support for `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`
+* [x] Freeze the algorithm and the parameters
 * [ ] Prototype `port4me` API and command-line tool in Python
-* [ ] Freeze the algorithm and the parameters
 
 
 ## The port4me Algorithm
@@ -288,11 +288,11 @@ $ port4me --version
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
   - the next seed is calculated based on the current seed $s$ and parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
 
-  - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
+  - the LCG algorithm must not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
 
   - the LCG algorithm may produce the same output seed as input seed. To avoid this resulting in a constant LCG stream, increment the seed by one and recalculate whenever this happens
 
-  - Choice of LCG parameters: $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81")
+  - LCG parameters should be $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81")
   
      - this requires only 32-bit integer arithmetic, because $m < 2^{32}$
      

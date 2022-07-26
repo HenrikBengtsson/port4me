@@ -1,9 +1,6 @@
 #! /usr/bin/env bash
 
 declare -i LCG_SEED
-declare -i LCG_PARAMS_MODULUS
-declare -i LCG_PARAMS_A
-declare -i LCG_PARAMS_C
 
 LCG_SEED=-1
 export LCG_SEED
@@ -11,18 +8,6 @@ export LCG_SEED
 error() {
     >&2 echo "ERROR: $1"
     exit 1
-}
-
-lcg_set_params() {
-    local -i modulus=${1:-65537}
-    local -i a=${2:-75}
-    local -i c=${3:-74}
-    (( a <= 0 )) && error "LCG parameter 'a' must be positive: $a"
-    (( c <= 0 )) && error "LCG parameter 'c' must be positive: $c"
-    (( modulus <= 0 )) && error "LCG parameter 'modulus' must be positive: $modulus"
-    LCG_PARAMS_MODULUS=${modulus}
-    LCG_PARAMS_A=${a}
-    LCG_PARAMS_C=${c}
 }
 
 lcg_set_seed() {
@@ -38,15 +23,11 @@ lcg_get_seed() {
 
 # shellcheck disable=SC2120
 lcg() {
-    local -i modulus=${1:-${LCG_PARAMS_MODULUS:-65537}}
-    local -i a=${2:-${LCG_PARAMS_A:-75}}
-    local -i c=${3:-${LCG_PARAMS_C:-74}}
+    local -i modulus=65537
+    local -i a=75
+    local -i c=74
     local -i seed
     local -i seed_next
-
-    (( a <= 0 )) && error "LCG parameter 'a' must be positive: $a"
-    (( c <= 0 )) && error "LCG parameter 'c' must be positive: $c"
-    (( modulus <= 0 )) && error "LCG parameter 'modulus' must be positive: $modulus"
 
     seed=$(lcg_get_seed)
 

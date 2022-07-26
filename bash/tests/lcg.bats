@@ -6,53 +6,15 @@ setup() {
     source ../incl/lcg.bash
 }
 
-@test "lcg_set_params" {
-    run lcg_set_params
-    assert_success
-    
-    run lcg_set_params 1 2 3
-    assert_success
-
-    run lcg_set_params 0 2 3
-    assert_failure
-    assert_output --partial "ERROR"
-
-    run lcg_set_params 1 0 3
-    assert_failure
-    assert_output --partial "ERROR"
-
-    run lcg_set_params 1 2 0
-    assert_failure
-    assert_output --partial "ERROR"
-}
-
 @test "lcg" {
-    lcg_set_params
     lcg_set_seed 42
     
     run lcg
     assert_success
     assert_output "3224"
-    
-    run lcg 65537 75 74
-    assert_success
-    assert_output "3224"
-
-    run lcg 0 75 74
-    assert_failure
-    assert_output --partial "'modulus' must be positive"
-
-    run lcg 65537 0 74
-    assert_failure
-    assert_output --partial "'a' must be positive"
-
-    run lcg 65537 75 0
-    assert_failure
-    assert_output --partial "'c' must be positive"
 }
 
 @test "lcg with initial seed = m - (a-c) (special case)" {
-    lcg_set_params
     lcg_set_seed 65536
     
     run lcg
@@ -99,8 +61,6 @@ lcg_port_times() {
 }
 
 @test "lcg_port" {
-    lcg_set_params
-    
     lcg_set_seed 42
     run lcg_port
     assert_success
