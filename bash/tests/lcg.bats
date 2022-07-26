@@ -24,26 +24,19 @@ setup() {
 
 lcg_port_times() {
     local -i n=${1:?}
-    local -i res=-1
+    local -i port=-1
     while ((n > 0)); do
-        p4m_lcg_port > /dev/null
-        res=${LCG_SEED:?}
+        p4m_lcg > /dev/null
+        port=${LCG_SEED:?}
+        if (( port < 1024 || port > 65535 )); then
+            continue
+        fi
         n=$((n - 1))
     done
-    echo $res
+    echo $port
 }
 
 @test "lcg_port" {
-    LCG_SEED=42
-    run p4m_lcg_port
-    assert_success
-    assert_output "3224"
-
-    LCG_SEED=42
-    run p4m_lcg_port
-    assert_success
-    assert_output "3224"
-
     LCG_SEED=42
     run lcg_port_times 0
     assert_success

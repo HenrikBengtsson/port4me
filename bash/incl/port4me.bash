@@ -127,20 +127,6 @@ p4m_lcg() {
     echo "${LCG_SEED}"
 }
 
-p4m_lcg_port() {
-    local -i min=1024
-    local -i max=65535
-    
-    while true; do
-        p4m_lcg > /dev/null
-        if (( LCG_SEED >= min && LCG_SEED <= max )); then
-            break
-        fi
-    done
-    
-    echo "${LCG_SEED}"
-}
-
 p4m_seed() {
     local seed=${PORT4ME_USER:-${USER:?}},${PORT4ME_TOOL}
     seed=${seed%%,}  ## trim trailing commas
@@ -172,7 +158,10 @@ port4me() {
             (( port < 1 || port > 65535 )) && p4m_error "Prepended port out of range [1,65535]: ${port}"
             prepend=("${prepend[@]:1}") ## drop first element
         else
-            p4m_lcg_port > /dev/null
+            p4m_lcg > /dev/null
+            if (( LCG_SEED < 1024 || LCG_SEED > 65535 )); then
+                continue
+            fi
             port=${LCG_SEED:?}
         fi
 
