@@ -39,9 +39,6 @@ this="${BASH_SOURCE%/}"
 ## Import bash utility functions
 incl="$(dirname "${this}")/incl"
 
-# shellcheck source=incl/lcg.bash
-source "${incl}/lcg.bash"
-
 # shellcheck source=incl/port4me.bash
 source "${incl}/port4me.bash"
 
