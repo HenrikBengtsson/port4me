@@ -49,3 +49,18 @@ If \code{test} is given, then TRUE is if the port can be opened, otherwise FALSE
 \description{
 Gets a personalized TCP port that can be opened
 }
+\examples{
+port <- port4me()
+print(port)
+
+port <- port4me(tool = "rstudio")
+print(port)
+
+ports <- port4me(tool = "rstudio", list = 5L)
+print(ports)
+
+avail <- port4me(test = 4321)
+print(avail)
+
+
+}

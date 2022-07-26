@@ -124,6 +124,8 @@ port4me_skip <- function() {
 #' An port or a vector of ports.
 #' If `test` is given, then TRUE is if the port can be opened, otherwise FALSE.
 #'
+#' @example incl/port4me.R
+#'
 #' @export
 port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port4me_prepend(), include = port4me_exclude(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 1000L, must_work = TRUE) {
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
