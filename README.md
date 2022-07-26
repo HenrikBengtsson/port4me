@@ -253,6 +253,20 @@ To install the R **portme** package, do:
 remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 ```
 
+Then call it as:
+
+```r
+> port4me::port4me(tool = "jupyter")
+[1] 47467
+```
+
+or
+
+```sh
+Rscript -e 'cat(port4me::port4me(tool = "jupyter"))'
+47467
+```
+
 
 ## Roadmap 
 
