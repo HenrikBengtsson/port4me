@@ -94,6 +94,36 @@ port4me_skip <- function() {
 }
 
 
+#' Gets a personalized TCP port that can be opened
+#'
+#' @param user (optional) The name of the user.
+#' Defaults to `Sys.info()[["user"]]`.
+#'
+#' @param tool (optional) The name of the software tool for which a port
+#' should be generated.
+#'
+#' @param prepend (optional) An integer vector of ports to always consider.
+#'
+#' @param include (optional) An integer vector of possible ports to return.
+#' Defaults to `1024::65535`.
+#'
+#' @param exclude (optional) An integer vector of ports to exclude.
+#'
+#' @param skip (optional) Number of non-excluded ports to skip.
+#'
+#' @param list (optional) Number of ports to list.
+#'
+#' @param test (optional) A port to check whether it can be opened or not.
+#'
+#' @param max_tries Maximum number of ports checked, before giving up.
+#'
+#' @param must_work If TRUE, then an error is produced if no port could
+#' be found.  If FALSE, then `-1` is returned.
+#'
+#' @return
+#' An port or a vector of ports.
+#' If `test` is given, then TRUE is if the port can be opened, otherwise FALSE.
+#'
 #' @export
 port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port4me_prepend(), include = port4me_exclude(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 1000L, must_work = TRUE) {
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
