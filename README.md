@@ -17,7 +17,7 @@ The **port4me** tool:
 * gives different users, different ports
 * gives the user the same port over time with high probability
 * gives different ports for different software tools
-* No configuration needed
+* requires no configuration
 
 ## Introduction
 
@@ -225,6 +225,8 @@ All **port4me** implementations output the identified port to standard output (s
 
 ## Installation
 
+### Bash, command-line tool
+
 To install the Bash version of **portme**, do:
 
 ```sh
@@ -241,6 +243,14 @@ Then run it as:
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
 0.3.0
+```
+
+### R package
+
+To install the R **portme** package, do:
+
+```r
+remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 ```
 
 

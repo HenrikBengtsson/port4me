@@ -1,5 +1,7 @@
-for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
-  source(ff, local = TRUE)
+if (!require("port4me", quietly = TRUE)) {
+  for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
+    source(ff, local = TRUE)
+  }
 }
 
 Sys.setenv(PORT4ME_USER = "alice")

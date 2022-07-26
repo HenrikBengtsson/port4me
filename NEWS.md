@@ -1,5 +1,9 @@
 # Version (development version)
 
+## New Features
+
+* Add R package **port4me**.
+
 ## Design
 
 * The LCG parameters are now frozen to `modulus = 2^16+1`, `a = 75`,

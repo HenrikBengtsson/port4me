@@ -1,5 +1,7 @@
 #' Linear Congruential Generator
 #'
+#' @param seed (optional) Initiates the LCG seed, iff specified.
+#'
 #' @return
 #' An integer in `{0, 1, ..., modulus-1}`, if `standardize = FALSE`,
 #' or a numeric in `[0,1)`, if `standardize = TRUE`,
@@ -9,8 +11,10 @@
 #' which are small enough to to be handled by Bash.  They also happens to be
 #' the one used by the fabolous Sinclair ZX81.
 #'
-#' @reference
+#' @references
 #' https://en.wikipedia.org/wiki/Linear_congruential_generator
+#'
+#' @noRd
 lcg <- local({
   ## LCG parameters
   modulus <- 2^16+1
