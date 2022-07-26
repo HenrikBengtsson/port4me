@@ -1,25 +1,12 @@
 #! /usr/bin/env bash
 
-port4me_user() {
-    local res=${PORT4ME_USER}
-    [[ -z $res ]] && res=${USER}
-    echo "$res"
-}
-
-port4me_tool() {
-    local res=${PORT4ME_TOOL}
-    echo "$res"
-}
-
 port4me_seed() {
-    local user tool seed_str
-    local -i seed
-    
-    user=$(port4me_user)
-    tool=$(port4me_tool)
+    local user=${PORT4ME_USER:-${USER}}
+    local tool=${PORT4ME_TOOL}
+    local seed_str
     
     seed_str=
-    if [[ -n $user &&  -n $tool ]]; then
+    if [[ -n $user && -n $tool ]]; then
         seed_str="$user,$tool"
     elif [[ -n $user ]]; then
         seed_str="$user"
@@ -29,14 +16,7 @@ port4me_seed() {
         error "At least one of arguments 'user' and 'tool' must be non-empty"
     fi
 
-    seed=$(string_to_uint "$seed_str")
-
-    if ${PORT4ME_DEBUG:-false}; then
-       >&2 printf "seed_str='%s'\n" "$seed_str"
-       >&2 printf "seed=%d\n" "$seed"
-    fi
-    
-    echo "$seed"
+    string_to_uint "$seed_str"
 }
 
 parse_ports() {
@@ -84,14 +64,12 @@ port4me_exclude() {
 }    
 
 port4me() {
-    local -i skip=${PORT4ME_SKIP:-0}
-    local -i exclude
-    local -i include
-    local -i prepend
-    local -i count
-    local -i list=${PORT4ME_LIST:-0}
     local -i max_tries=${PORT4ME_MAX_TRIES:-1000}
     local must_work=${PORT4ME_MUST_WORK:-true}
+    local -i skip=${PORT4ME_SKIP:-0}
+    local -i list=${PORT4ME_LIST:-0}
+    local -i exclude include prepend
+    local -i count
 
     mapfile -t exclude < <(port4me_exclude)
     mapfile -t include < <(port4me_include)
