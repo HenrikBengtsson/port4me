@@ -11,6 +11,7 @@
 #' returned.
 #'
 #' @keywords internal
+#' @noRd
 can_port_be_opened <- function(port) {
   stopifnot(length(port) == 1, is.numeric(port), is.finite(port), port >= 1, port <= 65535)
   
