@@ -1,8 +1,6 @@
 #! /usr/bin/env bash
 
 declare -i LCG_SEED
-
-LCG_SEED=-1
 export LCG_SEED
 
 error() {
@@ -10,26 +8,10 @@ error() {
     exit 1
 }
 
-lcg_set_seed() {
-    local -i seed=${1:?}
-    (( seed < 0 )) && error "LCG seed must be non-negative: $seed"
-    LCG_SEED=${seed}
-}
-
-lcg_get_seed() {
-    echo "${LCG_SEED:?}"
-}
-
-
 # shellcheck disable=SC2120
 lcg() {
-    local -i modulus=65537
-    local -i a=75
-    local -i c=74
-    local -i seed
+    local -i a=75 c=74 modulus=65537 seed="${LCG_SEED:?}"
     local -i seed_next
-
-    seed=$(lcg_get_seed)
 
     ## Make sure seed is within [0,modulus-1] to avoid integer overflow
     seed=$(( seed % modulus ))

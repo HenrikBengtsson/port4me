@@ -101,7 +101,7 @@ port4me() {
         max_tries=${list}
     fi
     
-    lcg_set_seed "$(port4me_seed)"
+    LCG_SEED=$(port4me_seed)
 
     count=0
     while (( count < max_tries )); do
