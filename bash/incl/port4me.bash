@@ -127,7 +127,7 @@ p4m_lcg() {
     echo "${LCG_SEED}"
 }
 
-p4m_seed() {
+p4m_string_to_seed() {
     local seed=${PORT4ME_USER:-${USER:?}},${PORT4ME_TOOL}
     seed=${seed%%,}  ## trim trailing commas
     p4m_string_to_uint "$seed"
@@ -149,7 +149,7 @@ port4me() {
         max_tries=${list}
     fi
     
-    LCG_SEED=$(p4m_seed)
+    LCG_SEED=$(p4m_string_to_seed)
 
     count=0
     while (( count < max_tries )); do
