@@ -53,8 +53,7 @@ port4me_prepend <- function() {
 
   for (name in c("PORT4ME_PREPEND", "PORT4ME_PREPEND_SITE")) {
     arg <- Sys.getenv(name, "")
-    ports <- parse_ports(arg)
-    ports <- c(ports, ports)
+    ports <- c(ports, parse_ports(arg))
   }
   ports <- unique(ports)
 
@@ -66,8 +65,7 @@ port4me_exclude <- function() {
 
   for (name in c("PORT4ME_EXCLUDE", "PORT4ME_EXCLUDE_SITE")) {
     arg <- Sys.getenv(name, "")
-    ports <- parse_ports(arg)
-    ports <- c(ports, ports)
+    ports <- c(ports, parse_ports(arg))
   }
   ports <- unique(ports)
   
@@ -79,8 +77,7 @@ port4me_include <- function() {
 
   for (name in c("PORT4ME_INCLUDE", "PORT4ME_INCLUDE_SITE")) {
     arg <- Sys.getenv(name, "")
-    ports <- parse_ports(arg)
-    ports <- c(ports, ports)
+    ports <- c(ports, parse_ports(arg))
   }
   ports <- unique(ports)
   
@@ -127,7 +124,7 @@ port4me_skip <- function() {
 #' @example incl/port4me.R
 #'
 #' @export
-port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port4me_prepend(), include = port4me_exclude(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 1000L, must_work = TRUE) {
+port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port4me_prepend(), include = port4me_include(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 65535L, must_work = TRUE) {
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
   if (!is.null(list)) {
@@ -158,9 +155,19 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port
 
   if (!is.null(list)) max_tries <- list + skip
 
+  if (isTRUE(as.logical(Sys.getenv("PORT4ME_DEBUG", "false")))) {
+    utils::str(list(
+      include = include,
+      exclude = exclude,
+      prepend = prepend
+    ))
+  }
+
   ports <- integer(0)
   count <- 0L
-  while (count <= max_tries) {
+  tries <- 0L
+  while (tries <= max_tries) {
+    tries <- tries + 1L
     if (length(prepend) > 0) {
       port <- prepend[1]
       prepend <- prepend[-1]
@@ -179,7 +186,9 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port
     }
   }
 
-  if (must_work) stop("Failed to find a free TCP port")
+  if (must_work) {
+    stop(sprintf("Failed to find a free TCP port after %d attempts", max_tries))
+  }
 
   -1L
 }

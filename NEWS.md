@@ -9,6 +9,12 @@
 * The LCG parameters are now frozen to `modulus = 2^16+1`, `a = 75`,
   and `c = 74`.
 
+## Bug Fixes
+
+* `port4me` stuck indefinitely if none of the ports scanned could be
+  opened.
+  
+
 
 # Version 0.3.0 [2022-07-25]
 

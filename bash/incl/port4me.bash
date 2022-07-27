@@ -134,12 +134,12 @@ p4m_string_to_seed() {
 }
 
 port4me() {
-    local -i max_tries=${PORT4ME_MAX_TRIES:-1000}
+    local -i max_tries=${PORT4ME_MAX_TRIES:-65535}
     local must_work=${PORT4ME_MUST_WORK:-true}
     local -i skip=${PORT4ME_SKIP:-0}
     local -i list=${PORT4ME_LIST:-0}
     local -i exclude include prepend
-    local -i count
+    local -i count tries
 
     mapfile -t exclude < <(p4m_parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}")
     mapfile -t include < <(p4m_parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}")
@@ -152,7 +152,10 @@ port4me() {
     LCG_SEED=$(p4m_string_to_seed)
 
     count=0
-    while (( count < max_tries )); do
+    tries=0
+    while (( tries < max_tries )); do
+        tries=$(( tries + 1 ))
+        
         if (( ${#prepend[@]} > 0 )); then
             port=${prepend[0]}
             (( port < 1 || port > 65535 )) && p4m_error "Prepended port out of range [1,65535]: ${port}"
@@ -202,7 +205,7 @@ port4me() {
 
     if (( list == 0 )); then
         if $must_work; then
-            p4m_error "Failed to find a free TCP port"
+            p4m_error "Failed to find a free TCP port after ${max_tries} attempts"
         fi
 
         printf "%d\n" "-1"
