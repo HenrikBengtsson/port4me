@@ -8,12 +8,12 @@ port4me(
   user = port4me_user(),
   tool = port4me_tool(),
   prepend = port4me_prepend(),
-  include = port4me_exclude(),
+  include = port4me_include(),
   exclude = port4me_exclude(),
   skip = port4me_skip(),
   list = NULL,
   test = NULL,
-  max_tries = 1000L,
+  max_tries = 65535L,
   must_work = TRUE
 )
 }
