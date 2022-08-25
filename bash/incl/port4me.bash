@@ -154,8 +154,6 @@ port4me() {
     count=0
     tries=0
     while (( tries < max_tries )); do
-        tries=$(( tries + 1 ))
-        
         if (( ${#prepend[@]} > 0 )); then
             port=${prepend[0]}
             (( port < 1 || port > 65535 )) && p4m_error "Prepended port out of range [1,65535]: ${port}"
@@ -183,6 +181,7 @@ port4me() {
             continue
         fi
 
+        tries=$(( tries + 1 ))
         count=$((count + 1))
 
         if (( list > 0 )); then

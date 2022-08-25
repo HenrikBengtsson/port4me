@@ -13,7 +13,10 @@
 
 * `port4me` stuck indefinitely if none of the ports scanned could be
   opened.
-  
+
+* `port4me --list=n --exclude=<ports>` would return fewer than `n`
+  ports if some of the `n` ports were excluded.
+
 
 
 # Version 0.3.0 [2022-07-25]
