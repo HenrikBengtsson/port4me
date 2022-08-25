@@ -17,3 +17,6 @@ install:
 	[[ -f "$$PREFIX/bin/port4me" ]]
 	[[ -x "$$PREFIX/bin/port4me" ]]
 
+install-r:
+	R CMD build r/
+	R CMD INSTALL port4me_*.tar.gz
