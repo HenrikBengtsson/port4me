@@ -167,7 +167,6 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port
   count <- 0L
   tries <- 0L
   while (tries <= max_tries) {
-    tries <- tries + 1L
     if (length(prepend) > 0) {
       port <- prepend[1]
       prepend <- prepend[-1]
@@ -176,6 +175,7 @@ port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port
     }
     if (port %in% exclude) next
     if (length(include) > 0 && (! port %in% include)) next
+    tries <- tries + 1L
     count <- count + 1L
     if (count <= skip) next
     if (is.null(list)) {

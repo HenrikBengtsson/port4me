@@ -19,4 +19,4 @@ install:
 
 install-r:
 	R CMD build r/
-	R CMD INSTALL port4me_*.tar.gz
+	R CMD INSTALL port4me_*.tar.gz && rm port4me_*.tar.gz

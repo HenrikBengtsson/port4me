@@ -14,8 +14,14 @@
 * `port4me` stuck indefinitely if none of the ports scanned could be
   opened.
 
-* `port4me --list=n --exclude=<ports>` would return fewer than `n`
+* Bash: `port4me --list=n --exclude=<ports>` would return fewer than `n`
   ports if some of the `n` ports were excluded.
+
+* R: `port4me(list=n, include=<ports>)` produced an error "Failed to
+  find a free TCP port after 'n' attempts".
+
+* R: `port4me(list=n, prepend=<ports>, exclude=<ports>)` could produce
+  an error "Failed to find a free TCP port after 'n' attempts".
 
 
 
