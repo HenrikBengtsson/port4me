@@ -16,22 +16,34 @@ p4m_error() {
 #'
 #' Requirements:
 #' * either 'nc' or 'ss'
+PORT4ME_PORT_COMMAND=
 p4m_can_port_be_opened() {
     local -i port=${1:?}
+    local cmds=(nc ss)
+    local cmd
     
     (( port < 1 || port > 65535 )) && p4m_error "Port is out of range [1,65535]: ${port}"
+
+    ## Identify port command and memoize, unless already done
+    if [[ -z ${PORT4ME_PORT_COMMAND} ]]; then
+        for cmd in "${cmds[@]}"; do
+            if command -v "${cmd}" > /dev/null; then
+                PORT4ME_PORT_COMMAND=${cmd}
+                break
+            fi
+        done
+        [[ -z ${PORT4ME_PORT_COMMAND} ]] && p4m_error "Cannot check if port is available or not. None of the following commands exist on this system: ${cmds[*]}"
+    fi
     
     ## Is port occupied?
-    if command -v nc > /dev/null; then
+    if [[ ${PORT4ME_PORT_COMMAND} == "nc" ]]; then
         if nc -z 127.0.0.1 "$port"; then
             return 1
         fi
-    elif command -v ss > /dev/null; then
+    elif [[ ${PORT4ME_PORT_COMMAND} == "ss" ]]; then
         if ss -H -l -n src :"$port" | grep -q -E ":$port\b"; then
             return 1
         fi
-    else
-        p4m_error "Neither command 'nc' nor 'ss' is available on this host ($HOSTNAME)"
     fi
     
     ## FIXME: A port can be free, but it might be that the user

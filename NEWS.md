@@ -4,6 +4,9 @@
 
 * Add R package **port4me**.
 
+* Now `port4me` memoized which system command (`nc` or `ss`) to use to
+  test whether a port is available or not.
+
 ## Design
 
 * The LCG parameters are now frozen to `modulus = 2^16+1`, `a = 75`,
@@ -22,7 +25,6 @@
 
 * R: `port4me(list=n, prepend=<ports>, exclude=<ports>)` could produce
   an error "Failed to find a free TCP port after 'n' attempts".
-
 
 
 # Version 0.3.0 [2022-07-25]
