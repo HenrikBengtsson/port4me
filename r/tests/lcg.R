@@ -1,5 +1,12 @@
-for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
-  source(ff, local = TRUE)
+if (requireNamespace("port4me", quietly = TRUE)) {
+  lcg_get_seed <- port4me:::lcg_get_seed
+  lcg_set_seed <- port4me:::lcg_set_seed
+  lcg_port <- port4me:::lcg_port
+  lcg <- port4me:::lcg
+} else {
+  for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
+    source(ff, local = TRUE)
+  }
 }
 
 message('- lcg() with seed m-1 = 65536 (special case)')

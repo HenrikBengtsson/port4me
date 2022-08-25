@@ -1,3 +1,32 @@
+# Version 0.4.0 [2022-08-25]
+
+## New Features
+
+* Add R package **port4me**.
+
+* Now `port4me` memoized which system command (`nc` or `ss`) to use to
+  test whether a port is available or not.
+
+## Design
+
+* The LCG parameters are now frozen to `modulus = 2^16+1`, `a = 75`,
+  and `c = 74`.
+
+## Bug Fixes
+
+* `port4me` stuck indefinitely if none of the ports scanned could be
+  opened.
+
+* Bash: `port4me --list=n --exclude=<ports>` would return fewer than `n`
+  ports if some of the `n` ports were excluded.
+
+* R: `port4me(list=n, include=<ports>)` produced an error "Failed to
+  find a free TCP port after 'n' attempts".
+
+* R: `port4me(list=n, prepend=<ports>, exclude=<ports>)` could produce
+  an error "Failed to find a free TCP port after 'n' attempts".
+
+
 # Version 0.3.0 [2022-07-25]
 
 ## Significant Changes

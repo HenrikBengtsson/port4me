@@ -1,8 +1,10 @@
-for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
-  source(ff, local = TRUE)
+if (requireNamespace("port4me", quietly = TRUE)) {
+  string_to_uint <- port4me:::string_to_uint
+} else {
+  for (ff in dir(c("../R", "R"), pattern = "[.]R$", full.names = TRUE)) {
+    source(ff, local = TRUE)
+  }
 }
-
-Sys.setenv(PORT4ME_MAX_UINT = "4294967296")  ## = 2^32
 
 message("* string_to_uint() ...")
 

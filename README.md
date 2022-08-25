@@ -2,11 +2,12 @@
 [![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
 [![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
 [![check-R](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml)
+[![R-CMD-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
 
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-07-25_
+_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-07-26_
 
 ## Features
 
@@ -17,7 +18,9 @@ The **port4me** tool:
 * gives different users, different ports
 * gives the user the same port over time with high probability
 * gives different ports for different software tools
-* No configuration needed
+* requires no configuration
+* can be reproduced perfectly on all operating systems and in all common programming languages
+
 
 ## Introduction
 
@@ -225,10 +228,12 @@ All **port4me** implementations output the identified port to standard output (s
 
 ## Installation
 
+### Bash, command-line tool
+
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.3.0
+VERSION=0.4.0
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me   ## must be an absolute path
@@ -240,7 +245,29 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.3.0
+0.4.0
+```
+
+### R package
+
+To install the R **portme** package, do:
+
+```r
+remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
+```
+
+Then call it as:
+
+```r
+> port4me::port4me(tool = "jupyter")
+[1] 47467
+```
+
+or
+
+```sh
+Rscript -e 'cat(port4me::port4me(tool = "jupyter"))'
+47467
 ```
 
 
@@ -254,8 +281,8 @@ $ port4me --version
 * [x] Validate statistical properties, e.g. uniform sampling of ports
 * [x] Add support for `PORT4ME_PREPEND` and `PORT4ME_PREPEND_SITE`
 * [x] Add support for `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`
+* [x] Freeze the algorithm and the parameters
 * [ ] Prototype `port4me` API and command-line tool in Python
-* [ ] Freeze the algorithm and the parameters
 
 
 ## The port4me Algorithm
@@ -288,11 +315,11 @@ $ port4me --version
 * A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
   - the next seed is calculated based on the current seed $s$ and parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
 
-  - the LCG algorithm should not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
+  - the LCG algorithm must not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
 
   - the LCG algorithm may produce the same output seed as input seed. To avoid this resulting in a constant LCG stream, increment the seed by one and recalculate whenever this happens
 
-  - Choice of LCG parameters: $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81")
+  - LCG parameters should be $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81")
   
      - this requires only 32-bit integer arithmetic, because $m < 2^{32}$
      

@@ -3,135 +3,61 @@
 setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
-    source ../incl/lcg.bash
-}
-
-@test "lcg_set_params" {
-    run lcg_set_params
-    assert_success
-    
-    run lcg_set_params 1 2 3
-    assert_success
-
-    run lcg_set_params 0 2 3
-    assert_failure
-    assert_output --partial "ERROR"
-
-    run lcg_set_params 1 0 3
-    assert_failure
-    assert_output --partial "ERROR"
-
-    run lcg_set_params 1 2 0
-    assert_failure
-    assert_output --partial "ERROR"
+    source ../incl/port4me.bash
 }
 
 @test "lcg" {
-    lcg_set_params
-    lcg_set_seed 42
+    LCG_SEED=42
     
-    run lcg
+    run p4m_lcg
     assert_success
     assert_output "3224"
-    
-    run lcg 65537 75 74
-    assert_success
-    assert_output "3224"
-
-    run lcg 0 75 74
-    assert_failure
-    assert_output --partial "'modulus' must be positive"
-
-    run lcg 65537 0 74
-    assert_failure
-    assert_output --partial "'a' must be positive"
-
-    run lcg 65537 75 0
-    assert_failure
-    assert_output --partial "'c' must be positive"
 }
 
 @test "lcg with initial seed = m - (a-c) (special case)" {
-    lcg_set_params
-    lcg_set_seed 65536
+    LCG_SEED=65536
     
-    run lcg
+    run p4m_lcg
     assert_success
     assert_output "74"
 }
 
-
-@test "lcg_set_seed" {
-    run lcg_set_seed 42
-    assert_success
-
-    run lcg_set_seed -1
-    assert_failure
-    assert_output --partial "ERROR"
-
-    run lcg_set_seed
-    assert_failure
-    assert_output --partial "parameter null or not set"
-}
-
-@test "lcg_get_seed" {
-    lcg_set_seed 1
-    run lcg_get_seed
-    assert_success
-    assert_output "1"
-
-    lcg_set_seed 42
-    run lcg_get_seed
-    assert_success
-    assert_output "42"
-}
-
-
 lcg_port_times() {
     local -i n=${1:?}
-    local -i res=-1
+    local -i port=-1
     while ((n > 0)); do
-        lcg_port > /dev/null
-        res=${LCG_SEED:?}
+        p4m_lcg > /dev/null
+        port=${LCG_SEED:?}
+        if (( port < 1024 || port > 65535 )); then
+            continue
+        fi
         n=$((n - 1))
     done
-    echo $res
+    echo $port
 }
 
 @test "lcg_port" {
-    lcg_set_params
-    
-    lcg_set_seed 42
-    run lcg_port
-    assert_success
-    assert_output "3224"
-
-    lcg_set_seed 42
-    run lcg_port
-    assert_success
-    assert_output "3224"
-
-    lcg_set_seed 42
+    LCG_SEED=42
     run lcg_port_times 0
     assert_success
     assert_output "-1"
 
-    lcg_set_seed 42
+    LCG_SEED=42
     run lcg_port_times 1
     assert_success
     assert_output "3224"
 
-    lcg_set_seed 42
+    LCG_SEED=42
     run lcg_port_times 2
     assert_success
     assert_output "45263"
 
-    lcg_set_seed 42
+    LCG_SEED=42
     run lcg_port_times 2
     assert_success
     assert_output "45263"
 
-    lcg_set_seed 42
+    LCG_SEED=42
     run lcg_port_times 10
     assert_success
     assert_output "16281"
