@@ -27,7 +27,7 @@ should be generated.}
 \item{prepend}{(optional) An integer vector of ports to always consider.}
 
 \item{include}{(optional) An integer vector of possible ports to return.
-Defaults to \verb{1024::65535}.}
+Defaults to \code{1024:65535}.}
 
 \item{exclude}{(optional) An integer vector of ports to exclude.}
 

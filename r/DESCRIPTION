@@ -1,7 +1,9 @@
 Package: port4me
-Version: 0.4.0-9000
+Version: 0.4.0-9001
 Depends:
     R (>= 4.0.0)
+Suggests:
+    utils
 Title: Get the Same, Personal, Free TCP Port over and over
 Authors@R: c(person("Henrik", "Bengtsson", role=c("aut", "cre", "cph"),
                                           email = "henrikb@braju.com"))

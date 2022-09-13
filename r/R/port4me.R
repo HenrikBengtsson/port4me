@@ -102,7 +102,7 @@ port4me_skip <- function() {
 #' @param prepend (optional) An integer vector of ports to always consider.
 #'
 #' @param include (optional) An integer vector of possible ports to return.
-#' Defaults to `1024::65535`.
+#' Defaults to `1024:65535`.
 #'
 #' @param exclude (optional) An integer vector of ports to exclude.
 #'
