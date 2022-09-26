@@ -29,7 +29,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.4.0-9002
+### Version: 0.4.0-9003
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -70,7 +70,6 @@ function _p4me_help {
 # Parse command-line options
 # -------------------------------------------------------------------------
 action=port
-port=-1
 
 _p4me_parse_cli_args() {
     local key value
@@ -106,8 +105,7 @@ _p4me_parse_cli_args() {
             elif [[ "${key}" == "list" ]]; then
                 PORT4ME_LIST=${value}
             elif [[ "${key}" == "test" ]]; then
-                action="test"
-                port=${value}
+                PORT4ME_TEST=${value}
             else
                 error "Unknown option: $1"
             fi
@@ -128,8 +126,15 @@ if [[ $action == "help" ]]; then
     _p4me_help ""
 elif [[ $action == "version" ]]; then
     _p4me_version
-elif [[ $action == "test" ]]; then
-    _p4m_can_port_be_opened "${port}" && exit 0 || exit 1
 else
     port4me
 fi    
+
+res=$?
+
+if ${PORT4ME_DEBUG}; then
+    echo "port4me exit code: $res"
+fi
+
+exit $res
+

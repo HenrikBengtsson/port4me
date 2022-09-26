@@ -34,7 +34,7 @@ _p4m_can_port_be_opened() {
         done
         [[ -z ${PORT4ME_PORT_COMMAND} ]] && _p4m_error "Cannot check if port is available or not. None of the following commands exist on this system: ${cmds[*]}"
     fi
-    
+
     ## Is port occupied?
     if [[ ${PORT4ME_PORT_COMMAND} == "nc" ]]; then
         if nc -z 127.0.0.1 "$port"; then
@@ -45,7 +45,7 @@ _p4m_can_port_be_opened() {
             return 1
         fi
     fi
-    
+
     ## FIXME: A port can be free, but it might be that the user
     ## don't have the right to open it, e.g. port 1-1023.
     ## WORKAROUND: If non-root, assume 1-1023 can't be opened
@@ -153,14 +153,22 @@ _p4m_string_to_seed() {
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_EXCLUDE=8787 port4me
 #' PORT4ME_PREPEND=4001:4003 port4me
+#' PORT4ME_TEST=4321 port4me
 port4me() {
     local -i max_tries=${PORT4ME_MAX_TRIES:-65535}
     local must_work=${PORT4ME_MUST_WORK:-true}
     local -i skip=${PORT4ME_SKIP:-0}
     local -i list=${PORT4ME_LIST:-0}
+    local -i test=${PORT4ME_TEST:-0}
+
     local -i exclude include prepend
     local -i count tries
 
+    if [[ $test -ne 0 ]]; then
+        _p4m_can_port_be_opened "${test}"
+        return $?
+    fi
+    
     mapfile -t exclude < <(_p4m_parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE}")
     mapfile -t include < <(_p4m_parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}")
     mapfile -t prepend < <(_p4m_parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}")
