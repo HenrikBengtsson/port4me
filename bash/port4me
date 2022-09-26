@@ -70,6 +70,7 @@ function _p4me_help {
 # Parse command-line options
 # -------------------------------------------------------------------------
 action=port
+PORT4ME_DEBUG=${PORT4ME_DEBUG:-false}
 
 _p4me_parse_cli_args() {
     local key value
@@ -137,4 +138,3 @@ if ${PORT4ME_DEBUG}; then
 fi
 
 exit $res
-
