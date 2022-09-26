@@ -29,7 +29,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.4.0-9001
+### Version: 0.4.0-9002
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -70,7 +70,6 @@ function _p4me_help {
 # Parse command-line options
 # -------------------------------------------------------------------------
 action=port
-count=0
 port=-1
 
 _p4me_parse_cli_args() {
@@ -105,8 +104,7 @@ _p4me_parse_cli_args() {
             elif [[ "${key}" == "skip" ]]; then
                 PORT4ME_SKIP=${value}
             elif [[ "${key}" == "list" ]]; then
-                action="list"
-                count=${value}
+                PORT4ME_LIST=${value}
             elif [[ "${key}" == "test" ]]; then
                 action="test"
                 port=${value}
@@ -130,8 +128,6 @@ if [[ $action == "help" ]]; then
     _p4me_help ""
 elif [[ $action == "version" ]]; then
     _p4me_version
-elif [[ $action == "list" ]]; then
-    PORT4ME_LIST=${count} port4me
 elif [[ $action == "test" ]]; then
     _p4m_can_port_be_opened "${port}" && exit 0 || exit 1
 else
