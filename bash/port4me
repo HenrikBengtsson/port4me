@@ -29,7 +29,7 @@
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.4.0-9000
+### Version: 0.4.0-9001
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
@@ -46,11 +46,11 @@ source "${incl}/port4me.bash"
 # -------------------------------------------------------------------------
 # CLI utility functions
 # -------------------------------------------------------------------------
-function version {
+function p4me_version {
     grep -E "^###[ ]*Version:[ ]*" "$0" | sed 's/###[ ]*Version:[ ]*//g'
 }
 
-function help {
+function p4me_help {
     local what res
 
     what=$1
@@ -73,7 +73,7 @@ action=port
 count=0
 port=-1
 
-parse_cli_args() {
+p4me_parse_cli_args() {
     local key value
     
     while (($# > 0)); do
@@ -120,16 +120,16 @@ parse_cli_args() {
     done              
 }
 
-parse_cli_args "$@"
+p4me_parse_cli_args "$@"
 
 
 # -------------------------------------------------------------------------
 # Main
 # -------------------------------------------------------------------------
 if [[ $action == "help" ]]; then
-    help ""
+    p4me_help ""
 elif [[ $action == "version" ]]; then
-    version
+    p4me_version
 elif [[ $action == "list" ]]; then
     PORT4ME_LIST=${count} port4me
 elif [[ $action == "test" ]]; then
