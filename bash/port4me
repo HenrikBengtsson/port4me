@@ -128,7 +128,7 @@ elif [[ $action == "version" ]]; then
     _p4me_version
 else
     port4me
-fi    
+fi
 
 res=$?
 
