@@ -46,11 +46,11 @@ source "${incl}/port4me.bash"
 # -------------------------------------------------------------------------
 # CLI utility functions
 # -------------------------------------------------------------------------
-function p4me_version {
+function _p4me_version {
     grep -E "^###[ ]*Version:[ ]*" "$0" | sed 's/###[ ]*Version:[ ]*//g'
 }
 
-function p4me_help {
+function _p4me_help {
     local what res
 
     what=$1
@@ -73,7 +73,7 @@ action=port
 count=0
 port=-1
 
-p4me_parse_cli_args() {
+_p4me_parse_cli_args() {
     local key value
     
     while (($# > 0)); do
@@ -120,20 +120,20 @@ p4me_parse_cli_args() {
     done              
 }
 
-p4me_parse_cli_args "$@"
-
 
 # -------------------------------------------------------------------------
 # Main
 # -------------------------------------------------------------------------
+_p4me_parse_cli_args "$@"
+
 if [[ $action == "help" ]]; then
-    p4me_help ""
+    _p4me_help ""
 elif [[ $action == "version" ]]; then
-    p4me_version
+    _p4me_version
 elif [[ $action == "list" ]]; then
     PORT4ME_LIST=${count} port4me
 elif [[ $action == "test" ]]; then
-    p4m_can_port_be_opened "${port}" && exit 0 || exit 1
+    _p4m_can_port_be_opened "${port}" && exit 0 || exit 1
 else
     port4me
 fi    

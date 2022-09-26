@@ -17,7 +17,7 @@ _p4m_error() {
 #' Requirements:
 #' * either 'nc' or 'ss'
 PORT4ME_PORT_COMMAND=
-p4m_can_port_be_opened() {
+_p4m_can_port_be_opened() {
     local -i port=${1:?}
     local cmds=(nc ss)
     local cmd
@@ -145,6 +145,14 @@ _p4m_string_to_seed() {
     _p4m_string_to_uint "$seed"
 }
 
+
+#' Get the Same, Personal, Free TCP Port over and over
+#'
+#' Examples:
+#' port4me
+#' PORT4ME_LIST=5 port4me
+#' PORT4ME_EXCLUDE=8787 port4me
+#' PORT4ME_PREPEND=4001:4003 port4me
 port4me() {
     local -i max_tries=${PORT4ME_MAX_TRIES:-65535}
     local must_work=${PORT4ME_MUST_WORK:-true}
@@ -206,7 +214,7 @@ port4me() {
             
             ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
     
-            if p4m_can_port_be_opened "$port"; then
+            if _p4m_can_port_be_opened "$port"; then
                 printf "%d\n" "$port"
                 return 0
             fi
