@@ -6,7 +6,7 @@ setup() {
     source ../incl/port4me.bash
 }
 
-@test "string_to_uint" {
+@test "_p4m_string_to_uint" {
     hash=$(_p4m_string_to_uint "")
     assert_equal "${hash}" "0"
 
