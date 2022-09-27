@@ -5,31 +5,34 @@
 ###  port4me [options]
 ### 
 ### Options:  
-###  --help              Display the full help page with examples
-###  --version           Output version of this software
-###  --debug             Output detailed debug information
+###  --help             Display the full help page with examples
+###  --version          Output version of this software
+###  --debug            Output detailed debug information
 ###
-###  --user=<string>     User name (default: $USER)
-###  --tool=<string>     Name of software tool
-###  --include=<ports>   Comma-separated list of ports to be included
-###                      (default: 1024-65535)
-###  --exclude=<ports>   Comma-separated list of ports to be excluded
-###  --prepend=<ports>   Comma-separated list of ports to be checked first
+###  --user=<string>    User name (default: $USER)
+###  --tool=<string>    Name of software tool
+###  --include=<ports>  Set of ports to be included
+###                     (default: 1024-65535)
+###  --exclude=<ports>  Set of ports to be excluded
+###  --prepend=<ports>  Set of ports to be considered first
 ###
-###  --list=<n>          List the first 'n', non-excluded ports scanned
+###  --list=<n>         List the first 'n', available or not, ports
 ###
-###  --test=<port>       Return 0 if port is available, otherwise 1
+###  --test=<port>      Return 0 if port is available, otherwise 1
 ###
 ### Examples:
 ### port4me --version
 ###
 ### port4me
 ### port4me --tool=rstudio
+### port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
 ###
 ### rserver --www-port "$(port4me --tool=rstudio)"
 ### jupyter notebook --port "$(port4me --tool=jupyter)"
 ###
-### Version: 0.4.0-9003
+### port4me --test=8087
+###
+### Version: 0.4.0-9004
 ### Copyright: Henrik Bengtsson (2022)
 ### License: ISC
 
