@@ -1,5 +1,35 @@
 #! /usr/bin/env bash
 
+#' port4me: Get the Same, Personal, Free TCP Port over and over
+#'
+#' This Bash script is a self-contained version of the port4me tool.
+#' It provides function port4me() that takes a set of environment
+#' variables as input:
+#'
+#' - PORT4ME_USER   : The name of the current user (default: ${USER})
+#' - PORT4ME_TOOL   : The name of the software tool (optional)
+#' - PORT4ME_INCLUDE: Ports to be considered (default: 1024-65535)
+#' - PORT4ME_EXCLUDE: Ports to be excluded (optional)
+#' - PORT4ME_PREPEND: Ports to be considered first (optional)
+#' - PORT4ME_SKIP   : Number of ports to skip in the set of ports
+#'                    considered after applying prepended, included,
+#'                    and excluded (optional)
+#' - PORT4ME_LIST   : Number of ports to list regardless of
+#'                    availability (optional)
+#' - PORT4ME_TEST   : Port to check if it is available (optional)
+#'
+#' Examples:
+#' port4me
+#' PORT4ME_TOOL=jupyter_lab port4me
+#' PORT4ME_EXCLUDE=8787 port4me
+#' PORT4ME_PREPEND=4001-4003 port4me
+#' PORT4ME_LIST=5 port4me
+#' PORT4ME_TEST=4321 port4me
+#'
+#' Version: 0.4.0-9004
+#' Copyright: Henrik Bengtsson (2022)
+#' License: ISC
+#' Source code: https://github.com/HenrikBengtsson/port4me
 declare -i LCG_SEED
 export LCG_SEED
 
@@ -145,15 +175,6 @@ _p4m_string_to_seed() {
     _p4m_string_to_uint "$seed"
 }
 
-
-#' Get the Same, Personal, Free TCP Port over and over
-#'
-#' Examples:
-#' port4me
-#' PORT4ME_LIST=5 port4me
-#' PORT4ME_EXCLUDE=8787 port4me
-#' PORT4ME_PREPEND=4001:4003 port4me
-#' PORT4ME_TEST=4321 port4me
 port4me() {
     local -i max_tries=${PORT4ME_MAX_TRIES:-65535}
     local must_work=${PORT4ME_MUST_WORK:-true}
