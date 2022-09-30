@@ -1,40 +1,41 @@
 #! /usr/bin/env bash
-### port4me: Get the Same, Personal, Free TCP Port over and over
-### 
-### Usage:
-###  port4me [options]
-### 
-### Options:  
-###  --help             Display the full help page with examples
-###  --version          Output version of this software
-###  --debug            Output detailed debug information
-###
-###  --user=<string>    User name (default: $USER)
-###  --tool=<string>    Name of software tool
-###  --include=<ports>  Set of ports to be included
-###                     (default: 1024-65535)
-###  --exclude=<ports>  Set of ports to be excluded
-###  --prepend=<ports>  Set of ports to be considered first
-###
-###  --list=<n>         List the first 'n', available or not, ports
-###
-###  --test=<port>      Return 0 if port is available, otherwise 1
-###
-### Examples:
-### port4me --version
-###
-### port4me
-### port4me --tool=rstudio
-### port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
-###
-### rserver --www-port "$(port4me --tool=rstudio)"
-### jupyter notebook --port "$(port4me --tool=jupyter)"
-###
-### port4me --test=8087
-###
-### Version: 0.4.0-9004
-### Copyright: Henrik Bengtsson (2022)
-### License: ISC
+
+#' port4me: Get the Same, Personal, Free TCP Port over and over
+#' 
+#' Usage:
+#'  port4me [options]
+#' 
+#' Options:  
+#'  --help             Display the full help page with examples
+#'  --version          Output version of this software
+#'  --debug            Output detailed debug information
+#'
+#'  --user=<string>    User name (default: $USER)
+#'  --tool=<string>    Name of software tool
+#'  --include=<ports>  Set of ports to be included
+#'                     (default: 1024-65535)
+#'  --exclude=<ports>  Set of ports to be excluded
+#'  --prepend=<ports>  Set of ports to be considered first
+#'
+#'  --list=<n>         List the first 'n', available or not, ports
+#'
+#'  --test=<port>      Return 0 if port is available, otherwise 1
+#'
+#' Examples:
+#' port4me --version
+#'
+#' port4me
+#' port4me --tool=rstudio
+#' port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
+#'
+#' rserver --www-port "$(port4me --tool=rstudio)"
+#' jupyter notebook --port "$(port4me --tool=jupyter-notebook)"
+#'
+#' port4me --test=8087
+#'
+#' Version: 0.4.0-9004
+#' Copyright: Henrik Bengtsson (2022)
+#' License: ISC
 
 this="${BASH_SOURCE%/}"
 [[ -L "${this}" ]] && this=$(readlink "${this}")
@@ -50,14 +51,14 @@ source "${incl}/port4me.bash"
 # CLI utility functions
 # -------------------------------------------------------------------------
 function _p4me_version {
-    grep -E "^###[ ]*Version:[ ]*" "$0" | sed 's/###[ ]*Version:[ ]*//g'
+    grep -E "^#'[ ]*Version:[ ]*" "$0" | sed "s/#'[ ]*Version:[ ]*//g"
 }
 
 function _p4me_help {
     local what res
 
     what=$1
-    res=$(grep "^###" "$0" | grep -vE '^(####|### whatis: )' | cut -b 5-)
+    res=$(grep "^#'" "$0" | cut -b 3-)
 
     if [[ $what == "full" ]]; then
         res=$(echo "$res" | sed '/^---/d')

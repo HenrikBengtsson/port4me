@@ -100,14 +100,14 @@ For testing and demonstration purposes, one can emulate another user by specifyi
 
 ## Different ports for different software tools
 
-Sometimes a user would like to use two, or more, ports at the same time, e.g. one port for RStudio Server and another for Jupyter Hub.  In such case, they can specify option `--tool`, which results in a port sequence that is unique to both the user and the tool.  For example,
+Sometimes a user would like to use two, or more, ports at the same time, e.g. one port for RStudio Server and another for Jupyter Notebook.  In such case, they can specify option `--tool`, which results in a port sequence that is unique to both the user and the tool.  For example,
 
 ```sh
 {alice}$ port4me
 30845
 {alice}$ port4me --tool=rstudio
 22486
-{alice}$ port4me --tool=jupyter
+{alice}$ port4me --tool=jupyter-notebook
 47467
 ```
 
@@ -120,7 +120,7 @@ This allows us to do:
 and
 
 ```sh
-{alice}$ jupyter notebook --port "$(port4me --tool=jupyter)"
+{alice}$ jupyter notebook --port "$(port4me --tool=jupyter-notebook)"
 ```
 
 
@@ -221,7 +221,7 @@ The environment variable `PORT4ME_PREPEND` is intended to be used by the individ
 All **port4me** implementations output the identified port to standard output (stdout). This makes it easy to capture by standard shell methods, e.g. `port="$(port4me)"`.  If you'd like to see which port number was generated, use `tee` to send the port also to the standard error (stderr), which can be seen in the terminal. For example,
 
 ```sh
-{alice}$ jupyter notebook --port "$(port4me --tool=jupyter | tee /dev/stderr)"
+{alice}$ jupyter notebook --port "$(port4me --tool=jupyter-notebook | tee /dev/stderr)"
 47467
 ```
 
@@ -259,14 +259,14 @@ remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 Then call it as:
 
 ```r
-> port4me::port4me(tool = "jupyter")
+> port4me::port4me(tool = "jupyter-notebook")
 [1] 47467
 ```
 
 or
 
 ```sh
-Rscript -e 'cat(port4me::port4me(tool = "jupyter"))'
+Rscript -e 'cat(port4me::port4me(tool = "jupyter-notebook"))'
 47467
 ```
 
