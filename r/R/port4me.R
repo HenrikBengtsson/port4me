@@ -23,11 +23,27 @@ port4me_seed <- function(user = NULL, tool = NULL) {
   seed
 }
 
+## Source: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
+## Last updated: 2022-10-24
+ports_excluded_by_chrome <- function() {
+  Sys.getenv("PORT4ME_EXCLUDE_CHROME", "1 7 9 11 13 15 17 19 20 21 22 23 25 37 42 43 53 69 77 79 87 95 101 102 103 104 109 110 111 113 115 117 119 123 135 137 139 143 161 179 389 427 465 512 513 514 515 526 530 531 532 540 548 554 556 563 587 601 636 989 990 993 995 1719 1720 1723 2049 3659 4045 5060 5061 6000 6566 6665 6666 6667 6668 6669 6697 10080")
+}
+
+## Source: https://www-archive.mozilla.org/projects/netlib/portbanning#portlist
+## Last updated: 2022-10-24
+ports_excluded_by_firefox <- function() {
+  Sys.getenv("PORT4ME_EXCLUDE_FIREFOX", "1 7 9 11 13 15 17 19 20 21 22 23 25 37 42 43 53 77 79 87 95 101 102 103 104 109 110 111 113 115 117 119 123 135 139 143 179 389 465 512 513 514 515 526 530 531 532 540 556 563 587 601 636 993 995 2049 4045 6000")
+}
+
 parse_ports <- function(ports) {
   spec <- ports
-  ports <- paste(ports, collapse = ",")
-  ports <- gsub(" ", "", ports, fixed = TRUE)
-  ports <- unlist(strsplit(ports, split = ","))
+  
+  ports <- gsub("{chrome}", ports_excluded_by_chrome(), ports, fixed = TRUE)
+  ports <- gsub("{firefox}", ports_excluded_by_firefox(), ports, fixed = TRUE)
+  ports <- gsub("[ ]+", " ", ports, fixed = TRUE)
+  ports <- unlist(strsplit(ports, split = "[, ]", fixed = FALSE))
+  ports <- unique(ports)
+
   bad <- grep("^([[:digit:]]+|[[:digit:]]+-[[:digit:]]+)$", ports, invert = TRUE, value = TRUE)
   if (length(bad) > 0) {
     stop(sprintf("Syntax error in port specification: %s", spec))
@@ -50,7 +66,6 @@ parse_ports <- function(ports) {
 
 port4me_prepend <- function() {
   ports <- NULL
-
   for (name in c("PORT4ME_PREPEND", "PORT4ME_PREPEND_SITE")) {
     arg <- Sys.getenv(name, "")
     ports <- c(ports, parse_ports(arg))
@@ -61,10 +76,15 @@ port4me_prepend <- function() {
 }
 
 port4me_exclude <- function() {
-  ports <- NULL
+  defaults <- c(
+    PORT4ME_EXCLUDE = "",
+    PORT4ME_EXCLUDE_SITE = "",
+    PORT4ME_EXCLUDE_BUILTIN = "{chrome},{firefox}"
+  )
 
-  for (name in c("PORT4ME_EXCLUDE", "PORT4ME_EXCLUDE_SITE")) {
-    arg <- Sys.getenv(name, "")
+  ports <- NULL
+  for (name in names(defaults)) {
+    arg <- Sys.getenv(name, defaults[name])
     ports <- c(ports, parse_ports(arg))
   }
   ports <- unique(ports)
@@ -74,7 +94,6 @@ port4me_exclude <- function() {
 
 port4me_include <- function() {
   ports <- NULL
-
   for (name in c("PORT4ME_INCLUDE", "PORT4ME_INCLUDE_SITE")) {
     arg <- Sys.getenv(name, "")
     ports <- c(ports, parse_ports(arg))
