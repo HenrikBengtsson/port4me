@@ -177,7 +177,7 @@ PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,8888
 export PORT4ME_EXCLUDE_SITE
 ```
 
-In addition to ports excluded via above mechanisms, **port4me** excludes ports that are considered unsafe by the Chrome and Firefox web browsers.  This behavior can be controlled by environment variable `PORT4ME_EXCLUDE_UNSAFE`, which defaults to `{chrome},{firefox}`.  Token `{chrome}` expands to the value of ``PORT4ME_EXCLUDE_UNSAFE_CHROME`, which defaults to [the set of ports that Chrome blocks](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc), and `{firefox}` expands to to the value of `PORT4ME_EXCLUDE_UNSAFE_FIREFOX`, which defaults to [the set of ports that Firefox blocks](https://www-archive.mozilla.org/projects/netlib/portbanning#portlist).
+In addition to ports excluded via above mechanisms, **port4me** excludes ports that are considered unsafe by the Chrome and Firefox web browsers.  This behavior can be controlled by environment variable `PORT4ME_EXCLUDE_UNSAFE`, which defaults to `{chrome},{firefox}`.  Token `{chrome}` expands to the value of `PORT4ME_EXCLUDE_UNSAFE_CHROME`, which defaults to [the set of ports that Chrome blocks](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc), and `{firefox}` expands to to the value of `PORT4ME_EXCLUDE_UNSAFE_FIREFOX`, which defaults to [the set of ports that Firefox blocks](https://www-archive.mozilla.org/projects/netlib/portbanning#portlist).
 
 
 Analogously to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line option `--include`, e.g.
