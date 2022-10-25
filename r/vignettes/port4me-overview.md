@@ -1,15 +1,12 @@
-![lifecycle: experimental](images/lifecycle-experimental-orange.svg)
-[![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
-[![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
-[![check-R](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml)
-[![R-CMD-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
-
-
-# port4me - Get the Same, Personal, Free TCP Port over and over
-
-_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-10-24_
-
-## Features
+<!--
+%\VignetteIndexEntry{port4me: Get the Same, Personal, Free TCP Port over and over}
+%\VignetteAuthor{Henrik Bengtsson}
+%\VignetteKeyword{R}
+%\VignetteKeyword{package}
+%\VignetteKeyword{vignette}
+%\VignetteKeyword{Renviron}
+%\VignetteEngine{port4me::selfonly}
+-->
 
 The **port4me** tool:
 
