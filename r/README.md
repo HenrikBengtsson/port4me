@@ -33,44 +33,42 @@ The **port4me** algorithm can be implemented in most known programming languages
 
 ## A quick introduction
 
-Assuming we're logged in as user `alice` in a Bash shell, calling `port4me` without arguments gives us a free port:
+Assuming we're logged in as user `alice` and calls `port4me::port4me()` without arguments gives us a free port:
 
-```sh
-{alice}$ port4me
-30845
+```r
+> Sys.info()[["user"]]
+[1] "alice"
+> port4me::port4me()
+[1] 30845
 ```
 
-As we will see later, each user on the system is likely to get their own unique port.  Because of this, it can be used to specifying a port that some software tool should use, e.g.
+As we will see later, each user on the system is likely to get their own unique port.  Because of this, it can be used to specifying a port that some tool should use, e.g.
 
-```sh
-{alice}$ jupyter notebook --port "$(port4me)"
+```r
+> shiny::runApp(port = port4me::port4me())
 ```
 
-As long as this port is available, `alice` will always get the same port across shell sessions and over time.  For example, if they return next week and retry, it's likely they still get:
+As long as this port is available, `alice` will always get the same port across R sessions and over time.  For example, if they return next week and retry, it's likely they still get:
 
 ```sh
-{alice}$ port4me
-30845
-{alice}$ port4me
-30845
+> port4me::port4me()
+[1] 30845
+> port4me::port4me()
+[1] 30845
 ```
 
 However, if port 30845 is already occupied, the next port in the pseudo-random sequence is considered, e.g.
 
-```sh
-{alice}$ port4me
-19654
+```r
+> port4me::port4me()
+[1] 19654
 ```
 
 To see the first five ports scanned, run:
 
-```sh
-{alice}$ port4me --list=5
-30845
-19654
-32310
-63992
-15273
+```r
+> port4me::port4me(list = 5)
+[1] 52613 13829 54194  1330 34287
 ```
 
 
@@ -78,66 +76,68 @@ To see the first five ports scanned, run:
 
 This random sequence is initiated by a random seed that can be set via the hashcode of a seed string.  By default, it is based on the name of the current user (e.g. environment variable `$USER`).  For example, when user `bob` uses the `port4me` tool, they see another set of ports being scanned:
 
-```sh
-{bob}$ port4me --list=5
-54242
-4930
-42139
-14723
-55707
+```r
+> Sys.info()[["user"]]
+[1] "bob"
+> port4me::port4me(list = 5)
+[1] 54242 4930 42139 14723 55707
 ```
 
-For testing and demonstration purposes, one can emulate another user by specifying option `--user`, e.g.
+For testing and demonstration purposes, one can emulate another user by specifying argument `user`, e.g.
 
-```sh
-{alice}$ port4me
-30845
-{alice}$ port4me --user=bob
-54242
-{alice}$ port4me --user=carol
-34307
+```r
+> Sys.info()[["user"]]
+[1] "alice"
+> port4me::port4me()
+[1] 30845
+> port4me::port4me(user = "bob")
+[1] 54242
+> port4me::port4me(user = "carol")
+[1] 34307
 ```
 
 ## Different ports for different software tools
 
-Sometimes a user would like to use two, or more, ports at the same time, e.g. one port for RStudio Server and another for Jupyter Notebook.  In such case, they can specify option `--tool`, which results in a port sequence that is unique to both the user and the tool.  For example,
+Sometimes a user would like to use two, or more, ports at the same time, e.g. two ports for two different Shiny apps.  In such case, they can specify argument `tool`, which results in a port sequence that is unique to both the user and the tool.  For example,
 
 ```sh
-{alice}$ port4me
-30845
-{alice}$ port4me --tool=rstudio
-22486
-{alice}$ port4me --tool=jupyter-notebook
-47467
+> port4me::port4me()
+[1] 30845
+> port4me::port4me(tool = "myapp")
+[1] 55578
+> port4me::port4me(tool = "demo")
+[1] 32273
 ```
 
 This allows us to do:
 
 ```sh
-{alice}$ rserver --www-port "$(port4me --tool=rstudio)"
+> shiny::runApp(appDir = "myapp", port = port4me::port4me(tool = "myapp"))
 ```
 
 and
 
 ```sh
-{alice}$ jupyter notebook --port "$(port4me --tool=jupyter-notebook)"
+> shiny::runApp(appDir = "demo", port = port4me::port4me(tool = "demo"))
 ```
 
 
 ## Avoid using ports commonly used elsewhere
 
-Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (30845) works only one out 10 times, whereas the second port (19654) works 99 out 100 times, and the third one (32310) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via option `--exclude`, e.g.
+Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (30845) works only one out 10 times, whereas the second port (19654) works 99 out 100 times, and the third one (32310) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via argument `exclude`, e.g.
 
 ```sh
-{alice}$ port4me --exclude=30845,32310
-20678
+> port4me::port4me(exclude = c(30845, 32310))
+[1] 20678
 ```
 
 An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
 
 ```sh
-{alice}$ PORT4ME_EXCLUDE=30845,32310 port4me
-20678
+{alice}$ PORT4ME_EXCLUDE=30845,32310 R
+...
+> port4me::port4me(exclude = c(30845, 32310))
+[1] 20678
 ```
 
 To set this permanently, append:
@@ -149,7 +149,13 @@ PORT4ME_EXCLUDE=30845,32310
 export PORT4ME_EXCLUDE
 ```
 
-to the shell startup script, e.g. `~/.bashrc`.
+to the shell startup script, e.g. `~/.bashrc`.  Alternatively, it can be set specifically for R in `~/.Renviron` as:
+
+```sh
+## port4me customization
+## https://github.com/HenrikBengtsson/port4me
+PORT4ME_EXCLUDE=30845,32310
+```
 
 This increases the chances for the user to end up with the same port over time, which is convenient, because then they can reuse the same call, which is available in the command-line history, each time without having to change the port parameter.
 
@@ -180,78 +186,39 @@ export PORT4ME_EXCLUDE_SITE
 In addition to ports excluded via above mechanisms, **port4me** excludes ports that are considered unsafe by the Chrome and Firefox web browsers.  This behavior can be controlled by environment variable `PORT4ME_EXCLUDE_UNSAFE`, which defaults to `{chrome},{firefox}`.  Token `{chrome}` expands to the value of `PORT4ME_EXCLUDE_UNSAFE_CHROME`, which defaults to [the set of ports that Chrome blocks](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc), and `{firefox}` expands to to the value of `PORT4ME_EXCLUDE_UNSAFE_FIREFOX`, which defaults to [the set of ports that Firefox blocks](https://www-archive.mozilla.org/projects/netlib/portbanning#portlist).
 
 
-Analogously to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line option `--include`, e.g.
+Analogously to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line argument `include`, e.g.
 
 ```sh
-{alice}$ port4me --include=2000-2123,4321,10000-10999
-10451
+> port4me::port4me(include = c(2000:2123, 4321, 10000:10999))
+[1] 10451
 ```
 
-where the default corresponds to `--include=1024-65535`.  Analogously to `--exclude`, `--include` can be specified via environment variables `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`.
+where the default corresponds to `include = 1024:65535`.  Analogously to `exclude`, `include` can be specified via environment variables `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`.
 
 
 
 ## Scan a predefined set of ports before pseudo-random ones
 
-In addition to scanning the user-specific, pseudo-random port sequence for a free port, it is possible to also consider a predefined set of ports prior to the random ones by specifying command-line option `--prepend`, e.g.
+In addition to scanning the user-specific, pseudo-random port sequence for a free port, it is possible to also consider a predefined set of ports prior to the random ones by specifying command-line argument `prepend`, e.g.
 
 ```sh
-{alice}$ port4me --prepend=4321,11001 --list=5
-4321
-11001
-30845
-19654
-32310
+> port4me::port4me(prepend = c(4321, 11001), list = 5)
+[1]  4321 11001 30845 19654 32310
 ```
 
 An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_PREPEND`, e.g.
 
 ```sh
-{alice}$ PORT4ME_PREPEND=4321,11001 port4me --list=5
-4321
-11001
-30845
-19654
-32310
+{alice}$ PORT4ME_PREPEND=4321,11001 R
+...
+> port4me::port4me(list = 5)
+[1]  4321 11001 30845 19654 32310
 ```
 
 The environment variable `PORT4ME_PREPEND` is intended to be used by the individual user.  To specify a set of ports to be prepended regardless of user, set `PORT4ME_PREPEND_SITE`.
 
 
-
-## Tips and Tricks
-
-All **port4me** implementations output the identified port to standard output (stdout). This makes it easy to capture by standard shell methods, e.g. `port="$(port4me)"`.  If you'd like to see which port number was generated, use `tee` to send the port also to the standard error (stderr), which can be seen in the terminal. For example,
-
-```sh
-{alice}$ jupyter notebook --port "$(port4me --tool=jupyter-notebook | tee /dev/stderr)"
-47467
-```
-
-
 ## Installation
-
-### Bash, command-line tool
-
-To install the Bash version of **portme**, do:
-
-```sh
-VERSION=0.4.0
-curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
-tar -x -f "${VERSION}.tar.gz"
-export PREFIX=/path/to/port4me   ## must be an absolute path
-(cd "port4me-${VERSION}"; make install)
-```
-
-Then run it as:
-
-```sh
-$ export PATH=/path/to/port4me/bin:$PATH
-$ port4me --version
-0.4.0
-```
-
-### R package
 
 To install the R **portme** package, do:
 
@@ -273,19 +240,7 @@ Rscript -e 'cat(port4me::port4me(tool = "jupyter-notebook"))'
 47467
 ```
 
-
-## Roadmap 
-
-* [x] Identify essential features
-* [x] Prototype `port4me` command-line tool in Bash, e.g. `port4me --list=5`
-* [x] Prototype `port4me` API and command-line tool in R, e.g. `Rscript port4me.R --list=5`
-* [x] Add support for `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`
-* [x] Standardize command-line interface between Bash and R implementations
-* [x] Validate statistical properties, e.g. uniform sampling of ports
-* [x] Add support for `PORT4ME_PREPEND` and `PORT4ME_PREPEND_SITE`
-* [x] Add support for `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`
-* [x] Freeze the algorithm and the parameters
-* [ ] Prototype `port4me` API and command-line tool in Python
+to test it.
 
 
 ## The port4me Algorithm

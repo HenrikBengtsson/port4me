@@ -2,7 +2,6 @@
 ^.github
 ^.Rhistory
 ^.Rdump
-^README[.]md$
 ^Makefile$
 ^port4me[.]R$
 ^incl
