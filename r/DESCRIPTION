@@ -8,7 +8,7 @@ Suggests:
     knitr
 VignetteBuilder:
     knitr
-Title: Get the Same, Personal, Free TCP Port over and over
+Title: Get the Same, Personal, Free 'TCP' Port over and over
 Authors@R: c(person("Henrik", "Bengtsson", role=c("aut", "cre", "cph"),
                                           email = "henrikb@braju.com"))
 Description: The 'port4me' tool: (1) finds a free 'TCP' port in [1024,65535] that the user can open, (2) is designed to work in multi-user environments, (3), gives different users, different ports, (4) gives the user the same port over time with high probability, (5) gives different ports for different software tools, and (6) requires no configuration.
