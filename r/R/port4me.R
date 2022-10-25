@@ -144,6 +144,10 @@ port4me_skip <- function() {
 #'
 #' @example incl/port4me.R
 #'
+#' @seealso
+#' The default values of the arguments can be controlled via environment
+#' variables.  See [port4me.settings] for details.
+#'
 #' @export
 port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, exclude = NULL, skip = NULL, list = NULL, test = NULL, max_tries = 65535L, must_work = TRUE) {
   if (is.null(tool)) tool <- port4me_tool()

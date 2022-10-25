@@ -69,3 +69,7 @@ print(avail)
 
 
 }
+\seealso{
+The default values of the arguments can be controlled via environment
+variables.  See \link{port4me.settings} for details.
+}

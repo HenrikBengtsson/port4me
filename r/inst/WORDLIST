@@ -12,6 +12,8 @@ hashcode
 lifecycle
 portme
 pre
+setenv
 shellcheck
 stderr
 stdout
+Sys
