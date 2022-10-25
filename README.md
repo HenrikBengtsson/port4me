@@ -7,46 +7,72 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-10-24_
+_WARNING: This is an experimental project under development. Feel free
+to kick the tires. Feedback is appreciated. /Henrik 2022-10-24_
 
 ## Features
 
 The **port4me** tool:
 
 * finds a free TCP port in [1024,65535] that the user can open
+
 * is designed to work in multi-user environments
+
 * gives different users, different ports
+
 * gives the user the same port over time with high probability
+
 * gives different ports for different software tools
+
 * requires no configuration
-* can be reproduced perfectly on all operating systems and in all common programming languages
+
+* can be reproduced perfectly on all operating systems and in all
+  common programming languages
 
 
 ## Introduction
 
-There are many tools to identify a free TCP port, where most of them return a random port.  Although it works technically, it might add a fair bit of friction if a new random port number has to be entered by the user each time they need to use a specific tool.
+There are many tools to identify a free TCP port, where most of them
+return a random port.  Although it works technically, it might add a
+fair bit of friction if a new random port number has to be entered by
+the user each time they need to use a specific tool.
 
-In contrast, **port4me** attempts, with high probability, to provide the user with the same port each time, even when used on different days.  It achieves this by scanning the same deterministic, pseudo-random sequence of ports and return the first free port detected.  Each user gets their own random port sequence, lowering the risk for any two users to request the same port.  The randomness is initiated with a random seed that is a function of the user's name (`USER`), and, optionally, the name of the software where we use the port.
+In contrast, **port4me** attempts, with high probability, to provide
+the user with the same port each time, even when used on different
+days.  It achieves this by scanning the same deterministic,
+pseudo-random sequence of ports and return the first free port
+detected.  Each user gets their own random port sequence, lowering the
+risk for any two users to request the same port.  The randomness is
+initiated with a random seed that is a function of the user's name
+(`USER`), and, optionally, the name of the software where we use the
+port.
 
-The **port4me** algorithm can be implemented in most known programming languages, producing perfectly reproducable sequencing regardless of implementation language.
+The **port4me** algorithm can be implemented in most known programming
+languages, producing perfectly reproducable sequencing regardless of
+implementation language.
 
 
 ## A quick introduction
 
-Assuming we're logged in as user `alice` in a Bash shell, calling `port4me` without arguments gives us a free port:
+Assuming we're logged in as user `alice` in a Bash shell, calling
+`port4me` without arguments gives us a free port:
 
 ```sh
 {alice}$ port4me
 30845
 ```
 
-As we will see later, each user on the system is likely to get their own unique port.  Because of this, it can be used to specifying a port that some software tool should use, e.g.
+As we will see later, each user on the system is likely to get their
+own unique port.  Because of this, it can be used to specifying a port
+that some software tool should use, e.g.
 
 ```sh
 {alice}$ jupyter notebook --port "$(port4me)"
 ```
 
-As long as this port is available, `alice` will always get the same port across shell sessions and over time.  For example, if they return next week and retry, it's likely they still get:
+As long as this port is available, `alice` will always get the same
+port across shell sessions and over time.  For example, if they return
+next week and retry, it's likely they still get:
 
 ```sh
 {alice}$ port4me
@@ -55,7 +81,8 @@ As long as this port is available, `alice` will always get the same port across 
 30845
 ```
 
-However, if port 30845 is already occupied, the next port in the pseudo-random sequence is considered, e.g.
+However, if port 30845 is already occupied, the next port in the
+pseudo-random sequence is considered, e.g.
 
 ```sh
 {alice}$ port4me
@@ -76,7 +103,11 @@ To see the first five ports scanned, run:
 
 ## User-specific, deterministic, pseudo-random port sequence
 
-This random sequence is initiated by a random seed that can be set via the hashcode of a seed string.  By default, it is based on the name of the current user (e.g. environment variable `$USER`).  For example, when user `bob` uses the `port4me` tool, they see another set of ports being scanned:
+This random sequence is initiated by a random seed that can be set via
+the hashcode of a seed string.  By default, it is based on the name of
+the current user (e.g. environment variable `$USER`).  For example,
+when user `bob` uses the `port4me` tool, they see another set of ports
+being scanned:
 
 ```sh
 {bob}$ port4me --list=5
@@ -87,7 +118,8 @@ This random sequence is initiated by a random seed that can be set via the hashc
 55707
 ```
 
-For testing and demonstration purposes, one can emulate another user by specifying option `--user`, e.g.
+For testing and demonstration purposes, one can emulate another user
+by specifying option `--user`, e.g.
 
 ```sh
 {alice}$ port4me
@@ -100,7 +132,11 @@ For testing and demonstration purposes, one can emulate another user by specifyi
 
 ## Different ports for different software tools
 
-Sometimes a user would like to use two, or more, ports at the same time, e.g. one port for RStudio Server and another for Jupyter Notebook.  In such case, they can specify option `--tool`, which results in a port sequence that is unique to both the user and the tool.  For example,
+Sometimes a user would like to use two, or more, ports at the same
+time, e.g. one port for RStudio Server and another for Jupyter
+Notebook.  In such case, they can specify option `--tool`, which
+results in a port sequence that is unique to both the user and the
+tool.  For example,
 
 ```sh
 {alice}$ port4me
@@ -126,14 +162,23 @@ and
 
 ## Avoid using ports commonly used elsewhere
 
-Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (30845) works only one out 10 times, whereas the second port (19654) works 99 out 100 times, and the third one (32310) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via option `--exclude`, e.g.
+Since there is a limited set of ports available (1024-65535), there is
+always a risk that another process occupies any given port.  The more
+users there are on the same machine, the higher the risk is for this
+to happen.  If a user is unlucky, they might experience this
+frequently.  For example, `alice` might find that the first port
+(30845) works only one out 10 times, whereas the second port (19654)
+works 99 out 100 times, and the third one (32310) works so and so.  If
+so, they might choose to exclude the "flaky" ports by specifying them
+as a comma-separated values via option `--exclude`, e.g.
 
 ```sh
 {alice}$ port4me --exclude=30845,32310
 20678
 ```
 
-An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
+An alternative to specify them via a command-line option, is to
+specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
 
 ```sh
 {alice}$ PORT4ME_EXCLUDE=30845,32310 port4me
@@ -151,10 +196,17 @@ export PORT4ME_EXCLUDE
 
 to the shell startup script, e.g. `~/.bashrc`.
 
-This increases the chances for the user to end up with the same port over time, which is convenient, because then they can reuse the same call, which is available in the command-line history, each time without having to change the port parameter.
+This increases the chances for the user to end up with the same port
+over time, which is convenient, because then they can reuse the same
+call, which is available in the command-line history, each time
+without having to change the port parameter.
 
 
-The environment variable `PORT4ME_EXCLUDE` is intended to be used by the individual user.  To specify a set of ports to be excluded regardless of user, set `PORT4ME_EXCLUDE_SITE`.  For example, the systems administrator, can choose to exclude an additional set of ports by adding the following to file `/etc/profile.d/port4me.sh`:
+The environment variable `PORT4ME_EXCLUDE` is intended to be used by
+the individual user.  To specify a set of ports to be excluded
+regardless of user, set `PORT4ME_EXCLUDE_SITE`.  For example, the
+systems administrator, can choose to exclude an additional set of
+ports by adding the following to file `/etc/profile.d/port4me.sh`:
 
 ```sh
 ## port4me: always exclude commonly used ports
@@ -177,23 +229,38 @@ PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,8888
 export PORT4ME_EXCLUDE_SITE
 ```
 
-In addition to ports excluded via above mechanisms, **port4me** excludes ports that are considered unsafe by the Chrome and Firefox web browsers.  This behavior can be controlled by environment variable `PORT4ME_EXCLUDE_UNSAFE`, which defaults to `{chrome},{firefox}`.  Token `{chrome}` expands to the value of `PORT4ME_EXCLUDE_UNSAFE_CHROME`, which defaults to [the set of ports that Chrome blocks](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc), and `{firefox}` expands to to the value of `PORT4ME_EXCLUDE_UNSAFE_FIREFOX`, which defaults to [the set of ports that Firefox blocks](https://www-archive.mozilla.org/projects/netlib/portbanning#portlist).
+In addition to ports excluded via above mechanisms, **port4me**
+excludes ports that are considered unsafe by the Chrome and Firefox
+web browsers.  This behavior can be controlled by environment variable
+`PORT4ME_EXCLUDE_UNSAFE`, which defaults to `{chrome},{firefox}`.
+Token `{chrome}` expands to the value of
+`PORT4ME_EXCLUDE_UNSAFE_CHROME`, which defaults to [the set of ports
+that Chrome blocks], and `{firefox}` expands to to the value of
+`PORT4ME_EXCLUDE_UNSAFE_FIREFOX`, which defaults to [the set of ports
+that Firefox blocks].
 
 
-Analogously to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line option `--include`, e.g.
+Analogously to excluding a set of ports, one can limit the range of
+ports to be scanned by specifying command-line option `--include`,
+e.g.
 
 ```sh
 {alice}$ port4me --include=2000-2123,4321,10000-10999
 10451
 ```
 
-where the default corresponds to `--include=1024-65535`.  Analogously to `--exclude`, `--include` can be specified via environment variables `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`.
+where the default corresponds to `--include=1024-65535`.  Analogously
+to `--exclude`, `--include` can be specified via environment variables
+`PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`.
 
 
 
 ## Scan a predefined set of ports before pseudo-random ones
 
-In addition to scanning the user-specific, pseudo-random port sequence for a free port, it is possible to also consider a predefined set of ports prior to the random ones by specifying command-line option `--prepend`, e.g.
+In addition to scanning the user-specific, pseudo-random port sequence
+for a free port, it is possible to also consider a predefined set of
+ports prior to the random ones by specifying command-line option
+`--prepend`, e.g.
 
 ```sh
 {alice}$ port4me --prepend=4321,11001 --list=5
@@ -204,7 +271,8 @@ In addition to scanning the user-specific, pseudo-random port sequence for a fre
 32310
 ```
 
-An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_PREPEND`, e.g.
+An alternative to specify them via a command-line option, is to
+specify them via environment variable `PORT4ME_PREPEND`, e.g.
 
 ```sh
 {alice}$ PORT4ME_PREPEND=4321,11001 port4me --list=5
@@ -215,13 +283,19 @@ An alternative to specify them via a command-line option, is to specify them via
 32310
 ```
 
-The environment variable `PORT4ME_PREPEND` is intended to be used by the individual user.  To specify a set of ports to be prepended regardless of user, set `PORT4ME_PREPEND_SITE`.
+The environment variable `PORT4ME_PREPEND` is intended to be used by
+the individual user.  To specify a set of ports to be prepended
+regardless of user, set `PORT4ME_PREPEND_SITE`.
 
 
 
 ## Tips and Tricks
 
-All **port4me** implementations output the identified port to standard output (stdout). This makes it easy to capture by standard shell methods, e.g. `port="$(port4me)"`.  If you'd like to see which port number was generated, use `tee` to send the port also to the standard error (stderr), which can be seen in the terminal. For example,
+All **port4me** implementations output the identified port to standard
+output (stdout). This makes it easy to capture by standard shell
+methods, e.g. `port="$(port4me)"`.  If you'd like to see which port
+number was generated, use `tee` to send the port also to the standard
+error (stderr), which can be seen in the terminal. For example,
 
 ```sh
 {alice}$ jupyter notebook --port "$(port4me --tool=jupyter-notebook | tee /dev/stderr)"
@@ -262,29 +336,41 @@ remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 Then call it as:
 
 ```r
-> port4me::port4me(tool = "jupyter-notebook")
+> port4me::port4me("jupyter-notebook")
 [1] 47467
 ```
 
 or
 
 ```sh
-Rscript -e 'cat(port4me::port4me(tool = "jupyter-notebook"))'
+Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
 47467
 ```
 
 
-## Roadmap 
+## Roadmap
 
 * [x] Identify essential features
-* [x] Prototype `port4me` command-line tool in Bash, e.g. `port4me --list=5`
-* [x] Prototype `port4me` API and command-line tool in R, e.g. `Rscript port4me.R --list=5`
+
+* [x] Prototype `port4me` command-line tool in Bash, e.g. `port4me
+      --list=5`
+
+* [x] Prototype `port4me` API and command-line tool in R,
+      e.g. `Rscript port4me.R --list=5`
+
 * [x] Add support for `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`
-* [x] Standardize command-line interface between Bash and R implementations
+
+* [x] Standardize command-line interface between Bash and R
+      implementations
+
 * [x] Validate statistical properties, e.g. uniform sampling of ports
+
 * [x] Add support for `PORT4ME_PREPEND` and `PORT4ME_PREPEND_SITE`
+
 * [x] Add support for `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`
+
 * [x] Freeze the algorithm and the parameters
+
 * [ ] Prototype `port4me` API and command-line tool in Python
 
 
@@ -292,45 +378,89 @@ Rscript -e 'cat(port4me::port4me(tool = "jupyter-notebook"))'
 
 ### Requirements
 
-* It should be possible to implement the algorithm using 32-bit _unsigned_ integer arithmetic.  One must not assume that the largest represented integer can exceed $2^{32} - 1$.
+* It should be possible to implement the algorithm using 32-bit
+  _unsigned_ integer arithmetic.  One must not assume that the largest
+  represented integer can exceed $2^{32} - 1$.
 
-* The pseudo-randomized port sequence should sample ports uniformly over $[1024, 65535]$.
+* The pseudo-randomized port sequence should sample ports uniformly
+  over $[1024, 65535]$.
 
-* At a minimum, it should be possible to implement the algorithm in vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby, with _no_ need for add-on packages beyond what is available from their core distribution. (*) Shells that do not support integer arithmetic may use tools such as `expr`, `dc`, `bc`, and `awk` for these calculations.
+* At a minimum, it should be possible to implement the algorithm in
+  vanilla Sh\*, Csh, Bash, C, C++, Fortran, Lua, Python, R, and Ruby,
+  with _no_ need for add-on packages beyond what is available from
+  their core distribution. (*) Shells that do not support integer
+  arithmetic may use tools such as `expr`, `dc`, `bc`, and `awk` for
+  these calculations.
 
-* All programming languages should produce the exact same pseudo-random port sequences given the same random seed.
+* All programming languages should produce the exact same
+  pseudo-random port sequences given the same random seed.
 
-* The implementations should be written such that they work also when sourced, or copy'and'pasted into source code elsewhere, e.g. in R and Python scripts.
+* The implementations should be written such that they work also when
+  sourced, or copy'and'pasted into source code elsewhere, e.g. in R
+  and Python scripts.
 
-* The identified, free port should be outputted to the standard output (stdout) as digits only, without any prefix or suffix symbols.
+* The identified, free port should be outputted to the standard output
+  (stdout) as digits only, without any prefix or suffix symbols.
 
-* The user should be able to exclude a pre-defined set of ports by specifying environment variable `PORT4ME_EXCLUDE`, e.g. `PORT4ME_EXCLUDE=8080,4321`.
+* The user should be able to exclude a pre-defined set of ports by
+  specifying environment variable `PORT4ME_EXCLUDE`,
+  e.g. `PORT4ME_EXCLUDE=8080,4321`.
 
-* The system administrator should be able to specify a pre-defined set of ports to be excluded by specifying environment variable `PORT4ME_EXCLUDE_SITE`, e.g. `PORT4ME_EXCLUDE_SITE=8080,4321`.  This works complementary to `PORT4ME_EXCLUDE`.
+* The system administrator should be able to specify a pre-defined set
+  of ports to be excluded by specifying environment variable
+  `PORT4ME_EXCLUDE_SITE`, e.g. `PORT4ME_EXCLUDE_SITE=8080,4321`.  This
+  works complementary to `PORT4ME_EXCLUDE`.
 
-* The user should be able to skip a certain number of random ports at their will by specifying environment variable `PORT4ME_SKIP`, e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which corresponds to `PORT4ME_SKIP=0`. Skipping should apply _after_ ports are excluding by `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`.
+* The user should be able to skip a certain number of random ports at
+  their will by specifying environment variable `PORT4ME_SKIP`,
+  e.g. `PORT4ME_SKIP=5`.  The default is to not skip, which
+  corresponds to `PORT4ME_SKIP=0`. Skipping should apply _after_ ports
+  are excluding by `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`.
 
-* New implementations should perfectly reproduce the port sequences produced by already existing implementations.
+* New implementations should perfectly reproduce the port sequences
+  produced by already existing implementations.
 
 
 ### Design
 
-* A _[Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)_ will be used to generate the pseudo-random port sequence
-  - the next seed is calculated based on the current seed $s$ and parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
+* A _[Linear congruential generator (LCG)]_ will be used to generate
+  the pseudo-random port sequence
 
-  - the LCG algorithm must not assume that the current LCG seed is within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed first to avoid integer overflow
+  - the next seed is calculated based on the current seed $s$ and
+    parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
 
-  - the LCG algorithm may produce the same output seed as input seed. To avoid this resulting in a constant LCG stream, increment the seed by one and recalculate whenever this happens
+  - the LCG algorithm must not assume that the current LCG seed is
+    within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed
+    first to avoid integer overflow
 
-  - LCG parameters should be $m = 2^{16} + 1$, $a = 75$, and $c = 74$ ("ZX81")
+  - the LCG algorithm may produce the same output seed as input
+    seed. To avoid this resulting in a constant LCG stream, increment
+    the seed by one and recalculate whenever this happens
+
+  - LCG parameters should be $m = 2^{16} + 1$, $a = 75$, and $c = 74$
+    ("ZX81")
   
-     - this requires only 32-bit integer arithmetic, because $m < 2^{32}$
+     - this requires only 32-bit integer arithmetic, because $m <
+       2^{32}$
      
-     - if the initial seed is $s = m - (a - c) = m - 1 = 2^{16}$, then the next LCG seed will be the same, which is then handled by the above increment-by-one workaround
+     - if the initial seed is $s = m - (a - c) = m - 1 = 2^{16}$, then
+       the next LCG seed will be the same, which is then handled by
+       the above increment-by-one workaround
   
-* A _32-bit integer string hashcode_ will be used to generate an integer in $[0,2^{32}-1]$ from an ASCII string with any number of characters. The hashcode algorithm is based on the Java hashcode algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$, instead of signed ones in $[-2^{31},2^{31}-1]$
+* A _32-bit integer string hashcode_ will be used to generate an
+  integer in $[0,2^{32}-1]$ from an ASCII string with any number of
+  characters. The hashcode algorithm is based on the Java hashcode
+  algorithm, but uses unsigned 32-bit integers in $[0,2^{32}-1]$,
+  instead of signed ones in $[-2^{31},2^{31}-1]$
 
 * The string hashcode is used as the initial LCG seed:
+
   - the LCG seed should be in $[0,m-1]$
   
-  - given hashcode $h$, we can generate the initial LCG seed as $h$ modulo $m$
+  - given hashcode $h$, we can generate the initial LCG seed as $h$
+    modulo $m$
+
+
+[the set of ports that Chrome blocks]: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
+[the set of ports that Firefox blocks]: https://www-archive.mozilla.org/projects/netlib/portbanning#portlist
+[Linear congruential generator (LCG)]: https://en.wikipedia.org/wiki/Linear_congruential_generator
