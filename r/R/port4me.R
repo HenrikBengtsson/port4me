@@ -110,7 +110,7 @@ port4me_skip <- function() {
 }
 
 
-#' Gets a personalized TCP port that can be opened
+#' Gets a Personalized TCP Port that can be Opened by the User
 #'
 #' @param user (optional) The name of the user.
 #' Defaults to `Sys.info()[["user"]]`.
@@ -139,7 +139,7 @@ port4me_skip <- function() {
 #' be found.  If FALSE, then `-1` is returned.
 #'
 #' @return
-#' An port or a vector of ports.
+#' A port, or a vector of ports.
 #' If `test` is given, then TRUE is if the port can be opened, otherwise FALSE.
 #'
 #' @example incl/port4me.R

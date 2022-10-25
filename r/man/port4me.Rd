@@ -2,7 +2,7 @@
 % Please edit documentation in R/port4me.R
 \name{port4me}
 \alias{port4me}
-\title{Gets a personalized TCP port that can be opened}
+\title{Gets a Personalized TCP Port that can be Opened by the User}
 \usage{
 port4me(
   tool = NULL,
@@ -45,11 +45,11 @@ Defaults to \code{65535L}.}
 be found.  If FALSE, then \code{-1} is returned.}
 }
 \value{
-An port or a vector of ports.
+A port, or a vector of ports.
 If \code{test} is given, then TRUE is if the port can be opened, otherwise FALSE.
 }
 \description{
-Gets a personalized TCP port that can be opened
+Gets a Personalized TCP Port that can be Opened by the User
 }
 \examples{
 port <- port4me()
