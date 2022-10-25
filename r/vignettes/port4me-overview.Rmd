@@ -30,7 +30,7 @@ There are many tools to identify a free TCP port, where most of them return a ra
 
 In contrast, **port4me** attempts, with high probability, to provide the user with the same port each time, even when used on different days.  It achieves this by scanning the same deterministic, pseudo-random sequence of ports and return the first free port detected.  Each user gets their own random port sequence, lowering the risk for any two users to request the same port.  The randomness is initiated with a random seed that is a function of the user's name (`USER`), and, optionally, the name of the software where we use the port.
 
-The **port4me** algorithm can be implemented in most known programming languages, producing perfectly reproducable sequencing regardless of implementation language.
+The **port4me** algorithm can be implemented in most known programming languages, producing perfectly reproducible sequencing regardless of implementation language.
 
 
 ## A quick introduction
@@ -52,7 +52,7 @@ As we will see later, each user on the system is likely to get their own unique 
 
 As long as this port is available, `alice` will always get the same port across R sessions and over time.  For example, if they return next week and retry, it's likely they still get:
 
-```sh
+```r
 > port4me::port4me()
 [1] 30845
 > port4me::port4me()
@@ -102,7 +102,7 @@ For testing and demonstration purposes, one can emulate another user by specifyi
 
 Sometimes a user would like to use two, or more, ports at the same time, e.g. two ports for two different Shiny apps.  In such case, they can specify argument `tool`, which results in a port sequence that is unique to both the user and the tool.  For example,
 
-```sh
+```r
 > port4me::port4me()
 [1] 30845
 > port4me::port4me(tool = "myapp")
@@ -113,13 +113,13 @@ Sometimes a user would like to use two, or more, ports at the same time, e.g. tw
 
 This allows us to do:
 
-```sh
+```r
 > shiny::runApp(appDir = "myapp", port = port4me::port4me(tool = "myapp"))
 ```
 
 and
 
-```sh
+```r
 > shiny::runApp(appDir = "demo", port = port4me::port4me(tool = "demo"))
 ```
 
@@ -128,14 +128,14 @@ and
 
 Since there is a limited set of ports available (1024-65535), there is always a risk that another process occupies any given port.  The more users there are on the same machine, the higher the risk is for this to happen.  If a user is unlucky, they might experience this frequently.  For example, `alice` might find that the first port (30845) works only one out 10 times, whereas the second port (19654) works 99 out 100 times, and the third one (32310) works so and so.  If so, they might choose to exclude the "flaky" ports by specifying them as a comma-separated values via argument `exclude`, e.g.
 
-```sh
+```r
 > port4me::port4me(exclude = c(30845, 32310))
 [1] 20678
 ```
 
 An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
 
-```sh
+```r
 {alice}$ PORT4ME_EXCLUDE=30845,32310 R
 ...
 > port4me::port4me(exclude = c(30845, 32310))
@@ -144,7 +144,7 @@ An alternative to specify them via a command-line option, is to specify them via
 
 To set this permanently, append:
 
-```sh
+```r
 ## port4me customization
 ## https://github.com/HenrikBengtsson/port4me
 PORT4ME_EXCLUDE=30845,32310
@@ -153,7 +153,7 @@ export PORT4ME_EXCLUDE
 
 to the shell startup script, e.g. `~/.bashrc`.  Alternatively, it can be set specifically for R in `~/.Renviron` as:
 
-```sh
+```r
 ## port4me customization
 ## https://github.com/HenrikBengtsson/port4me
 PORT4ME_EXCLUDE=30845,32310
@@ -190,7 +190,7 @@ In addition to ports excluded via above mechanisms, **port4me** excludes ports t
 
 Analogously to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line argument `include`, e.g.
 
-```sh
+```r
 > port4me::port4me(include = c(2000:2123, 4321, 10000:10999))
 [1] 10451
 ```
@@ -203,14 +203,14 @@ where the default corresponds to `include = 1024:65535`.  Analogously to `exclud
 
 In addition to scanning the user-specific, pseudo-random port sequence for a free port, it is possible to also consider a predefined set of ports prior to the random ones by specifying command-line argument `prepend`, e.g.
 
-```sh
+```r
 > port4me::port4me(prepend = c(4321, 11001), list = 5)
 [1]  4321 11001 30845 19654 32310
 ```
 
 An alternative to specify them via a command-line option, is to specify them via environment variable `PORT4ME_PREPEND`, e.g.
 
-```sh
+```r
 {alice}$ PORT4ME_PREPEND=4321,11001 R
 ...
 > port4me::port4me(list = 5)
