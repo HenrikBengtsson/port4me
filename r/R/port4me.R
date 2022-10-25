@@ -126,12 +126,14 @@ port4me_skip <- function() {
 #' @param exclude (optional) An integer vector of ports to exclude.
 #'
 #' @param skip (optional) Number of non-excluded ports to skip.
+#' Defaults to `0L`.
 #'
 #' @param list (optional) Number of ports to list.
 #'
 #' @param test (optional) A port to check whether it can be opened or not.
 #'
 #' @param max_tries Maximum number of ports checked, before giving up.
+#' Defaults to `65535L`.
 #'
 #' @param must_work If TRUE, then an error is produced if no port could
 #' be found.  If FALSE, then `-1` is returned.
@@ -143,9 +145,16 @@ port4me_skip <- function() {
 #' @example incl/port4me.R
 #'
 #' @export
-port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port4me_prepend(), include = port4me_include(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 65535L, must_work = TRUE) {
-  stopifnot(length(user) == 1L, is.character(user), !is.na(user))
+port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, exclude = NULL, skip = NULL, list = NULL, test = NULL, max_tries = 65535L, must_work = TRUE) {
+  if (is.null(tool)) tool <- port4me_tool()
+  if (is.null(user)) user <- port4me_user()
+  if (is.null(prepend)) prepend <- port4me_prepend()
+  if (is.null(include)) include <- port4me_include()
+  if (is.null(exclude)) exclude <- port4me_exclude()
+  if (is.null(skip)) skip <- port4me_skip()
+  
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
+  stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   if (!is.null(list)) {
     stopifnot(is.numeric(list), length(list) == 1L, !is.na(list), list >= 0)
   }
