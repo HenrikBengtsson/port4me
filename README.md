@@ -1,7 +1,6 @@
 ![lifecycle: experimental](images/lifecycle-experimental-orange.svg)
 [![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
 [![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
-[![check-R](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml)
 [![R-CMD-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
 
 
