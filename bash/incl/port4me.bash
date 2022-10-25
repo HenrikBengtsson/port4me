@@ -31,7 +31,7 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me
 #'
-#' Version: 0.4.0-9008
+#' Version: 0.5.0
 #' Copyright: Henrik Bengtsson (2022)
 #' License: ISC
 #' Source code: https://github.com/HenrikBengtsson/port4me
