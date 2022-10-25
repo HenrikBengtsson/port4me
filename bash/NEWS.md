@@ -1,6 +1,12 @@
 # Version (development version)
 
-* ...
+## New Features
+
+* Added environment variable `PORT4ME_EXCLUDE_BUILTIN`, which defaults
+  to `{chrome},{mozilla}`.  The token `{chrome}` expands to the set of
+  ports that are considered unsafe by the Chrome web browser and
+  therefore also blocked by it.  Similarly, `{mozilla}` expands to the
+  set of ports that are blocked by Mozilla Firefox web browser.
 
 
 # Version 0.4.0 [2022-08-25]

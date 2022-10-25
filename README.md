@@ -7,7 +7,7 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-07-26_
+_WARNING: This is an experimental project under development. Feel free to kick the tires. Feedback is appreciated. /Henrik 2022-10-24_
 
 ## Features
 
@@ -177,7 +177,10 @@ PORT4ME_EXCLUDE_SITE=$PORT4ME_EXCLUDE_SITE,8888
 export PORT4ME_EXCLUDE_SITE
 ```
 
-In addition to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line option `--include`, e.g.
+In addition to ports excluded via above mechanisms, **port4me** excludes ports that are considered unsafe by the Chrome and Firefox web browsers.  This behavior can be controlled by environment variable `PORT4ME_EXCLUDE_BUILTIN`, which defaults to `{chrome},{mozilla}`.  Token `{chrome}` expands to [the set of ports that Chrome blocks](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc), and `{mozilla}` expands to [the set of ports that Mozilla Firefox blocks](https://www-archive.mozilla.org/projects/netlib/portbanning#portlist).
+
+
+Analogously to excluding a set of ports, one can limit the range of ports to be scanned by specifying command-line option `--include`, e.g.
 
 ```sh
 {alice}$ port4me --include=2000-2123,4321,10000-10999
