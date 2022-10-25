@@ -108,7 +108,6 @@
 #' For more information, see the \link[base]{Startup} help page.
 #'
 #' @aliases
-#' ## User settings
 #' PORT4ME_DEBUG
 #' PORT4ME_TOOL
 #' PORT4ME_USER
@@ -116,8 +115,6 @@
 #' PORT4ME_PREPEND
 #' PORT4ME_INCLUDE
 #' PORT4ME_EXCLUDE
-#'
-#' ## Site-wide and built-in settings
 #' PORT4ME_PREPEND_SITE
 #' PORT4ME_INCLUDE_SITE
 #' PORT4ME_EXCLUDE_SITE

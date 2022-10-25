@@ -2,9 +2,6 @@
 % Please edit documentation in R/settings.R
 \name{port4me.settings}
 \alias{port4me.settings}
-\alias{##}
-\alias{User}
-\alias{settings}
 \alias{PORT4ME_DEBUG}
 \alias{PORT4ME_TOOL}
 \alias{PORT4ME_USER}
@@ -12,9 +9,6 @@
 \alias{PORT4ME_PREPEND}
 \alias{PORT4ME_INCLUDE}
 \alias{PORT4ME_EXCLUDE}
-\alias{Site-wide}
-\alias{and}
-\alias{built-in}
 \alias{PORT4ME_PREPEND_SITE}
 \alias{PORT4ME_INCLUDE_SITE}
 \alias{PORT4ME_EXCLUDE_SITE}
