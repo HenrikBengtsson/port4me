@@ -118,7 +118,6 @@ If \code{true}, extensive debug messages are generated.
 }
 
 \examples{
-# Set a environment variable):
 Sys.setenv(PORT4ME_EXCLUDE = "4444,5000-5999,8080")
 port4me()
 
