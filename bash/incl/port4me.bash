@@ -8,9 +8,14 @@
 #'
 #' - PORT4ME_USER   : The name of the current user (default: ${USER})
 #' - PORT4ME_TOOL   : The name of the software tool (optional)
+#' - PORT4ME_PREPEND: Ports to be considered first (optional)
 #' - PORT4ME_INCLUDE: Ports to be considered (default: 1024-65535)
 #' - PORT4ME_EXCLUDE: Ports to be excluded (optional)
-#' - PORT4ME_PREPEND: Ports to be considered first (optional)
+#' - PORT4ME_EXCLUDE_UNSAFE:
+#'                    Ports to be excluded because they are considered
+#'                    unsafe (defaults: {chrome},{firefox})
+#' - PORT4ME_EXCLUDE_UNSAFE_CHROME: Ports blocked by the Chrome browser
+#' - PORT4ME_EXCLUDE_UNSAFE_FIREFOX: Ports blocked by the Firefox browser
 #' - PORT4ME_SKIP   : Number of ports to skip in the set of ports
 #'                    considered after applying prepended, included,
 #'                    and excluded (optional)
@@ -26,23 +31,23 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me
 #'
-#' Version: 0.4.0-9007
+#' Version: 0.4.0-9008
 #' Copyright: Henrik Bengtsson (2022)
 #' License: ISC
 #' Source code: https://github.com/HenrikBengtsson/port4me
 declare -i LCG_SEED
 export LCG_SEED
 
-PORT4ME_EXCLUDE_BUILTIN=${PORT4ME_EXCLUDE_BUILTIN:-"{chrome},{firefox}"}
-export PORT4ME_EXCLUDE_BUILTIN
+PORT4ME_EXCLUDE_UNSAFE=${PORT4ME_EXCLUDE_UNSAFE:-"{chrome},{firefox}"}
+export PORT4ME_EXCLUDE_UNSAFE
 
 ## Source: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
 ## Last updated: 2022-10-24
-PORT4ME_EXCLUDE_CHROME=${PORT4ME_EXCLUDE_CHROME:-"1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,69,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,137,139,143,161,179,389,427,465,512,513,514,515,526,530,531,532,540,548,554,556,563,587,601,636,989,990,993,995,1719,1720,1723,2049,3659,4045,5060,5061,6000,6566,6665,6666,6667,6668,6669,6697,10080"}
+PORT4ME_EXCLUDE_UNSAFE_CHROME=${PORT4ME_EXCLUDE_UNSAFE_CHROME:-"1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,69,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,137,139,143,161,179,389,427,465,512,513,514,515,526,530,531,532,540,548,554,556,563,587,601,636,989,990,993,995,1719,1720,1723,2049,3659,4045,5060,5061,6000,6566,6665,6666,6667,6668,6669,6697,10080"}
 
 ## Source: https://www-archive.mozilla.org/projects/netlib/portbanning#portlist
 ## Last updated: 2022-10-24
-PORT4ME_EXCLUDE_FIREFOX=${PORT4ME_EXCLUDE_FIREFOX:-"1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,139,143,179,389,465,512,513,514,515,526,530,531,532,540,556,563,587,601,636,993,995,2049,4045,6000"}
+PORT4ME_EXCLUDE_UNSAFE_FIREFOX=${PORT4ME_EXCLUDE_UNSAFE_FIREFOX:-"1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,139,143,179,389,465,512,513,514,515,526,530,531,532,540,556,563,587,601,636,993,995,2049,4045,6000"}
 
 _p4m_error() {
     >&2 echo "ERROR: $1"
@@ -123,8 +128,8 @@ _p4m_parse_ports() {
     local -a ports
     
     ## Prune and pre-parse input
-    spec=${spec//\{chrome\}/${PORT4ME_EXCLUDE_CHROME}}
-    spec=${spec//\{firefox\}/${PORT4ME_EXCLUDE_FIREFOX}}
+    spec=${spec//\{chrome\}/${PORT4ME_EXCLUDE_UNSAFE_CHROME}}
+    spec=${spec//\{firefox\}/${PORT4ME_EXCLUDE_UNSAFE_FIREFOX}}
     spec=${spec//,/ }
     spec=${spec//+( )/ }
     spec=${spec## }
@@ -205,14 +210,14 @@ port4me() {
         return $?
     fi
     
-    mapfile -t exclude < <(_p4m_parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE},${PORT4ME_EXCLUDE_BUILTIN}")
+    mapfile -t exclude < <(_p4m_parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE},${PORT4ME_EXCLUDE_UNSAFE}")
     mapfile -t include < <(_p4m_parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}")
     mapfile -t prepend < <(_p4m_parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}")
     if ${PORT4ME_DEBUG:-false}; then
         {
             echo "PORT4ME_EXCLUDE=${PORT4ME_EXCLUDE}"
             echo "PORT4ME_EXCLUDE_SITE=${PORT4ME_EXCLUDE_SITE}"
-            echo "PORT4ME_EXCLUDE_BUILTIN=${PORT4ME_EXCLUDE_BUILTIN}"
+            echo "PORT4ME_EXCLUDE_UNSAFE=${PORT4ME_EXCLUDE_UNSAFE}"
             echo "PORT4ME_INCLUDE=${PORT4ME_INCLUDE}"
             echo "PORT4ME_INCLUDE_SITE=${PORT4ME_INCLUDE_SITE}"
             echo "PORT4ME_PREPEND=${PORT4ME_PREPEND}"
