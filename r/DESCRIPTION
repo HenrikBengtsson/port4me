@@ -1,12 +1,13 @@
 Package: port4me
-Version: 0.4.0-9008
+Version: 0.4.0-9009
 Depends:
     R (>= 4.0.0)
 Suggests:
-    commonmark,
     utils,
-    tools
-VignetteBuilder: port4me
+    rmarkdown,
+    knitr
+VignetteBuilder:
+    knitr
 Title: Get the Same, Personal, Free TCP Port over and over
 Authors@R: c(person("Henrik", "Bengtsson", role=c("aut", "cre", "cph"),
                                           email = "henrikb@braju.com"))

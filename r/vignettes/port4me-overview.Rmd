@@ -1,12 +1,17 @@
-<!--
-%\VignetteIndexEntry{port4me: Get the Same, Personal, Free TCP Port over and over}
-%\VignetteAuthor{Henrik Bengtsson}
-%\VignetteKeyword{R}
-%\VignetteKeyword{package}
-%\VignetteKeyword{vignette}
-%\VignetteKeyword{Renviron}
-%\VignetteEngine{port4me::selfonly}
--->
+---
+title: "port4me: Get the Same, Personal, Free TCP Port over and over"
+author: Henrik Bengtsson
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{port4me: Get the Same, Personal, Free TCP Port over and over}
+  %\VignetteAuthor{Henrik Bengtsson}
+  %\VignetteKeyword{R}
+  %\VignetteKeyword{package}
+  %\VignetteKeyword{vignette}
+  %\VignetteKeyword{Renviron}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 The **port4me** tool:
 
