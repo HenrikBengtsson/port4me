@@ -1,8 +1,25 @@
 # CRAN submission port4me 0.5.0
 
+## First submission
+
 on 2022-10-25
 
 This is a new package submission.
+
+Thanks in advance
+
+
+## Resubmission
+
+on 2022-10-28
+
+Updates per request from CRAN on this newbie submission:
+
+1. Spell out initialism 'TCP' in the package description
+
+2. Rephrase the starting sentence in the package description
+
+3. Add URL reference for the "port4me" algorithm in the package description
 
 Thanks in advance
 
