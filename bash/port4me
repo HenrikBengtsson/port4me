@@ -1,37 +1,41 @@
 #! /usr/bin/env bash
-### port4me: Get the Same, Personal, Free TCP Port over and over
-### 
-### Usage:
-###  port4me [options]
-### 
-### Options:  
-###  --help              Display the full help page with examples
-###  --version           Output version of this software
-###  --debug             Output detailed debug information
-###
-###  --user=<string>     User name (default: $USER)
-###  --tool=<string>     Name of software tool
-###  --include=<ports>   Comma-separated list of ports to be included
-###                      (default: 1024-65535)
-###  --exclude=<ports>   Comma-separated list of ports to be excluded
-###  --prepend=<ports>   Comma-separated list of ports to be checked first
-###
-###  --list=<n>          List the first 'n', non-excluded ports scanned
-###
-###  --test=<port>       Return 0 if port is available, otherwise 1
-###
-### Examples:
-### port4me --version
-###
-### port4me
-### port4me --tool=rstudio
-###
-### rserver --www-port "$(port4me --tool=rstudio)"
-### jupyter notebook --port "$(port4me --tool=jupyter)"
-###
-### Version: 0.4.0
-### Copyright: Henrik Bengtsson (2022)
-### License: ISC
+
+#' port4me: Get the Same, Personal, Free TCP Port over and over
+#' 
+#' Usage:
+#'  port4me [options]
+#' 
+#' Options:  
+#'  --help             Display the full help page with examples
+#'  --version          Output version of this software
+#'  --debug            Output detailed debug information
+#'
+#'  --user=<string>    User name (default: $USER)
+#'  --tool=<string>    Name of software tool
+#'  --include=<ports>  Set of ports to be included
+#'                     (default: 1024-65535)
+#'  --exclude=<ports>  Set of ports to be excluded
+#'  --prepend=<ports>  Set of ports to be considered first
+#'
+#'  --list=<n>         List the first 'n', available or not, ports
+#'
+#'  --test=<port>      Return 0 if port is available, otherwise 1
+#'
+#' Examples:
+#' port4me --version
+#'
+#' port4me
+#' port4me --tool=rstudio
+#' port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
+#'
+#' rserver --www-port "$(port4me --tool=rstudio)"
+#' jupyter notebook --port "$(port4me --tool=jupyter-notebook)"
+#'
+#' port4me --test=8087
+#'
+#' Version: 0.5.0
+#' Copyright: Henrik Bengtsson (2022)
+#' License: ISC
 
 this="${BASH_SOURCE%/}"
 [[ -L "${this}" ]] && this=$(readlink "${this}")
@@ -46,15 +50,15 @@ source "${incl}/port4me.bash"
 # -------------------------------------------------------------------------
 # CLI utility functions
 # -------------------------------------------------------------------------
-function version {
-    grep -E "^###[ ]*Version:[ ]*" "$0" | sed 's/###[ ]*Version:[ ]*//g'
+function _p4me_version {
+    grep -E "^#'[ ]*Version:[ ]*" "$0" | sed "s/#'[ ]*Version:[ ]*//g"
 }
 
-function help {
+function _p4me_help {
     local what res
 
     what=$1
-    res=$(grep "^###" "$0" | grep -vE '^(####|### whatis: )' | cut -b 5-)
+    res=$(grep "^#'" "$0" | cut -b 3-)
 
     if [[ $what == "full" ]]; then
         res=$(echo "$res" | sed '/^---/d')
@@ -70,10 +74,9 @@ function help {
 # Parse command-line options
 # -------------------------------------------------------------------------
 action=port
-count=0
-port=-1
+PORT4ME_DEBUG=${PORT4ME_DEBUG:-false}
 
-parse_cli_args() {
+_p4me_parse_cli_args() {
     local key value
     
     while (($# > 0)); do
@@ -105,11 +108,9 @@ parse_cli_args() {
             elif [[ "${key}" == "skip" ]]; then
                 PORT4ME_SKIP=${value}
             elif [[ "${key}" == "list" ]]; then
-                action="list"
-                count=${value}
+                PORT4ME_LIST=${value}
             elif [[ "${key}" == "test" ]]; then
-                action="test"
-                port=${value}
+                PORT4ME_TEST=${value}
             else
                 error "Unknown option: $1"
             fi
@@ -120,20 +121,24 @@ parse_cli_args() {
     done              
 }
 
-parse_cli_args "$@"
-
 
 # -------------------------------------------------------------------------
 # Main
 # -------------------------------------------------------------------------
+_p4me_parse_cli_args "$@"
+
 if [[ $action == "help" ]]; then
-    help ""
+    _p4me_help ""
 elif [[ $action == "version" ]]; then
-    version
-elif [[ $action == "list" ]]; then
-    PORT4ME_LIST=${count} port4me
-elif [[ $action == "test" ]]; then
-    p4m_can_port_be_opened "${port}" && exit 0 || exit 1
+    _p4me_version
 else
     port4me
-fi    
+fi
+
+res=$?
+
+if ${PORT4ME_DEBUG}; then
+    echo "port4me exit code: $res"
+fi
+
+exit $res

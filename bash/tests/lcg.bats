@@ -9,7 +9,7 @@ setup() {
 @test "lcg" {
     LCG_SEED=42
     
-    run p4m_lcg
+    run _p4m_lcg
     assert_success
     assert_output "3224"
 }
@@ -17,7 +17,7 @@ setup() {
 @test "lcg with initial seed = m - (a-c) (special case)" {
     LCG_SEED=65536
     
-    run p4m_lcg
+    run _p4m_lcg
     assert_success
     assert_output "74"
 }
@@ -26,7 +26,7 @@ lcg_port_times() {
     local -i n=${1:?}
     local -i port=-1
     while ((n > 0)); do
-        p4m_lcg > /dev/null
+        _p4m_lcg > /dev/null
         port=${LCG_SEED:?}
         if (( port < 1024 || port > 65535 )); then
             continue

@@ -23,11 +23,27 @@ port4me_seed <- function(user = NULL, tool = NULL) {
   seed
 }
 
+## Source: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
+## Last updated: 2022-10-24
+ports_excluded_by_chrome <- function() {
+  Sys.getenv("PORT4ME_EXCLUDE_UNSAFE_CHROME", "1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,69,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,137,139,143,161,179,389,427,465,512,513,514,515,526,530,531,532,540,548,554,556,563,587,601,636,989,990,993,995,1719,1720,1723,2049,3659,4045,5060,5061,6000,6566,6665,6666,6667,6668,6669,6697,10080")
+}
+
+## Source: https://www-archive.mozilla.org/projects/netlib/portbanning#portlist
+## Last updated: 2022-10-24
+ports_excluded_by_firefox <- function() {
+  Sys.getenv("PORT4ME_EXCLUDE_UNSAFE_FIREFOX", "1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,139,143,179,389,465,512,513,514,515,526,530,531,532,540,556,563,587,601,636,993,995,2049,4045,6000")
+}
+
 parse_ports <- function(ports) {
   spec <- ports
-  ports <- paste(ports, collapse = ",")
-  ports <- gsub(" ", "", ports, fixed = TRUE)
-  ports <- unlist(strsplit(ports, split = ","))
+  
+  ports <- gsub("{chrome}", ports_excluded_by_chrome(), ports, fixed = TRUE)
+  ports <- gsub("{firefox}", ports_excluded_by_firefox(), ports, fixed = TRUE)
+  ports <- gsub("[ ]+", " ", ports, fixed = TRUE)
+  ports <- unlist(strsplit(ports, split = "[, ]", fixed = FALSE))
+  ports <- unique(ports)
+
   bad <- grep("^([[:digit:]]+|[[:digit:]]+-[[:digit:]]+)$", ports, invert = TRUE, value = TRUE)
   if (length(bad) > 0) {
     stop(sprintf("Syntax error in port specification: %s", spec))
@@ -50,7 +66,6 @@ parse_ports <- function(ports) {
 
 port4me_prepend <- function() {
   ports <- NULL
-
   for (name in c("PORT4ME_PREPEND", "PORT4ME_PREPEND_SITE")) {
     arg <- Sys.getenv(name, "")
     ports <- c(ports, parse_ports(arg))
@@ -61,10 +76,15 @@ port4me_prepend <- function() {
 }
 
 port4me_exclude <- function() {
-  ports <- NULL
+  defaults <- c(
+    PORT4ME_EXCLUDE = "",
+    PORT4ME_EXCLUDE_SITE = "",
+    PORT4ME_EXCLUDE_UNSAFE = "{chrome},{firefox}"
+  )
 
-  for (name in c("PORT4ME_EXCLUDE", "PORT4ME_EXCLUDE_SITE")) {
-    arg <- Sys.getenv(name, "")
+  ports <- NULL
+  for (name in names(defaults)) {
+    arg <- Sys.getenv(name, defaults[name])
     ports <- c(ports, parse_ports(arg))
   }
   ports <- unique(ports)
@@ -74,7 +94,6 @@ port4me_exclude <- function() {
 
 port4me_include <- function() {
   ports <- NULL
-
   for (name in c("PORT4ME_INCLUDE", "PORT4ME_INCLUDE_SITE")) {
     arg <- Sys.getenv(name, "")
     ports <- c(ports, parse_ports(arg))
@@ -91,7 +110,7 @@ port4me_skip <- function() {
 }
 
 
-#' Gets a personalized TCP port that can be opened
+#' Gets a Personalized TCP Port that can be Opened by the User
 #'
 #' @param user (optional) The name of the user.
 #' Defaults to `Sys.info()[["user"]]`.
@@ -102,31 +121,44 @@ port4me_skip <- function() {
 #' @param prepend (optional) An integer vector of ports to always consider.
 #'
 #' @param include (optional) An integer vector of possible ports to return.
-#' Defaults to `1024::65535`.
+#' Defaults to `1024:65535`.
 #'
 #' @param exclude (optional) An integer vector of ports to exclude.
 #'
 #' @param skip (optional) Number of non-excluded ports to skip.
+#' Defaults to `0L`.
 #'
 #' @param list (optional) Number of ports to list.
 #'
 #' @param test (optional) A port to check whether it can be opened or not.
 #'
 #' @param max_tries Maximum number of ports checked, before giving up.
+#' Defaults to `65535L`.
 #'
 #' @param must_work If TRUE, then an error is produced if no port could
 #' be found.  If FALSE, then `-1` is returned.
 #'
 #' @return
-#' An port or a vector of ports.
+#' A port, or a vector of ports.
 #' If `test` is given, then TRUE is if the port can be opened, otherwise FALSE.
 #'
 #' @example incl/port4me.R
 #'
+#' @seealso
+#' The default values of the arguments can be controlled via environment
+#' variables.  See [port4me.settings] for details.
+#'
 #' @export
-port4me <- function(user = port4me_user(), tool = port4me_tool(), prepend = port4me_prepend(), include = port4me_include(), exclude = port4me_exclude(), skip = port4me_skip(), list = NULL, test = NULL, max_tries = 65535L, must_work = TRUE) {
-  stopifnot(length(user) == 1L, is.character(user), !is.na(user))
+port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, exclude = NULL, skip = NULL, list = NULL, test = NULL, max_tries = 65535L, must_work = TRUE) {
+  if (is.null(tool)) tool <- port4me_tool()
+  if (is.null(user)) user <- port4me_user()
+  if (is.null(prepend)) prepend <- port4me_prepend()
+  if (is.null(include)) include <- port4me_include()
+  if (is.null(exclude)) exclude <- port4me_exclude()
+  if (is.null(skip)) skip <- port4me_skip()
+  
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
+  stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   if (!is.null(list)) {
     stopifnot(is.numeric(list), length(list) == 1L, !is.na(list), list >= 0)
   }

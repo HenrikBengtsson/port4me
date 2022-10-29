@@ -1,8 +1,11 @@
 ^.git
 ^.github
 ^.Rhistory
-^README[.]md$
+^.Rdump
 ^Makefile$
 ^port4me[.]R$
-^incl/
+^incl
+^cran-comments.md$
+
+
 
