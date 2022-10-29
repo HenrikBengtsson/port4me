@@ -1,7 +1,6 @@
 ![lifecycle: experimental](images/lifecycle-experimental-orange.svg)
 [![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
 [![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
-[![check-R](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-R.yml)
 [![R-CMD-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
 
 
@@ -426,26 +425,28 @@ Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
 * A _[Linear congruential generator (LCG)]_ will be used to generate
   the pseudo-random port sequence
 
-  - the next seed is calculated based on the current seed $s$ and
-    parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
+  - the next seed, $s_{n+1}$ is calculated based on the current seed
+    $s_n$ and parameters $a, c, m > 1$ as
+    $s_{n+1} = (a * s_{n} + c) \% m$
 
   - the LCG algorithm must not assume that the current LCG seed is
     within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed
     first to avoid integer overflow
 
-  - the LCG algorithm may produce the same output seed as input
-    seed. To avoid this resulting in a constant LCG stream, increment
-    the seed by one and recalculate whenever this happens
+  - the LCG algorithm may produce the same output seed as input seed,
+    which may happen when the seed is $s_n = m - (a - c)$.  To avoid
+    this resulting in a constant LCG stream, increment the seed by one
+    and recalculate whenever this happens
 
   - LCG parameters should be $m = 2^{16} + 1$, $a = 75$, and $c = 74$
     ("ZX81")
   
-     - this requires only 32-bit integer arithmetic, because $m <
-       2^{32}$
+     - this requires only 32-bit integer arithmetic, because
+       $m < 2^{32}$
      
-     - if the initial seed is $s = m - (a - c) = m - 1 = 2^{16}$, then
-       the next LCG seed will be the same, which is then handled by
-       the above increment-by-one workaround
+     - if the initial seed is $s_0 = m - (a - c)$, which here is
+       $m - 1 = 2^{16}$, then the next LCG seed will be the same, 
+       which is then handled by the above increment-by-one workaround
   
 * A _32-bit integer string hashcode_ will be used to generate an
   integer in $[0,2^{32}-1]$ from an ASCII string with any number of
