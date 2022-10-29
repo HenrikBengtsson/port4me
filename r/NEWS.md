@@ -1,3 +1,8 @@
+# Version (development version)
+
+ * ...
+ 
+
 # Version 0.5.0 [2022-10-25]
 
 ## New Features
