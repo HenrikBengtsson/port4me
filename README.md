@@ -1,13 +1,13 @@
-![lifecycle: experimental](images/lifecycle-experimental-orange.svg)
-[![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
-[![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
+[![CRAN check status](https://www.r-pkg.org/badges/version/port4me)](https://CRAN.R-project.org/web/checks/check_results_port4me.html)
 [![R-CMD-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
+[![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
+[![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
 
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. Feel free
-to kick the tires. Feedback is appreciated. /Henrik 2022-10-24_
+_Note, this is an project under development. Feel free to kick the
+tires. Feedback is appreciated. /Henrik 2022-10-29_
 
 ## Features
 
