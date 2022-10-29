@@ -326,13 +326,19 @@ $ port4me --version
 
 ### R package
 
-To install the R **portme** package, do:
+To install the R **portme** package, call the following from within R:
+
+```r
+install.packages("port4me")
+```
+
+To install the development version, do:
 
 ```r
 remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 ```
 
-Then call it as:
+To try it out, call:
 
 ```r
 > port4me::port4me("jupyter-notebook")
