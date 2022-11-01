@@ -1,6 +1,9 @@
 # Version (development version)
 
- * ...
+## New Features
+
+ * Fix incorrect static output in vignette by generating it
+   dynamically, e.g. some ports listed are not the ones expected.
  
 
 # Version 0.5.0 [2022-10-25]
