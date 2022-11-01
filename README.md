@@ -6,7 +6,7 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_Note, this is an project under development. Feel free to kick the
+_Note, this is a project under development. Feel free to kick the
 tires. Feedback is appreciated. /Henrik 2022-10-29_
 
 ## Features
