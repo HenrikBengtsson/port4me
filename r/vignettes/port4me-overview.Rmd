@@ -96,7 +96,7 @@ To see the first five ports scanned, run:
 
 ```r
 > port4me::port4me(list = 5)
-[1] 52613 13829 54194  1330 34287
+[1] 30845 19654 32310 63992 15273
 ```
 
 
