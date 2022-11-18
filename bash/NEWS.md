@@ -1,4 +1,13 @@
-# Version 0.5.0
+# Version (development version)
+
+## Bug Fixes
+
+* `port4me` failed to produce the intended error message in some
+  cases, e.g.  `port4me --user=""` gave `error: command not found`
+  instead of `ERROR: Option '--user' must not be empty`.
+
+
+# Version 0.5.0 [2022-10-29]
 
 ## New Features
 
