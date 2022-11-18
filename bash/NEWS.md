@@ -1,5 +1,13 @@
 # Version (development version)
 
+## New Features
+
+* `port4me <tool>` is now short for `port4me --tool=<tool>`.  Such an
+  "unnamed" `--tool` option is only allowed if specified in the first
+  location, otherwise it is considered an error.  This is analogue to
+  not naming the `tool` argument in R, which is the first argument,
+  e.g. `port4me::port4me(<tool>)`.
+
 ## Bug Fixes
 
 * `port4me` failed to produce the intended error message in some
