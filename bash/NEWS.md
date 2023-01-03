@@ -8,6 +8,9 @@
   not naming the `tool` argument in R, which is the first argument,
   e.g. `port4me::port4me(<tool>)`.
 
+* Now `port4me` can also use `netstat` to test whether a port is
+  available or not.
+
 ## Bug Fixes
 
 * `port4me` failed to produce the intended error message in some
