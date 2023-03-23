@@ -112,11 +112,11 @@ port4me_skip <- function() {
 
 #' Gets a Personalized TCP Port that can be Opened by the User
 #'
-#' @param user (optional) The name of the user.
-#' Defaults to `Sys.info()[["user"]]`.
-#'
 #' @param tool (optional) The name of the software tool for which a port
 #' should be generated.
+#'
+#' @param user (optional) The name of the user.
+#' Defaults to `Sys.info()[["user"]]`.
 #'
 #' @param prepend (optional) An integer vector of ports to always consider.
 #'

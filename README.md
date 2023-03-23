@@ -1,17 +1,17 @@
-![lifecycle: experimental](images/lifecycle-experimental-orange.svg)
-[![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
-[![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
+[![CRAN check status](https://www.r-pkg.org/badges/version/port4me)](https://CRAN.R-project.org/web/checks/check_results_port4me.html)
 [![R-CMD-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
+[![check-bash](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
+[![shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
 
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_WARNING: This is an experimental project under development. Feel free
-to kick the tires. Feedback is appreciated. /Henrik 2022-10-24_
+_Note, this is a project under development. Feel free to kick the
+tires. Feedback is appreciated. /Henrik 2022-10-29_
 
 ## Features
 
-The **port4me** tool:
+The **[port4me]** tool:
 
 * finds a free TCP port in [1024,65535] that the user can open
 
@@ -146,16 +146,25 @@ tool.  For example,
 47467
 ```
 
-This allows us to do:
+For conveniency, if the first option is unnames, then it is assumed it
+specifies the `--tool` option.  This mean we can use the following
+sort form as well:
 
 ```sh
-{alice}$ rserver --www-port "$(port4me --tool=rstudio)"
+{alice}$ port4me jupyter-notebook
+47467
+```
+
+This allows us to get different ports for different software tools, e.g.
+
+```sh
+{alice}$ rserver --www-port "$(port4me rstudio)"
 ```
 
 and
 
 ```sh
-{alice}$ jupyter notebook --port "$(port4me --tool=jupyter-notebook)"
+{alice}$ jupyter notebook --port "$(port4me jupyter-notebook)"
 ```
 
 
@@ -309,7 +318,7 @@ error (stderr), which can be seen in the terminal. For example,
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.5.0
+VERSION=0.5.1
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me   ## must be an absolute path
@@ -321,18 +330,26 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.5.0
+0.5.1
 ```
 
 ### R package
 
-To install the R **portme** package, do:
+To install the R **portme** package, which is available on
+[CRAN](https://cran.r-project.org/package=port4me), call the following
+from within R:
+
+```r
+install.packages("port4me")
+```
+
+To install the development version, do:
 
 ```r
 remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 ```
 
-Then call it as:
+To try it out, call:
 
 ```r
 > port4me::port4me("jupyter-notebook")
@@ -462,6 +479,7 @@ Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
     modulo $m$
 
 
+[port4me]: https://github.com/HenrikBengtsson/port4me
 [the set of ports that Chrome blocks]: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
 [the set of ports that Firefox blocks]: https://www-archive.mozilla.org/projects/netlib/portbanning#portlist
 [Linear congruential generator (LCG)]: https://en.wikipedia.org/wiki/Linear_congruential_generator
