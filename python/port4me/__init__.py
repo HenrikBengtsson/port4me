@@ -50,7 +50,7 @@ def LCG(seed, a=75, c=74, modulus=65537):  # constants from the ZX81's algorithm
     return seed_next
 
 
-def port4me(user='', tool='', min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
+def port4me(tool='', user='', min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
     
@@ -59,10 +59,10 @@ def port4me(user='', tool='', min_port=1024, max_port=65535, chrome_safe=True, f
 
     Parameters
     ----------
-    user : str, optional
-        Defaults to determining the username with getuser().
     tool : str, optional
         Specify this to get a different port sequence for different tools
+    user : str, optional
+        Defaults to determining the username with getuser().
     min_port: int, optional
         Skips any ports that are smaller than this
     max_port: int, optional
@@ -91,7 +91,7 @@ def port4me(user='', tool='', min_port=1024, max_port=65535, chrome_safe=True, f
 
 
 if __name__ == '__main__':
-    print(port4me('alice'))
-    print(port4me('alice', 'rstudio'))
-    print(port4me('alice', 'jupyter-notebook'))  # gets incorrect result
-    print(port4me('bob'))
+    print(port4me(user='alice'))
+    print(port4me('rstudio', user='alice'))
+    print(port4me('jupyter-notebook', user='alice'))  # gets incorrect result
+    print(port4me(user='bob'))
