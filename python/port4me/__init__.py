@@ -51,15 +51,42 @@ def LCG(seed, a=75, c=74, modulus=65537):  # constants from the ZX81's algorithm
 
 
 def port4me(user='', tool='', min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
+    """
+    Find a free TCP port using a deterministic sequence of ports based on the current username.
+    
+    This reduces the chance of different users trying to access the same port,
+    without having to use a completely random new port every time.
+
+    Parameters
+    ----------
+    user : str, optional
+        Defaults to determining the username with getuser().
+    tool : str, optional
+        Specify this to get a different port sequence for different tools
+    min_port: int, optional
+        Skips any ports that are smaller than this
+    max_port: int, optional
+        Skips any ports that are larger than this
+    chrome_safe: bool, optional
+        Whether to skip ports that Chrome refuses to open
+    firefox_safe: bool, optional
+        Whether to skip ports that Firefox refuses to open
+
+    See Also
+    --------
+    `unsafe_ports_chrome` : set of ports to be skipped when `chrome_safe=True`
+    `unsafe_ports_firefox` : set of ports to be skipped when `firefox_safe=True`
+    """
     if not user: user = getuser()
 
     port = uint_hash((user+','+tool).rstrip(','))
 
-    while (not ((min_port <= port <= max_port) and is_port_free(port))
+    while (not (min_port <= port <= max_port)
            or (chrome_safe and port in unsafe_ports_chrome)
-           or (firefox_safe and port in unsafe_ports_firefox)):
+           or (firefox_safe and port in unsafe_ports_firefox)
+           or not is_port_free(port)):
         port = LCG(port)
-    
+
     return port
 
 
