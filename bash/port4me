@@ -34,8 +34,8 @@
 #'
 #' port4me --test=8087
 #'
-#' Version: 0.5.0-9002
-#' Copyright: Henrik Bengtsson (2022)
+#' Version: 0.5.1
+#' Copyright: Henrik Bengtsson (2022-2023)
 #' License: ISC
 
 this="${BASH_SOURCE%/}"
