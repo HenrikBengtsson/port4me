@@ -1,6 +1,6 @@
 # Version (development version)
 
-## New Features
+## Miscellaneous
 
  * Fix incorrect static output in vignette by generating it
    dynamically, e.g. some ports listed are not the ones expected.
