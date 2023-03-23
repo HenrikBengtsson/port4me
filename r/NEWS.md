@@ -1,3 +1,11 @@
+# Version 0.5.1 [2023-03-23]
+
+## Miscellaneous
+
+ * Fix incorrect static output in vignette by generating it
+   dynamically, e.g. some ports listed are not the ones expected.
+ 
+
 # Version 0.5.0 [2022-10-25]
 
 ## New Features
@@ -8,7 +16,7 @@
    ports that are considered unsafe by the Chrome web browser and
    therefore also blocked by it.  Similarly, `{firefox}` expands to
    the value of `PORT4ME_EXCLUDE_UNSAFE_FIXEFOX`, which defaults to
-   the set of ports that are blocked by Mozilla Firefox web browser.
+   the set of ports that are blocked by the Mozilla Firefox web browser.
  
 
 # Version 0.4.0 [2022-08-25]

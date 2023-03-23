@@ -31,8 +31,8 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me
 #'
-#' Version: 0.5.0
-#' Copyright: Henrik Bengtsson (2022)
+#' Version: 0.5.0-9001
+#' Copyright: Henrik Bengtsson (2022-2023)
 #' License: ISC
 #' Source code: https://github.com/HenrikBengtsson/port4me
 declare -i LCG_SEED
@@ -61,11 +61,11 @@ _p4m_error() {
 #' openable=$?
 #'
 #' Requirements:
-#' * either 'nc' or 'ss'
+#' * either 'nc', 'netstat', or 'ss'
 PORT4ME_PORT_COMMAND=
 _p4m_can_port_be_opened() {
     local -i port=${1:?}
-    local cmds=(nc ss)
+    local cmds=(nc netstat ss)
     local cmd
     
     (( port < 1 || port > 65535 )) && _p4m_error "Port is out of range [1,65535]: ${port}"
@@ -88,6 +88,10 @@ _p4m_can_port_be_opened() {
         fi
     elif [[ ${PORT4ME_PORT_COMMAND} == "ss" ]]; then
         if ss -H -l -n src :"$port" | grep -q -E ":$port\b"; then
+            return 1
+        fi
+    elif [[ ${PORT4ME_PORT_COMMAND} == "netstat" ]]; then
+        if netstat -n -l -t | grep -q -E "^tcp\b[^:]+:$port\b"; then
             return 1
         fi
     fi

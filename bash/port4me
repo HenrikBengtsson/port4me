@@ -27,13 +27,14 @@
 #' port4me
 #' port4me --tool=rstudio
 #' port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
+#' port4me rstudio    ## short for --tool=rstudio
 #'
 #' rserver --www-port "$(port4me --tool=rstudio)"
 #' jupyter notebook --port "$(port4me --tool=jupyter-notebook)"
 #'
 #' port4me --test=8087
 #'
-#' Version: 0.5.0
+#' Version: 0.5.0-9002
 #' Copyright: Henrik Bengtsson (2022)
 #' License: ISC
 
@@ -75,6 +76,7 @@ function _p4me_help {
 # -------------------------------------------------------------------------
 action=port
 PORT4ME_DEBUG=${PORT4ME_DEBUG:-false}
+is_first=true
 
 _p4me_parse_cli_args() {
     local key value
@@ -93,7 +95,7 @@ _p4me_parse_cli_args() {
             key=${key//=*}
             value=${1//--[[:alpha:]]*=}
             if [[ -z ${value} ]]; then
-                error "Option '--${key}' must not be empty"
+                _p4m_error "Option '--${key}' must not be empty"
             fi
             if [[ "${key}" == "user" ]]; then
                 PORT4ME_USER=${value}
@@ -112,13 +114,16 @@ _p4me_parse_cli_args() {
             elif [[ "${key}" == "test" ]]; then
                 PORT4ME_TEST=${value}
             else
-                error "Unknown option: $1"
+                _p4m_error "Unknown option: $1"
             fi
+        elif $is_first; then
+            PORT4ME_TOOL=${1}
         else
-            error "Unknown option: $1"
+            _p4m_error "An unnamed \"--tool\" option is only allowed in the first position: $1"
         fi
         shift
-    done              
+        is_first=false
+    done
 }
 
 

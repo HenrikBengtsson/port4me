@@ -13,6 +13,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, echo=FALSE}
+Sys.setenv(PORT4ME_USER = "alice")
+```
+
 The **port4me** tool:
 
 * finds a free TCP port in [1024,65535] that the user can open
@@ -59,10 +63,13 @@ Assuming we're logged in as user `alice` and calls
 `port4me::port4me()` without arguments gives us a free port:
 
 ```r
-> Sys.info()[["user"]]
-[1] "alice"
-> port4me::port4me()
-[1] 30845
+Sys.info()[["user"]]
+```
+```plain
+## [1] "alice"
+```
+```{r}
+port4me::port4me()
 ```
 
 As we will see later, each user on the system is likely to get their
@@ -70,33 +77,35 @@ own unique port.  Because of this, it can be used to specifying a port
 that some tool should use, e.g.
 
 ```r
-> shiny::runApp(port = port4me::port4me())
+shiny::runApp(port = port4me::port4me())
 ```
 
 As long as this port is available, `alice` will always get the same
 port across R sessions and over time.  For example, if they return
 next week and retry, it's likely they still get:
 
-```r
-> port4me::port4me()
-[1] 30845
-> port4me::port4me()
-[1] 30845
+```{r}
+port4me::port4me()
+port4me::port4me()
 ```
 
 However, if port 30845 is already occupied, the next port in the
 pseudo-random sequence is considered, e.g.
 
-```r
-> port4me::port4me()
-[1] 19654
+```{r, echo=FALSE}
+Sys.setenv(PORT4ME_EXCLUDE = port4me::port4me())
+```
+```{r}
+port4me::port4me()
+```
+```{r, echo=FALSE}
+Sys.unsetenv("PORT4ME_EXCLUDE")
 ```
 
 To see the first five ports scanned, run:
 
-```r
-> port4me::port4me(list = 5)
-[1] 52613 13829 54194  1330 34287
+```{r}
+port4me::port4me(list = 5)
 ```
 
 
@@ -109,24 +118,28 @@ when user `bob` uses the `port4me` tool, they see another set of ports
 being scanned:
 
 ```r
-> Sys.info()[["user"]]
-[1] "bob"
-> port4me::port4me(list = 5)
-[1] 54242 4930 42139 14723 55707
+Sys.info()[["user"]]
+```
+```plain
+## [1] "bob"
+```
+```{r}
+port4me::port4me(list = 5)
 ```
 
 For testing and demonstration purposes, one can emulate another user
 by specifying argument `user`, e.g.
 
 ```r
-> Sys.info()[["user"]]
-[1] "alice"
-> port4me::port4me()
-[1] 30845
-> port4me::port4me(user = "bob")
-[1] 54242
-> port4me::port4me(user = "carol")
-[1] 34307
+Sys.info()[["user"]]
+```
+```plain
+## [1] "alice"
+```
+```{r}
+port4me::port4me()
+port4me::port4me(user = "bob")
+port4me::port4me(user = "carol")
 ```
 
 ## Different ports for different software tools
@@ -136,25 +149,22 @@ time, e.g. two ports for two different Shiny apps.  In such case, they
 can specify argument `tool`, which results in a port sequence that is
 unique to both the user and the tool.  For example,
 
-```r
-> port4me::port4me()
-[1] 30845
-> port4me::port4me("myapp")
-[1] 55578
-> port4me::port4me("demo")
-[1] 32273
+```{r}
+port4me::port4me()
+port4me::port4me("myapp")
+port4me::port4me("demo")
 ```
 
 This allows us to do:
 
 ```r
-> shiny::runApp(appDir = "myapp", port = port4me::port4me("myapp"))
+shiny::runApp(appDir = "myapp", port = port4me::port4me("myapp"))
 ```
 
 and
 
 ```r
-> shiny::runApp(appDir = "demo", port = port4me::port4me("demo"))
+shiny::runApp(appDir = "demo", port = port4me::port4me("demo"))
 ```
 
 
@@ -171,7 +181,9 @@ so, they might choose to exclude the "flaky" ports by specifying them
 as a comma-separated values via argument `exclude`, e.g.
 
 ```r
-> port4me::port4me(exclude = c(30845, 32310))
+port4me::port4me(exclude = c(30845, 32310))
+```
+```plain
 [1] 20678
 ```
 
@@ -187,7 +199,7 @@ specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
 
 To set this permanently, append:
 
-```r
+```sh
 ## port4me customization
 ## https://github.com/HenrikBengtsson/port4me
 PORT4ME_EXCLUDE=30845,32310
@@ -197,7 +209,7 @@ export PORT4ME_EXCLUDE
 to the shell startup script, e.g. `~/.bashrc`.  Alternatively, it can
 be set specifically for R in `~/.Renviron` as:
 
-```r
+```sh
 ## port4me customization
 ## https://github.com/HenrikBengtsson/port4me
 PORT4ME_EXCLUDE=30845,32310
@@ -250,9 +262,8 @@ Analogously to excluding a set of ports, one can limit the range of
 ports to be scanned by specifying command-line argument `include`,
 e.g.
 
-```r
-> port4me::port4me(include = c(2000:2123, 4321, 10000:10999))
-[1] 10451
+```{r}
+port4me::port4me(include = c(2000:2123, 4321, 10000:10999))
 ```
 
 where the default corresponds to `include = 1024:65535`.  Analogously
@@ -268,9 +279,8 @@ for a free port, it is possible to also consider a predefined set of
 ports prior to the random ones by specifying command-line argument
 `prepend`, e.g.
 
-```r
-> port4me::port4me(prepend = c(4321, 11001), list = 5)
-[1]  4321 11001 30845 19654 32310
+```{r}
+port4me::port4me(prepend = c(4321, 11001), list = 5)
 ```
 
 An alternative to specify them via a command-line option, is to
@@ -293,24 +303,27 @@ regardless of user, set `PORT4ME_PREPEND_SITE`.
 To install the R **portme** package, do:
 
 ```r
+install.packages("port4me")
+```
+
+To install the development version, do:
+
+```r
 remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 ```
 
-Then call it as:
+To try it out, call:
 
-```r
-> port4me::port4me("jupyter-notebook")
-[1] 47467
+```{r}
+port4me::port4me("jupyter-notebook")
 ```
 
 or
 
 ```sh
 Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
-47467
+29525
 ```
-
-to test it.
 
 
 ## The port4me Algorithm
@@ -365,26 +378,28 @@ to test it.
 * A _[Linear congruential generator (LCG)]_ will be used to generate
   the pseudo-random port sequence
 
-  - the next seed is calculated based on the current seed $s$ and
-    parameters $a, c, m > 1$ as $s <- (a * s + c) \% m$
+  - the next seed, $s_{n+1}$ is calculated based on the current seed
+    $s_n$ and parameters $a, c, m > 1$ as
+    $s_{n+1} = (a * s_{n} + c) \% m$
 
   - the LCG algorithm must not assume that the current LCG seed is
     within $[0,m-1]$, i.e. it should apply modulo $m$ on the seed
     first to avoid integer overflow
 
-  - the LCG algorithm may produce the same output seed as input
-    seed. To avoid this resulting in a constant LCG stream, increment
-    the seed by one and recalculate whenever this happens
+  - the LCG algorithm may produce the same output seed as input seed,
+    which may happen when the seed is $s_n = m - (a - c)$.  To avoid
+    this resulting in a constant LCG stream, increment the seed by one
+    and recalculate whenever this happens
 
   - LCG parameters should be $m = 2^{16} + 1$, $a = 75$, and $c = 74$
     ("ZX81")
   
-     - this requires only 32-bit integer arithmetic, because $m <
-       2^{32}$
+     - this requires only 32-bit integer arithmetic, because
+       $m < 2^{32}$
      
-     - if the initial seed is $s = m - (a - c) = m - 1 = 2^{16}$, then
-       the next LCG seed will be the same, which is then handled by
-       the above increment-by-one workaround
+     - if the initial seed is $s_0 = m - (a - c)$, which here is
+       $m - 1 = 2^{16}$, then the next LCG seed will be the same, 
+       which is then handled by the above increment-by-one workaround
   
 * A _32-bit integer string hashcode_ will be used to generate an
   integer in $[0,2^{32}-1]$ from an ASCII string with any number of
