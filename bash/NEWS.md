@@ -1,12 +1,19 @@
 # Version (development version)
 
-## New Features
+* ...
+
+
+# Version 0.5.1 [2023-03-23]
+
+## Significant Changes
 
 * `port4me <tool>` is now short for `port4me --tool=<tool>`.  Such an
   "unnamed" `--tool` option is only allowed if specified in the first
   location, otherwise it is considered an error.  This is analogue to
   not naming the `tool` argument in R, which is the first argument,
   e.g. `port4me::port4me(<tool>)`.
+
+## New Features
 
 * Now `port4me` can also use `netstat` to test whether a port is
   available or not.
