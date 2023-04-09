@@ -6,6 +6,9 @@ from getpass import getuser
 from os import getenv
 
 
+__all__ = ['port4me']
+
+
 # Source: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
 # Last updated: 2022-10-24
 unsafe_ports_chrome = getenv("PORT4ME_EXCLUDE_UNSAFE_CHROME")
@@ -31,11 +34,16 @@ def uint_hash(s):
 
 
 def is_port_free(port):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    return (s.connect_ex(('', port)) != 0)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return (s.connect_ex(('', port)) != 0)
 
 
-def LCG(seed, a=75, c=74, modulus=65537):  # constants from the ZX81's algorithm
+def lcg(seed, a=75, c=74, modulus=65537):
+    """
+    Get the next number in a sequence according to a Linear Congruential Generator algorithm.
+
+    The default constants are from the ZX81.
+    """
     seed %= modulus
     seed_next = (a*seed + c) % modulus
 
@@ -44,16 +52,16 @@ def LCG(seed, a=75, c=74, modulus=65537):  # constants from the ZX81's algorithm
     # seed = modulus-1. To make sure we handle any parameter setup, we
     # detect this manually, increment the seed, and recalculate.
     if seed_next == seed:
-        return LCG(seed+1, a, c, modulus)
+        return lcg(seed+1, a, c, modulus)
 
     #assert 0 <= seed_next <= modulus
     return seed_next
 
 
-def port4me(tool='', user='', min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
+def port4me(tool='', user='', whitelist=None, blacklist=None, skip=0, max_tries=65536, min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
-    
+
     This reduces the chance of different users trying to access the same port,
     without having to use a completely random new port every time.
 
@@ -63,13 +71,21 @@ def port4me(tool='', user='', min_port=1024, max_port=65535, chrome_safe=True, f
         Specify this to get a different port sequence for different tools
     user : str, optional
         Defaults to determining the username with getuser().
-    min_port: int, optional
+    whitelist : list, optional
+        If specified, skip any ports not in this list
+    blacklist : list, optional
+        Skip any ports in this list
+    skip : int, optional
+        Skip this many ports at the beginning
+    max_tries : int, optional
+        Raise a TimeoutError if it takes more than this many tries to find a port. Default is 65536.
+    min_port : int, optional
         Skips any ports that are smaller than this
-    max_port: int, optional
+    max_port : int, optional
         Skips any ports that are larger than this
-    chrome_safe: bool, optional
+    chrome_safe : bool, optional
         Whether to skip ports that Chrome refuses to open
-    firefox_safe: bool, optional
+    firefox_safe : bool, optional
         Whether to skip ports that Firefox refuses to open
 
     See Also
@@ -81,11 +97,21 @@ def port4me(tool='', user='', min_port=1024, max_port=65535, chrome_safe=True, f
 
     port = uint_hash((user+','+tool).rstrip(','))
 
+    tries = 1
     while (not (min_port <= port <= max_port)
+           or (skip and tries < skip)
+           or (whitelist and port not in whitelist)
+           or (blacklist and port in blacklist)
            or (chrome_safe and port in unsafe_ports_chrome)
            or (firefox_safe and port in unsafe_ports_firefox)
            or not is_port_free(port)):
-        port = LCG(port)
+
+        if max_tries and tries > max_tries:
+            raise TimeoutError("Failed to find a free TCP port after {} attempts".format(max_tries))
+
+        port = lcg(port)
+
+        tries += 1
 
     return port
 
