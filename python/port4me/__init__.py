@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from itertools import islice
 import socket
 from getpass import getuser
 from os import getenv
@@ -58,7 +59,33 @@ def lcg(seed, a=75, c=74, modulus=65537):
     return seed_next
 
 
-def port4me(tool='', user='', whitelist=None, blacklist=None, skip=0, max_tries=65536, min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
+def port4me_gen_unfiltered(tool='', user='', prepend=None):
+    if prepend is None:
+        prepend = [int(p) for p in getenv("PORT4ME_PREPEND", "").split(",") if p]
+        prepend.extend(int(p) for p in getenv("PORT4ME_PREPEND_SITE", "").split(",") if p and p not in prepend)
+
+    yield from prepend
+
+    if not user: user = getuser()
+
+    port = uint_hash((user+','+tool).rstrip(','))
+    while True:
+        port = lcg(port)
+        yield port
+
+
+def port4me_gen(tool='', user='', prepend=None, whitelist=None, blacklist=None, min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
+    for port in port4me_gen_unfiltered(tool, user, prepend):
+        if ((min_port <= port <= max_port)
+            and (not whitelist or port in whitelist)
+            and (not blacklist or port not in blacklist)
+            and (not chrome_safe or port not in unsafe_ports_chrome)
+            and (not firefox_safe or port not in unsafe_ports_firefox)):
+                yield port
+
+
+_list = list  # necessary to avoid conflicts with list() and the parameter which is named list
+def port4me(tool='', user='', prepend=None, whitelist=None, blacklist=None, skip=0, list=0, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
 
@@ -68,17 +95,25 @@ def port4me(tool='', user='', whitelist=None, blacklist=None, skip=0, max_tries=
     Parameters
     ----------
     tool : str, optional
-        Specify this to get a different port sequence for different tools
+        Used in the seed when generating port numbers, to get a different port sequence for different tools.
     user : str, optional
-        Defaults to determining the username with getuser().
+        Used in the seed when generating port numbers. Defaults to determining the username with getuser().
+    prepend : list, optional
+        A list of ports to try first
     whitelist : list, optional
         If specified, skip any ports not in this list
     blacklist : list, optional
         Skip any ports in this list
     skip : int, optional
-        Skip this many ports at the beginning
+        Skip this many ports at the beginning (after excluded ports have been skipped)
+    list : int, optional
+        Instead of returning a single port, return a list of this many ports without checking if they are free.
+    test : int, optional
+        If specified, return whether the port `test` is not in use. All other parameters will be ignored.
     max_tries : int, optional
         Raise a TimeoutError if it takes more than this many tries to find a port. Default is 65536.
+    must_work : bool, optional
+        If True, then an error is produced if no port could be found. If False, then `-1` is returned.
     min_port : int, optional
         Skips any ports that are smaller than this
     max_port : int, optional
@@ -93,23 +128,31 @@ def port4me(tool='', user='', whitelist=None, blacklist=None, skip=0, max_tries=
     `unsafe_ports_chrome` : set of ports to be skipped when `chrome_safe=True`
     `unsafe_ports_firefox` : set of ports to be skipped when `firefox_safe=True`
     """
-    if not user: user = getuser()
-
-    port = uint_hash((user+','+tool).rstrip(','))
+    if test:
+        return is_port_free(test)
 
     tries = 1
-    while (not (min_port <= port <= max_port)
-           or (skip and tries < skip)
-           or (whitelist and port not in whitelist)
-           or (blacklist and port in blacklist)
-           or (chrome_safe and port in unsafe_ports_chrome)
-           or (firefox_safe and port in unsafe_ports_firefox)
-           or not is_port_free(port)):
+
+    gen = port4me_gen(tool, user, prepend, whitelist, blacklist, min_port, max_port, chrome_safe, firefox_safe)
+
+    if skip:
+        for port in gen:
+            tries += 1
+            if tries > skip:
+                break
+
+    if list:
+        return _list(islice(gen, list))
+
+    for port in gen:
+        if is_port_free(port):
+            break
 
         if max_tries and tries > max_tries:
-            raise TimeoutError("Failed to find a free TCP port after {} attempts".format(max_tries))
-
-        port = lcg(port)
+            if must_work:
+                raise TimeoutError("Failed to find a free TCP port after {} attempts".format(max_tries))
+            else:
+                return -1
 
         tries += 1
 
