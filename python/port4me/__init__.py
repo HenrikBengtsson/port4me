@@ -7,24 +7,16 @@ from getpass import getuser
 from os import getenv
 
 
-__all__ = ['port4me']
+__all__ = ["port4me"]
 
 
 # Source: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
 # Last updated: 2022-10-24
-unsafe_ports_chrome = getenv("PORT4ME_EXCLUDE_UNSAFE_CHROME")
-if unsafe_ports_chrome:
-    unsafe_ports_chrome = set(map(int, unsafe_ports_chrome.split(',')))
-else:
-    unsafe_ports_chrome = {1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,69,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,137,139,143,161,179,389,427,465,512,513,514,515,526,530,531,532,540,548,554,556,563,587,601,636,989,990,993,995,1719,1720,1723,2049,3659,4045,5060,5061,6000,6566,6665,6666,6667,6668,6669,6697,10080}
+unsafe_ports_chrome = getenv("PORT4ME_EXCLUDE_UNSAFE_CHROME", "1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,69,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,137,139,143,161,179,389,427,465,512,513,514,515,526,530,531,532,540,548,554,556,563,587,601,636,989,990,993,995,1719,1720,1723,2049,3659,4045,5060,5061,6000,6566,6665,6666,6667,6668,6669,6697,10080")
 
 # Source: https://www-archive.mozilla.org/projects/netlib/portbanning#portlist
 # Last updated: 2022-10-24
-unsafe_ports_firefox = getenv("PORT4ME_EXCLUDE_UNSAFE_FIREFOX")
-if unsafe_ports_firefox:
-    unsafe_ports_firefox = set(map(int, unsafe_ports_firefox.split(',')))
-else:
-    unsafe_ports_firefox = {1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,139,143,179,389,465,512,513,514,515,526,530,531,532,540,556,563,587,601,636,993,995,2049,4045,6000}
+unsafe_ports_firefox = getenv("PORT4ME_EXCLUDE_UNSAFE_FIREFOX", "1,7,9,11,13,15,17,19,20,21,22,23,25,37,42,43,53,77,79,87,95,101,102,103,104,109,110,111,113,115,117,119,123,135,139,143,179,389,465,512,513,514,515,526,530,531,532,540,556,563,587,601,636,993,995,2049,4045,6000")
 
 
 def uint_hash(s):
@@ -36,7 +28,31 @@ def uint_hash(s):
 
 def is_port_free(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return (s.connect_ex(('', port)) != 0)
+        return (s.connect_ex(("", port)) != 0)
+
+
+def get_env_ports(var_name):
+    """Get an ordered set of ports from the environment variable `var_name` and `var_name`_SITE"""
+    ports_dict = {}  # using a dict filled with None here because there is no OrderedSet
+    names = [var_name, var_name+"_SITE"]
+    if var_name == "PORT4ME_EXCLUDE": names.append(var_name+"_UNSAFE")
+    for name in names:
+        if name == "PORT4ME_EXCLUDE_UNSAFE":
+            ports = getenv(name, "{chrome},{firefox}")
+        else:
+            ports = getenv(name, "")
+        try:
+            for port in ports.replace("{chrome}", unsafe_ports_chrome).replace("{firefox}", unsafe_ports_firefox).split(","):
+                if port:
+                    port1, _, port2 = port.partition("-")
+                    if port2:
+                        for i in range(int(port1), int(port2)+1):
+                            ports_dict[i] = None
+                    else:
+                        ports_dict[int(port1)] = None
+        except ValueError:
+            raise ValueError("invalid port in environment variable "+name)
+    return ports_dict.keys()
 
 
 def lcg(seed, a=75, c=74, modulus=65537):
@@ -59,33 +75,35 @@ def lcg(seed, a=75, c=74, modulus=65537):
     return seed_next
 
 
-def port4me_gen_unfiltered(tool='', user='', prepend=None):
+def port4me_gen_unfiltered(tool="", user="", prepend=None):
     if prepend is None:
-        prepend = [int(p) for p in getenv("PORT4ME_PREPEND", "").split(",") if p]
-        prepend.extend(int(p) for p in getenv("PORT4ME_PREPEND_SITE", "").split(",") if p and p not in prepend)
+        prepend = get_env_ports("PORT4ME_PREPEND")
 
     yield from prepend
 
-    if not user: user = getuser()
+    if not user: user = getenv("PORT4ME_USER", getuser())
+    if not tool: tool = getenv("PORT4ME_TOOL", "")
 
-    port = uint_hash((user+','+tool).rstrip(','))
+    port = uint_hash((user+","+tool).rstrip(","))
     while True:
         port = lcg(port)
         yield port
 
 
-def port4me_gen(tool='', user='', prepend=None, whitelist=None, blacklist=None, min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
+def port4me_gen(tool="", user="", prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
+    if include is None:
+        include = get_env_ports("PORT4ME_INCLUDE")
+    if exclude is None:
+        exclude = get_env_ports("PORT4ME_EXCLUDE")
     for port in port4me_gen_unfiltered(tool, user, prepend):
         if ((min_port <= port <= max_port)
-            and (not whitelist or port in whitelist)
-            and (not blacklist or port not in blacklist)
-            and (not chrome_safe or port not in unsafe_ports_chrome)
-            and (not firefox_safe or port not in unsafe_ports_firefox)):
+            and (not include or port in include)
+            and (not exclude or port not in exclude)):
                 yield port
 
 
 _list = list  # necessary to avoid conflicts with list() and the parameter which is named list
-def port4me(tool='', user='', prepend=None, whitelist=None, blacklist=None, skip=0, list=0, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535, chrome_safe=True, firefox_safe=True):
+def port4me(tool="", user="", prepend=None, include=None, exclude=None, skip=None, list=0, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
 
@@ -100,9 +118,9 @@ def port4me(tool='', user='', prepend=None, whitelist=None, blacklist=None, skip
         Used in the seed when generating port numbers. Defaults to determining the username with getuser().
     prepend : list, optional
         A list of ports to try first
-    whitelist : list, optional
+    include : list, optional
         If specified, skip any ports not in this list
-    blacklist : list, optional
+    exclude : list, optional
         Skip any ports in this list
     skip : int, optional
         Skip this many ports at the beginning (after excluded ports have been skipped)
@@ -118,23 +136,16 @@ def port4me(tool='', user='', prepend=None, whitelist=None, blacklist=None, skip
         Skips any ports that are smaller than this
     max_port : int, optional
         Skips any ports that are larger than this
-    chrome_safe : bool, optional
-        Whether to skip ports that Chrome refuses to open
-    firefox_safe : bool, optional
-        Whether to skip ports that Firefox refuses to open
-
-    See Also
-    --------
-    `unsafe_ports_chrome` : set of ports to be skipped when `chrome_safe=True`
-    `unsafe_ports_firefox` : set of ports to be skipped when `firefox_safe=True`
     """
     if test:
         return is_port_free(test)
 
     tries = 1
 
-    gen = port4me_gen(tool, user, prepend, whitelist, blacklist, min_port, max_port, chrome_safe, firefox_safe)
+    gen = port4me_gen(tool, user, prepend, include, exclude, min_port, max_port)
 
+    if skip is None:
+        skip = getenv("PORT4ME_SKIP", 0)
     if skip:
         for port in gen:
             tries += 1
@@ -159,8 +170,5 @@ def port4me(tool='', user='', prepend=None, whitelist=None, blacklist=None, skip
     return port
 
 
-if __name__ == '__main__':
-    print(port4me(user='alice'))
-    print(port4me('rstudio', user='alice'))
-    print(port4me('jupyter-notebook', user='alice'))  # gets incorrect result
-    print(port4me(user='bob'))
+if __name__ == "__main__":
+    print(port4me())
