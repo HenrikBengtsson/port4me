@@ -149,10 +149,12 @@ def port4me(tool="", user="", prepend=None, include=None, exclude=None, skip=Non
 
     tries = 1
 
+    gen = port4me_gen(tool, user, prepend, include, exclude, skip, min_port, max_port)
+
     if list:
         return _list(islice(gen, list))
 
-    for port in port4me_gen(tool, user, prepend, include, exclude, skip, min_port, max_port):
+    for port in gen:
         if is_port_free(port):
             break
 
