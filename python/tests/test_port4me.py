@@ -18,4 +18,4 @@ def test_bob():
 
 
 def test_bob_skip_exclude():
-    assert port4me('', 'bob', list=2, skip=1, exclude=[54252, 14723]) == [42139, 55707]
+    assert port4me('', 'bob', list=2, skip=1, exclude=[54242, 14723]) == [42139, 55707]
