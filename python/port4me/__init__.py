@@ -150,6 +150,7 @@ def port4me(tool="", user="", prepend=None, include=None, exclude=None, skip=Non
 
     if skip is None:
         skip = getenv("PORT4ME_SKIP", 0)
+        skip = int(skip)
     gen = islice(gen, skip, None)
 
     if list:
