@@ -1,6 +1,8 @@
 # Version (development version)
 
-* ...
+## Miscellaneous
+
+* Two of the examples for excluding ports had the wrong output.
 
 
 # Version 0.5.1 [2023-03-23]

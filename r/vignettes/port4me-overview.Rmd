@@ -175,16 +175,17 @@ always a risk that another process occupies any given port.  The more
 users there are on the same machine, the higher the risk is for this
 to happen.  If a user is unlucky, they might experience this
 frequently.  For example, `alice` might find that the first port
-(30845) works only one out 10 times, whereas the second port (19654)
-works 99 out 100 times, and the third one (32310) works so and so.  If
-so, they might choose to exclude the "flaky" ports by specifying them
-as a comma-separated values via argument `exclude`, e.g.
+(30845) works only one out 10 times, the second port (19654) works 99
+out 100 times, and the third one (32310) works rarely.  If so, they
+might choose to exclude the ports that are most likely to be used by
+specifying them as a comma-separated values via option `--exclude`,
+e.g.
 
 ```r
 port4me::port4me(exclude = c(30845, 32310))
 ```
 ```plain
-[1] 20678
+[1] 19654
 ```
 
 An alternative to specify them via a command-line option, is to
@@ -194,7 +195,7 @@ specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
 {alice}$ PORT4ME_EXCLUDE=30845,32310 R
 ...
 > port4me::port4me(exclude = c(30845, 32310))
-[1] 20678
+[1] 19654
 ```
 
 To set this permanently, append:

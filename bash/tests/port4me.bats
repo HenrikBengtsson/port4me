@@ -22,6 +22,12 @@ setup() {
     assert_output "22486"
 }
 
+@test "port4me --user=alice --exclude=30845,32310" {
+    run port4me --user=alice --exclude=30845,32310
+    assert_success
+    assert_output "19654"
+}
+
 @test "port4me --user=alice --tool=jupyter-notebook" {
     run port4me --user=alice --tool=jupyter-notebook
     assert_success
