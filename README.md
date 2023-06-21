@@ -395,7 +395,7 @@ $ Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
 
 * [x] Add `port4me` API in Python
 
-* [ ] Relase **port4me** package on the PyPi Python repository
+* [ ] Relase **port4me** package on the PyPI Python repository
 
 * [ ] Add command-line tool in Python
 
