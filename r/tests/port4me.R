@@ -45,6 +45,21 @@ stopifnot(
   all(ports == truth)
 )
 
+exclude <- c(30845, 32310)
+message(sprintf("- port4me(exclude = c(%s))", paste(exclude, collapse = ", ")))
+port <- port4me(exclude = exclude)
+print(port)
+stopifnot(
+  length(port) == 1L,
+  is.integer(port),
+  is.finite(port),
+  port > 0L,
+  port <= 65535L,
+  port >= 1024L,
+  port == setdiff(truth, exclude)[1]
+)
+
+
 n <- 200e3
 message(sprintf("- port4me(list = %d)", n))
 ports <- port4me(list = n)
