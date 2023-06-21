@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__all__ = ["port4me"]
+__all__ = ["port4me", "port4me_gen"]
 
 
 # Source: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
@@ -77,7 +77,7 @@ def lcg(seed, a=75, c=74, modulus=65537):
     return seed_next
 
 
-def port4me_gen_unfiltered(tool="", user="", prepend=None):
+def port4me_gen_unfiltered(tool=None, user=None, prepend=None):
     if prepend is None:
         prepend = get_env_ports("PORT4ME_PREPEND")
 
@@ -85,7 +85,7 @@ def port4me_gen_unfiltered(tool="", user="", prepend=None):
 
     if not user:
         user = getenv("PORT4ME_USER", getuser())
-    if not tool:
+    if tool is None:
         tool = getenv("PORT4ME_TOOL", "")
 
     port = uint_hash((user+","+tool).rstrip(","))
@@ -94,7 +94,7 @@ def port4me_gen_unfiltered(tool="", user="", prepend=None):
         yield port
 
 
-def port4me_gen(tool="", user="", prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
+def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
     if include is None:
         include = get_env_ports("PORT4ME_INCLUDE")
     if exclude is None:
@@ -107,7 +107,7 @@ def port4me_gen(tool="", user="", prepend=None, include=None, exclude=None, min_
 
 
 _list = list  # necessary to avoid conflicts with list() and the parameter which is named list
-def port4me(tool="", user="", prepend=None, include=None, exclude=None, skip=None, list=None, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535):
+def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip=None, list=None, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
 
@@ -156,7 +156,7 @@ def port4me(tool="", user="", prepend=None, include=None, exclude=None, skip=Non
     if list is None:
         list = getenv("PORT4ME_LIST", 0)
         list = int(list)
-    
+
     if list:
         return _list(islice(gen, list))
 
