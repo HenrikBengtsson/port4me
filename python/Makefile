@@ -5,11 +5,11 @@ all: install test
 test:
 	pytest
 
-install-req:
+requirements:
 	python -m pip install --upgrade pip
 	pip install flake8 pytest
 
-install: install-req
+install:
 	pip install .
 
 
