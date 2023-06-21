@@ -90,12 +90,19 @@ def port4me_gen_unfiltered(tool="", user="", prepend=None):
         yield port
 
 
-def port4me_gen(tool="", user="", prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
+def port4me_gen(tool="", user="", prepend=None, include=None, exclude=None, skip=None, min_port=1024, max_port=65535):
+    gen = port4me_gen_unfiltered(tool, user, prepend)
+    if skip is None:
+        skip = getenv("PORT4ME_SKIP", 0)
+    if skip:
+        for _ in range(skip):
+            next(gen)
+
     if include is None:
         include = get_env_ports("PORT4ME_INCLUDE")
     if exclude is None:
         exclude = get_env_ports("PORT4ME_EXCLUDE")
-    for port in port4me_gen_unfiltered(tool, user, prepend):
+    for port in gen:
         if ((min_port <= port <= max_port)
             and (not include or port in include)
             and (not exclude or port not in exclude)):
@@ -142,20 +149,10 @@ def port4me(tool="", user="", prepend=None, include=None, exclude=None, skip=Non
 
     tries = 1
 
-    gen = port4me_gen(tool, user, prepend, include, exclude, min_port, max_port)
-
-    if skip is None:
-        skip = getenv("PORT4ME_SKIP", 0)
-    if skip:
-        for port in gen:
-            tries += 1
-            if tries > skip:
-                break
-
     if list:
         return _list(islice(gen, list))
 
-    for port in gen:
+    for port in port4me_gen(tool, user, prepend, include, exclude, skip, min_port, max_port):
         if is_port_free(port):
             break
 
