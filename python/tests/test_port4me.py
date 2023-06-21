@@ -34,8 +34,18 @@ def test_alice_tool_env():
     environ['PORT4ME_TOOL'] = 'jupyter-notebook'
     assert port4me('', 'alice') == 29525
     environ.pop('PORT4ME_TOOL')
+
+    
+def test_alice_skip():
+    assert port4me('', 'alice', list=3, skip=2) == [32310, 63992, 15273]
     
 
+def test_alice_skip_env():
+    environ['PORT4ME_SKIP'] = '2'
+    assert port4me('', 'alice', list=3) == [32310, 63992, 15273]
+    environ.pop('PORT4ME_SKIP')
+
+    
 def test_alice_exclude():
     assert port4me('', 'alice', exclude=[30845, 32310]) == 19654
 
