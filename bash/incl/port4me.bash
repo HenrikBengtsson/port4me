@@ -243,11 +243,13 @@ port4me() {
     while (( tries < max_tries )); do
         if (( ${#prepend[@]} > 0 )); then
             port=${prepend[0]}
+            ${PORT4ME_DEBUG:-false} && >&2 printf "Port prepended: %d\n" "$port"
             (( port < 1 || port > 65535 )) && _p4m_error "Prepended port out of range [1,65535]: ${port}"
             prepend=("${prepend[@]:1}") ## drop first element
         else
             _p4m_lcg > /dev/null
             port=${LCG_SEED:?}
+            ${PORT4ME_DEBUG:-false} && >&2 printf "Port drawn: %d\n" "$port"
         fi
 
         ## Skip?
@@ -265,9 +267,10 @@ port4me() {
                 continue
             fi
         elif (( LCG_SEED < 1024 || LCG_SEED > 65535 )); then
+            ${PORT4ME_DEBUG:-false} && >&2 printf "Port skipped, because LCG_SEED is out of range: %d\n" "$LCG_SEED"
             continue
         fi
-
+        
         tries=$(( tries + 1 ))
         count=$((count + 1))
 
