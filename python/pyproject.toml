@@ -20,3 +20,8 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/HenrikBengtsson/port4me"
 "Bug Tracker" = "https://github.com/HenrikBengtsson/port4me/issues"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
