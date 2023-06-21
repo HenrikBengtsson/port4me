@@ -22,6 +22,12 @@ setup() {
     assert_output "22486"
 }
 
+@test "port4me --user=alice --tool=jupyter-notebook" {
+    run port4me --user=alice --tool=jupyter-notebook
+    assert_success
+    assert_output "29525"
+}
+
 @test "port4me --list=10" {
     run port4me --user=alice --list=10
     assert_success
