@@ -1,12 +1,23 @@
 from port4me import port4me
 
+def test_alice():
+    assert port4me('', 'alice') == 30845
 
+
+def test_alice():
+    assert port4me('', 'alice', list=1) == [30845]
+
+    
 def test_alice():
     assert port4me('', 'alice', list=5) == [30845, 19654, 32310, 63992, 15273]
 
 
 def test_alice_tool():
     assert port4me('jupyter-notebook', 'alice', list=1) == [29525]
+
+
+def test_alice_exclude():
+    assert port4me('', 'alice', exclude=[30845, 32310]) == 19654
 
 
 def test_alice_prepend():
