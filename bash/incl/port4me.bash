@@ -31,7 +31,7 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me
 #'
-#' Version: 0.5.0-9001
+#' Version: 0.5.1-9002
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: ISC
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -248,6 +248,13 @@ port4me() {
             prepend=("${prepend[@]:1}") ## drop first element
         else
             _p4m_lcg > /dev/null
+            
+            ## Skip?
+            if (( LCG_SEED < 1024 || LCG_SEED > 65535 )); then
+              ${PORT4ME_DEBUG:-false} && >&2 printf "Skip to next, because LCG_SEED is out of range: %d\n" "$LCG_SEED"
+              continue
+            fi
+            
             port=${LCG_SEED:?}
             ${PORT4ME_DEBUG:-false} && >&2 printf "Port drawn: %d\n" "$port"
         fi
@@ -266,9 +273,6 @@ port4me() {
                 ${PORT4ME_DEBUG:-false} && >&2 printf "Port not included: %d\n" "$port"
                 continue
             fi
-        elif (( LCG_SEED < 1024 || LCG_SEED > 65535 )); then
-            ${PORT4ME_DEBUG:-false} && >&2 printf "Port skipped, because LCG_SEED is out of range: %d\n" "$LCG_SEED"
-            continue
         fi
         
         tries=$(( tries + 1 ))

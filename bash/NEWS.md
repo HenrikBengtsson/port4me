@@ -1,6 +1,9 @@
 # Version (development version)
 
-* ...
+## Bug Fixes
+
+* Prepending ports, e.g. `port4me --prepend=<ports>`, did not
+  work since version 0.4.0. Any ports specified where ignored.
 
 
 # Version 0.5.1 [2023-03-23]
