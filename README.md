@@ -7,8 +7,10 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_Note, this is a project under development. Feel free to kick the
-tires. Feedback is appreciated. /Henrik 2022-10-29_
+_Note, although stable and well tested, consider this project to be
+under development. Feel free to kick the tires using the Bash, the
+Python, or the R implementations. Feedback is appreciated. /Henrik
+2023-06-21_
 
 ## Features
 
@@ -25,6 +27,8 @@ The **[port4me]** tool:
 * gives different ports for different software tools
 
 * requires no configuration
+
+* implemented in Bash, Python, and R
 
 * can be reproduced perfectly on all operating systems and in all
   common programming languages
