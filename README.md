@@ -389,7 +389,11 @@ $ Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
 
 * [x] Freeze the algorithm and the parameters
 
-* [ ] Prototype `port4me` API and command-line tool in Python
+* [x] Add `port4me` API in Python
+
+* [ ] Relase **port4me** package on the PyPi Python repository
+
+* [ ] Add command-line tool in Python
 
 
 ## The port4me Algorithm
