@@ -28,6 +28,13 @@ setup() {
     assert_output "19654"
 }
 
+@test "port4me --user=alice --prepend=4321,11001 --list=5" {
+    run port4me --user=alice --prepend=4321,11001 --list=5
+    assert_success
+    truth=(4321 11001 30845 19654 32310)
+    [[ "${lines[*]}" == "${truth[*]}" ]]
+}
+
 @test "port4me --user=alice --include=2000-2123,4321,10000-10999" {
     run port4me --user=alice --include=2000-2123,4321,10000-10999
     assert_success
