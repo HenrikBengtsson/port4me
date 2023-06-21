@@ -6,6 +6,4 @@
 ^port4me[.]R$
 ^incl
 ^cran-comments.md$
-
-
-
+^.local
