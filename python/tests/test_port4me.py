@@ -25,7 +25,7 @@ def test_alice_exclude():
 
 
 def test_alice_prepend():
-    assert port4me('', 'alice', list=5, prepend=[9876, 5432]) == [9876, 5432, 30845, 19654, 32310]
+    assert port4me('', 'alice', list=5, prepend=[4321, 11001]) == [4321, 11001, 30845, 19654, 32310]
 
 
 def test_bob():
