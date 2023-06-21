@@ -22,7 +22,7 @@ unsafe_ports_firefox = getenv("PORT4ME_EXCLUDE_UNSAFE_FIREFOX", "1,7,9,11,13,15,
 def uint_hash(s):
     h = 0
     for char in s:
-        h = (31 * h + ord(char)) % 2**32 
+        h = (31 * h + ord(char)) % 2**32
     return h
 
 
@@ -35,7 +35,9 @@ def get_env_ports(var_name):
     """Get an ordered set of ports from the environment variable `var_name` and `var_name`_SITE"""
     ports_dict = {}  # using a dict filled with None here because there is no OrderedSet
     names = [var_name, var_name+"_SITE"]
-    if var_name == "PORT4ME_EXCLUDE": names.append(var_name+"_UNSAFE")
+    if var_name == "PORT4ME_EXCLUDE":
+        names.append(var_name+"_UNSAFE")
+
     for name in names:
         if name == "PORT4ME_EXCLUDE_UNSAFE":
             ports = getenv(name, "{chrome},{firefox}")
@@ -81,8 +83,10 @@ def port4me_gen_unfiltered(tool="", user="", prepend=None):
 
     yield from prepend
 
-    if not user: user = getenv("PORT4ME_USER", getuser())
-    if not tool: tool = getenv("PORT4ME_TOOL", "")
+    if not user:
+        user = getenv("PORT4ME_USER", getuser())
+    if not tool:
+        tool = getenv("PORT4ME_TOOL", "")
 
     port = uint_hash((user+","+tool).rstrip(","))
     while True:
@@ -97,9 +101,9 @@ def port4me_gen(tool="", user="", prepend=None, include=None, exclude=None, min_
         exclude = get_env_ports("PORT4ME_EXCLUDE")
     for port in port4me_gen_unfiltered(tool, user, prepend):
         if ((min_port <= port <= max_port)
-            and (not include or port in include)
-            and (not exclude or port not in exclude)):
-                yield port
+                and (not include or port in include)
+                and (not exclude or port not in exclude)):
+            yield port
 
 
 _list = list  # necessary to avoid conflicts with list() and the parameter which is named list
