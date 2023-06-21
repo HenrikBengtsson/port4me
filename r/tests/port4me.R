@@ -60,6 +60,21 @@ stopifnot(
 )
 
 
+include <- c(2000:2123, 4321, 10000:10999)
+message("- port4me(include = c(2000:2123, 4321, 10000:10999))")
+port <- port4me(include = include)
+print(port)
+stopifnot(
+  length(port) == 1L,
+  is.integer(port),
+  is.finite(port),
+  port > 0L,
+  port <= 65535L,
+  port >= 1024L,
+  port == 10451L
+)
+
+
 n <- 200e3
 message(sprintf("- port4me(list = %d)", n))
 ports <- port4me(list = n)

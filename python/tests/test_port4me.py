@@ -19,6 +19,10 @@ def test_alice_tool():
 def test_alice_exclude():
     assert port4me('', 'alice', exclude=[30845, 32310]) == 19654
 
+   
+def test_alice_exclude():
+    assert port4me('', 'alice', include=list(range(2000, 2123+1)) + [4321] + list(range(10000, 10999+1))) == 10451
+
 
 def test_alice_prepend():
     assert port4me('', 'alice', list=5, prepend=[9876, 5432]) == [9876, 5432, 30845, 19654, 32310]
