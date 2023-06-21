@@ -18,4 +18,3 @@ check: build
 .local/port4me-overview.md:
 	mkdir -p ".local"
 	Rscript -e "rmarkdown::render('vignettes/port4me-overview.Rmd', rmarkdown::md_document(), output_dir = '.local')"
-
