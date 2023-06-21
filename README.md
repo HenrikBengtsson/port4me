@@ -143,7 +143,7 @@ tool.  For example,
 {alice}$ port4me --tool=rstudio
 22486
 {alice}$ port4me --tool=jupyter-notebook
-47467
+29525
 ```
 
 For conveniency, if the first option is unnames, then it is assumed it
@@ -307,7 +307,7 @@ error (stderr), which can be seen in the terminal. For example,
 
 ```sh
 {alice}$ jupyter notebook --port "$(port4me --tool=jupyter-notebook | tee /dev/stderr)"
-47467
+29525
 ```
 
 
@@ -359,8 +359,8 @@ To try it out, call:
 or
 
 ```sh
-Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
-47467
+$ Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
+29525
 ```
 
 
