@@ -19,10 +19,9 @@ def test_alice_list_five():
     assert port4me('', 'alice', list=5) == [30845, 19654, 32310, 63992, 15273]
 
 
-## FIXME: HB /2023-06-21
 def test_alice_list_five_env():
     environ['PORT4ME_LIST'] = '5'
-#    assert port4me('', 'alice') == [30845, 19654, 32310, 63992, 15273]
+    assert port4me('', 'alice') == [30845, 19654, 32310, 63992, 15273]
     environ.pop('PORT4ME_LIST')
 
 
