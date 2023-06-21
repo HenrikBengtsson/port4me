@@ -2,7 +2,13 @@
 
 ## Miscellaneous
 
-* Two of the examples for excluding ports had the wrong output.
+ * Two of the examples for excluding ports had the wrong output.
+
+## Bug Fixes
+
+ * If argument `prepend` was a numeric, but not an integer, then the
+   return port, or ports, would also be numeric. Now `port4me()`
+   returns integer ports also when `prepend` is numeric.
 
 
 # Version 0.5.1 [2023-03-23]

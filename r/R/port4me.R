@@ -166,6 +166,8 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
   max_tries <- as.integer(max_tries)
   if (is.character(prepend)) prepend <- parse_ports(prepend)
   stopifnot(is.numeric(prepend), !anyNA(prepend), all(prepend > 0), all(prepend <= 65535))
+  prepend <- as.integer(prepend)
+  stopifnot(is.integer(prepend), !anyNA(prepend), all(prepend > 0), all(prepend <= 65535))
   if (is.character(exclude)) exclude <- parse_ports(exclude)
   stopifnot(is.numeric(exclude), !anyNA(exclude), all(exclude > 0), all(exclude <= 65535))
   if (is.character(include)) include <- parse_ports(include)
