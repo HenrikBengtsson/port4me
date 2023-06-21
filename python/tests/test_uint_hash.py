@@ -10,4 +10,4 @@ def test_alice():
     assert uint_hash('alice,rstudio') == 3688618396
 
 def test_long():
-    assert uint_hash('port4me - get the same, personal, free TCP port over and over") == 1731535982
+    assert uint_hash('port4me - get the same, personal, free TCP port over and over') == 1731535982
