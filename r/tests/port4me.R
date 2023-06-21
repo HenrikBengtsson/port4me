@@ -75,6 +75,20 @@ stopifnot(
 )
 
 
+prepend <- c(4321, 11001)
+message("- port4me(prepend = c(4321, 11001))")
+ports <- port4me(prepend = prepend, list = 5L)
+stopifnot(
+  is.integer(ports),
+  length(ports) == 5L,
+  all(is.finite(ports)),
+  all(ports > 0L),
+  all(ports <= 65535L),
+  all(ports >= 1024L),
+  all(ports = c(prepend, truth))
+)
+
+
 n <- 200e3
 message(sprintf("- port4me(list = %d)", n))
 ports <- port4me(list = n)
