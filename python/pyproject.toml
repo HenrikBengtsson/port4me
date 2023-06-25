@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "port4me"
-version = "0.0.1-9000"
+dynamic = ["version"]
 authors = [
   { name="Henrik Bengtsson", email="henrikb@braju.com" },
 ]
@@ -20,6 +20,9 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/HenrikBengtsson/port4me"
 "Bug Tracker" = "https://github.com/HenrikBengtsson/port4me/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "port4me.__version__"}
 
 [tool.pytest.ini_options]
 addopts = [
