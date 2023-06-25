@@ -7,6 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
+__version__ = "0.0.1-9000"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -33,7 +34,8 @@ def is_port_free(port):
 
 def parse_ports(string):
     ports = []
-    for port in string.replace("{chrome}", unsafe_ports_chrome).replace("{firefox}", unsafe_ports_firefox).replace(",", " ").split():
+    for port in string.replace("{chrome}", unsafe_ports_chrome).replace(
+                               "{firefox}", unsafe_ports_firefox).replace(",", " ").split():
         if port:
             port1, _, port2 = port.partition("-")
             if port2:
@@ -78,7 +80,7 @@ def lcg(seed, a=75, c=74, modulus=65537):
     if seed_next == seed:
         return lcg(seed+1, a, c, modulus)
 
-    #assert 0 <= seed_next <= modulus
+    # assert 0 <= seed_next <= modulus
     return seed_next
 
 
@@ -112,7 +114,8 @@ def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None, 
 
 
 _list = list  # necessary to avoid conflicts with list() and the parameter which is named list
-def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip=None, list=None, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535):
+def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip=None,
+            list=None, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
 
