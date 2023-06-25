@@ -31,30 +31,35 @@ def is_port_free(port):
         return (s.connect_ex(("", port)) != 0)
 
 
+def parse_ports(string):
+    ports = []
+    for port in string.replace("{chrome}", unsafe_ports_chrome).replace("{firefox}", unsafe_ports_firefox).replace(",", " ").split():
+        if port:
+            port1, _, port2 = port.partition("-")
+            if port2:
+                ports.extend(range(int(port1), int(port2)+1))
+            else:
+                ports.append(int(port1))
+    return ports
+
+
 def get_env_ports(var_name):
     """Get an ordered set of ports from the environment variable `var_name` and `var_name`_SITE"""
-    ports_dict = {}  # using a dict filled with None here because there is no OrderedSet
+    ports = []
     names = [var_name, var_name+"_SITE"]
     if var_name == "PORT4ME_EXCLUDE":
         names.append(var_name+"_UNSAFE")
 
     for name in names:
         if name == "PORT4ME_EXCLUDE_UNSAFE":
-            ports = getenv(name, "{chrome},{firefox}")
+            ports_str = getenv(name, "{chrome},{firefox}")
         else:
-            ports = getenv(name, "")
+            ports_str = getenv(name, "")
         try:
-            for port in ports.replace("{chrome}", unsafe_ports_chrome).replace("{firefox}", unsafe_ports_firefox).split(","):
-                if port:
-                    port1, _, port2 = port.partition("-")
-                    if port2:
-                        for i in range(int(port1), int(port2)+1):
-                            ports_dict[i] = None
-                    else:
-                        ports_dict[int(port1)] = None
+            ports.extend(parse_ports(ports_str))
         except ValueError:
             raise ValueError("invalid port in environment variable "+name)
-    return ports_dict.keys()
+    return dict.fromkeys(ports).keys()  # discard duplicates but preserve order
 
 
 def lcg(seed, a=75, c=74, modulus=65537):
