@@ -87,7 +87,7 @@ def lcg(seed, a=75, c=74, modulus=65537):
 def port4me_gen_unfiltered(tool=None, user=None, prepend=None):
     if prepend is None:
         prepend = get_env_ports("PORT4ME_PREPEND")
-    elif isinstance(str, prepend):
+    elif isinstance(prepend, str):
         prepend = parse_ports(prepend)
 
     yield from prepend
@@ -106,12 +106,12 @@ def port4me_gen_unfiltered(tool=None, user=None, prepend=None):
 def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
     if include is None:
         include = get_env_ports("PORT4ME_INCLUDE")
-    elif isinstance(str, include):
+    elif isinstance(include, str):
         include = parse_ports(include)
 
     if exclude is None:
         exclude = get_env_ports("PORT4ME_EXCLUDE")
-    elif isinstance(str, exclude):
+    elif isinstance(exclude, str):
         exclude = parse_ports(exclude)
 
     for port in port4me_gen_unfiltered(tool, user, prepend):
