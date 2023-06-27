@@ -63,6 +63,10 @@ def test_alice_include():
     assert port4me(user='alice', include=list(range(2000, 2123+1)) + [4321] + list(range(10000, 10999+1))) == 10451
 
 
+def test_alice_include_str():
+    assert port4me(user='alice', include="2000-2123,4321,10000-10999") == 10451
+
+
 def test_alice_include_env():
     include = list(range(2000, 2123+1)) + [4321] + list(range(10000, 10999+1))
     environ['PORT4ME_INCLUDE'] = ','.join(map(str, include))
