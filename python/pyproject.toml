@@ -29,3 +29,6 @@ version = {attr = "port4me.__version__"}
 addopts = [
     "--import-mode=importlib",
 ]
+
+[tool.hatch.version]
+path = "port4me/__init__.py"
