@@ -381,7 +381,7 @@ following from the command line:
 $ pip install --user port4me
 ```
 
-To install it to Python virtual environment, drop option `--user`.
+To install it to a Python virtual environment, drop option `--user`.
 
 To try it out, call:
 
