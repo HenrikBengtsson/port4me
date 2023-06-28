@@ -7,7 +7,7 @@ test:
 
 requirements:
 	python -m pip install --upgrade pip
-	pip install flake8 pytest
+	pip install hatch flake8 pytest
 
 install:
 	pip install .
