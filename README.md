@@ -370,34 +370,33 @@ $ Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
 ```
 
 
-## Roadmap
+### Python package
 
-* [x] Identify essential features
+The Python package **port4me** is available
+[PyPI](https://pypi.org/project/port4me/). To install the Python
+**portme** package to your personal Python package library, call the
+following from the command line:
 
-* [x] Prototype `port4me` command-line tool in Bash, e.g. `port4me
-      --list=5`
+```sh
+$ pip install --user port4me
+```
 
-* [x] Prototype `port4me` API and command-line tool in R,
-      e.g. `Rscript port4me.R --list=5`
+To install it to Python virtual environment, drop option `--user`.
 
-* [x] Add support for `PORT4ME_EXCLUDE` and `PORT4ME_EXCLUDE_SITE`
+To try it out, call:
 
-* [x] Standardize command-line interface between Bash and R
-      implementations
+```r
+>>> from port4me import port4me
+>>> port4me("jupyter-notebook")
+29525
+```
 
-* [x] Validate statistical properties, e.g. uniform sampling of ports
+or
 
-* [x] Add support for `PORT4ME_PREPEND` and `PORT4ME_PREPEND_SITE`
-
-* [x] Add support for `PORT4ME_INCLUDE` and `PORT4ME_INCLUDE_SITE`
-
-* [x] Freeze the algorithm and the parameters
-
-* [x] Add `port4me` API in Python
-
-* [ ] Relase **port4me** package on the PyPI Python repository
-
-* [ ] Add command-line tool in Python
+```sh
+$ python -m port4me --tool=jupyter-notebook
+29525
+```
 
 
 ## The port4me Algorithm
