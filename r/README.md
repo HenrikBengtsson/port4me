@@ -101,7 +101,7 @@ scanned:
 
     port4me::port4me(list = 5)
 
-    ## [1] 54242 4930 42139 14723 55707
+    ## [1] 54242  4930 42139 14723 55707
 
 For testing and demonstration purposes, one can emulate another user by
 specifying argument `user`, e.g.

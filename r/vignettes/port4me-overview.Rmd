@@ -59,8 +59,8 @@ implementation language.
 
 ## A quick introduction
 
-Assuming we're logged in as user `alice` and calls
-`port4me::port4me()` without arguments gives us a free port:
+Assuming we're logged in as user `alice`, calling `port4me::port4me()`
+without arguments gives us a free port:
 
 ```r
 Sys.info()[["user"]]
@@ -117,6 +117,9 @@ the current user (e.g. environment variable `$USER`).  For example,
 when user `bob` uses the `port4me` tool, they see another set of ports
 being scanned:
 
+```{r, echo = FALSE}
+Sys.setenv(PORT4ME_USER = "bob")
+```
 ```r
 Sys.info()[["user"]]
 ```
@@ -125,6 +128,9 @@ Sys.info()[["user"]]
 ```
 ```{r}
 port4me::port4me(list = 5)
+```
+```{r, echo = FALSE}
+Sys.setenv(PORT4ME_USER = "alice")
 ```
 
 For testing and demonstration purposes, one can emulate another user
@@ -194,7 +200,7 @@ specify them via environment variable `PORT4ME_EXCLUDE`, e.g.
 ```r
 {alice}$ PORT4ME_EXCLUDE=30845,32310 R
 ...
-> port4me::port4me(exclude = c(30845, 32310))
+> port4me::port4me()
 [1] 19654
 ```
 
@@ -301,7 +307,7 @@ regardless of user, set `PORT4ME_PREPEND_SITE`.
 
 ## Installation
 
-To install the R **portme** package, do:
+To install the R **port4me** package, do:
 
 ```r
 install.packages("port4me")
