@@ -7,7 +7,8 @@ from getpass import getuser
 from os import getenv
 
 
-__all__ = ["port4me"]
+__version__ = "0.0.1-9000"
+__all__ = ["port4me", "port4me_gen"]
 
 
 # Source: https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/net/base/port_util.cc
@@ -31,30 +32,36 @@ def is_port_free(port):
         return (s.connect_ex(("", port)) != 0)
 
 
+def parse_ports(string):
+    ports = []
+    for port in string.replace("{chrome}", unsafe_ports_chrome).replace(
+                               "{firefox}", unsafe_ports_firefox).replace(",", " ").split():
+        if port:
+            port1, _, port2 = port.partition("-")
+            if port2:
+                ports.extend(range(int(port1), int(port2)+1))
+            else:
+                ports.append(int(port1))
+    return ports
+
+
 def get_env_ports(var_name):
     """Get an ordered set of ports from the environment variable `var_name` and `var_name`_SITE"""
-    ports_dict = {}  # using a dict filled with None here because there is no OrderedSet
+    ports = []
     names = [var_name, var_name+"_SITE"]
     if var_name == "PORT4ME_EXCLUDE":
         names.append(var_name+"_UNSAFE")
 
     for name in names:
         if name == "PORT4ME_EXCLUDE_UNSAFE":
-            ports = getenv(name, "{chrome},{firefox}")
+            ports_str = getenv(name, "{chrome},{firefox}")
         else:
-            ports = getenv(name, "")
+            ports_str = getenv(name, "")
         try:
-            for port in ports.replace("{chrome}", unsafe_ports_chrome).replace("{firefox}", unsafe_ports_firefox).split(","):
-                if port:
-                    port1, _, port2 = port.partition("-")
-                    if port2:
-                        for i in range(int(port1), int(port2)+1):
-                            ports_dict[i] = None
-                    else:
-                        ports_dict[int(port1)] = None
+            ports.extend(parse_ports(ports_str))
         except ValueError:
             raise ValueError("invalid port in environment variable "+name)
-    return ports_dict.keys()
+    return dict.fromkeys(ports).keys()  # discard duplicates but preserve order
 
 
 def lcg(seed, a=75, c=74, modulus=65537):
@@ -73,19 +80,21 @@ def lcg(seed, a=75, c=74, modulus=65537):
     if seed_next == seed:
         return lcg(seed+1, a, c, modulus)
 
-    #assert 0 <= seed_next <= modulus
+    # assert 0 <= seed_next <= modulus
     return seed_next
 
 
-def port4me_gen_unfiltered(tool="", user="", prepend=None):
+def port4me_gen_unfiltered(tool=None, user=None, prepend=None):
     if prepend is None:
         prepend = get_env_ports("PORT4ME_PREPEND")
+    elif isinstance(prepend, str):
+        prepend = parse_ports(prepend)
 
     yield from prepend
 
     if not user:
         user = getenv("PORT4ME_USER", getuser())
-    if not tool:
+    if tool is None:
         tool = getenv("PORT4ME_TOOL", "")
 
     port = uint_hash((user+","+tool).rstrip(","))
@@ -94,11 +103,17 @@ def port4me_gen_unfiltered(tool="", user="", prepend=None):
         yield port
 
 
-def port4me_gen(tool="", user="", prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
+def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
     if include is None:
         include = get_env_ports("PORT4ME_INCLUDE")
+    elif isinstance(include, str):
+        include = parse_ports(include)
+
     if exclude is None:
         exclude = get_env_ports("PORT4ME_EXCLUDE")
+    elif isinstance(exclude, str):
+        exclude = parse_ports(exclude)
+
     for port in port4me_gen_unfiltered(tool, user, prepend):
         if ((min_port <= port <= max_port)
                 and (not include or port in include)
@@ -107,7 +122,8 @@ def port4me_gen(tool="", user="", prepend=None, include=None, exclude=None, min_
 
 
 _list = list  # necessary to avoid conflicts with list() and the parameter which is named list
-def port4me(tool="", user="", prepend=None, include=None, exclude=None, skip=None, list=None, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535):
+def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip=None,
+            list=None, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
 
@@ -156,7 +172,7 @@ def port4me(tool="", user="", prepend=None, include=None, exclude=None, skip=Non
     if list is None:
         list = getenv("PORT4ME_LIST", 0)
         list = int(list)
-    
+
     if list:
         return _list(islice(gen, list))
 

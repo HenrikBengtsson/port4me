@@ -45,7 +45,7 @@ implementation language.
 
 ## A quick introduction
 
-Assuming we’re logged in as user `alice` and calls `port4me::port4me()`
+Assuming we’re logged in as user `alice`, calling `port4me::port4me()`
 without arguments gives us a free port:
 
     Sys.info()[["user"]]
@@ -101,7 +101,7 @@ scanned:
 
     port4me::port4me(list = 5)
 
-    ## [1] 30845 19654 32310 63992 15273
+    ## [1] 54242 4930 42139 14723 55707
 
 For testing and demonstration purposes, one can emulate another user by
 specifying argument `user`, e.g.
@@ -170,7 +170,7 @@ them via environment variable `PORT4ME_EXCLUDE`, e.g.
 
     {alice}$ PORT4ME_EXCLUDE=30845,32310 R
     ...
-    > port4me::port4me(exclude = c(30845, 32310))
+    > port4me::port4me()
     [1] 19654
 
 To set this permanently, append:
@@ -265,7 +265,7 @@ user, set `PORT4ME_PREPEND_SITE`.
 
 ## Installation
 
-To install the R **portme** package, do:
+To install the R **port4me** package, do:
 
     install.packages("port4me")
 
