@@ -252,5 +252,5 @@ To try it out, call:
 
 or
 
-    python -m port4me --tool=jupyter-notebook
+    {alice}$ python -m port4me --tool=jupyter-notebook
     29525
