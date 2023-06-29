@@ -16,6 +16,9 @@
    return port, or ports, would also be numeric. Now `port4me()`
    returns integer ports also when `prepend` is numeric.
 
+ * The R `port4me::port4me()` function did not default to environment
+   variable `PORT4ME_LIST`, if argument `list` was not specified.
+
 
 # Version 0.5.1 [2023-03-23]
 

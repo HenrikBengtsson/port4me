@@ -106,6 +106,5 @@ setup() {
     run Rscript -e port4me::port4me --user=alice
     assert_success
     truth=(30845 19654 32310 63992 15273 31420 62779 55372 24143 41300)
-    ## FIXME: R ignores env var PORT4ME_LIST /HB 2023-06-29
-##    [[ "${lines[*]}" == "${truth[*]}" ]]
+    [[ "${lines[*]}" == "${truth[*]}" ]]
 }

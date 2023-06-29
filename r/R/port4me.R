@@ -109,6 +109,14 @@ port4me_skip <- function() {
   skip
 }
 
+port4me_list <- function() {
+  list <- Sys.getenv("PORT4ME_LIST", NA_character_)
+  if (is.na(list)) return(NULL)
+  list <- as.integer(list)
+  stopifnot(!is.na(list))
+  list
+}
+
 
 #' Gets a Personalized TCP Port that can be Opened by the User
 #'
@@ -156,6 +164,7 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
   if (is.null(include)) include <- port4me_include()
   if (is.null(exclude)) exclude <- port4me_exclude()
   if (is.null(skip)) skip <- port4me_skip()
+  if (is.null(list)) list <- port4me_list()
   
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
