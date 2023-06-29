@@ -3,7 +3,8 @@
 ## New Features
 
  * Add command-line interface for R, e.g. `Rscript -e
-   port4me::port4me`, and `Rscript -e port4me::port4me --list=5`.
+   port4me::port4me`, `Rscript -e port4me::port4me --list=5`,
+   `Rscript -e port4me::port4me --test=8087`.
 
 ## Miscellaneous
 
