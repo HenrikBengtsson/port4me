@@ -1,5 +1,10 @@
 # Version (development version)
 
+## New Features
+
+ * Add command-line interface for R, e.g. `Rscript -e
+   port4me::port4me`, and `Rscript -e port4me::port4me --list=5`.
+
 ## Miscellaneous
 
  * Two of the examples for excluding ports had the wrong output.
