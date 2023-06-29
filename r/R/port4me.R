@@ -226,3 +226,4 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
 
   -1L
 }
+class(port4me) <- c("cli_function", class(port4me))
