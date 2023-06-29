@@ -108,7 +108,7 @@ stopifnot(
 
 message('- port4me(user = "alice") with PORT4ME_LIST=10)')
 Sys.setenv(PORT4ME_LIST = "10")
-ports <- port4me(list = length(truth))
+ports <- port4me()
 print(ports)
 stopifnot(
   is.integer(ports),
