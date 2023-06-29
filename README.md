@@ -365,7 +365,7 @@ To try it out, call:
 or
 
 ```sh
-$ Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
+$ Rscript -e port4me::port4me jupyter-notebook
 29525
 ```
 
