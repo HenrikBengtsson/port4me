@@ -28,7 +28,7 @@ parse_cli_args <- function() {
 }
 
 
-cli_help_string <- "
+cli_help_string <- '
  port4me: Get the Same, Personal, Free TCP Port over and over
  
  Usage:
@@ -46,7 +46,7 @@ cli_help_string <- "
   --exclude=<ports>  Set of ports to be excluded
   --prepend=<ports>  Set of ports to be considered first
 
-  --list=<n>         List the first 'n', available or not, ports
+  --list=<n>         List the first \'n\', available or not, ports
 
   --test=<port>      Return 0 if port is available, otherwise 1
 
@@ -58,15 +58,15 @@ cli_help_string <- "
  Rscript -e port4me::port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
  Rscript -e port4me::port4me rstudio    ## short for --tool=rstudio
 
- rserver --www-port \"$(Rscript -e port4me::port4me rstudio)\"
- jupyter notebook --port \"$(Rscript -e port4me::port4me jupyter-notebook)\"
+ rserver --www-port "$(Rscript -e port4me::port4me rstudio)"
+ jupyter notebook --port "$(Rscript -e port4me::port4me jupyter-notebook)"
 
- Rscript -e port4me::port4me --test=8087
+ Rscript -e port4me::port4me --test=8087 && echo "free" || echo "taken"
 
  Version: {{ version }}
  Copyright: Henrik Bengtsson (2022-2023)
  License: MIT
-"
+'
 
 
 #' @importFrom utils packageVersion

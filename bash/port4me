@@ -32,9 +32,9 @@
 #' rserver --www-port "$(port4me --tool=rstudio)"
 #' jupyter notebook --port "$(port4me --tool=jupyter-notebook)"
 #'
-#' port4me --test=8087
+#' port4me --test=8087 && echo "free" || echo "taken"
 #'
-#' Version: 0.5.1-9002
+#' Version: 0.5.1-9003
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: ISC
 
