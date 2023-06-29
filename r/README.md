@@ -281,7 +281,7 @@ To try it out, call:
 
 or
 
-    Rscript -e 'cat(port4me::port4me("jupyter-notebook"))'
+    $ Rscript -e port4me::port4me jupyter-notebook
     29525
 
 ## The port4me Algorithm
