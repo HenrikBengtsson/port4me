@@ -15,6 +15,11 @@ build:
 check: build
 	cd ".local" && R CMD check --as-cran port4me_*.tar.gz
 
+check_cli: build
+	cd ".local" && R CMD INSTALL port4me_*.tar.gz
+	module load CBI bats-core bats-assert bats-file; \
+	(cd tests/; bats *.bats)
+
 incl/OVERVIEW.md: vignettes/port4me-overview.Rmd
 	Rscript -e "rmarkdown::render('vignettes/port4me-overview.Rmd', rmarkdown::md_document(), output_dir = '$(@D)', output_file = '$(@F)')"
 
