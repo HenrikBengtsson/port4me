@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from . import port4me, parse_ports
+from . import port4me, parse_ports, __version__
 
 parser = ArgumentParser(prog="python -m port4me", description="port4me: Get the Same, Personal, Free TCP Port over and over")
 parser.add_argument("--tool", type=str, help="Used in the seed when generating port numbers, to get a different port sequence for different tools.")
@@ -9,5 +9,11 @@ parser.add_argument("--include", type=parse_ports, metavar="PORTS", help="If spe
 parser.add_argument("--exclude", type=parse_ports, metavar="PORTS", help="Skip any ports in this list")
 parser.add_argument("--list", type=int, metavar="N", help="Instead of returning a single port, return a list of this many ports without checking if they are free.")
 parser.add_argument("--test", type=int, metavar="PORT", help="If specified, return whether the port `PORT` is not in use. All other parameters will be ignored.")
+parser.add_argument("--version", action="store_true", help="Show version")
 
-print(port4me(**vars(parser.parse_args())))
+args = vars(parser.parse_args())
+
+if args.pop("version"):
+    print(__version__)
+else:
+    print(port4me(**args))
