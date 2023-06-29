@@ -34,9 +34,9 @@
 #'
 #' port4me --test=8087 && echo "free" || echo "taken"
 #'
-#' Version: 0.5.1-9003
+#' Version: 0.5.1-9004
 #' Copyright: Henrik Bengtsson (2022-2023)
-#' License: ISC
+#' License: MIT
 
 this="${BASH_SOURCE%/}"
 [[ -L "${this}" ]] && this=$(readlink "${this}")

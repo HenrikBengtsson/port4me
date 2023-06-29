@@ -29,11 +29,11 @@
 #' PORT4ME_EXCLUDE=8787 port4me
 #' PORT4ME_PREPEND=4001-4003 port4me
 #' PORT4ME_LIST=5 port4me
-#' PORT4ME_TEST=4321 port4me
+#' PORT4ME_TEST=4321 port4me && echo "free" || echo "taken"
 #'
-#' Version: 0.5.1-9002
+#' Version: 0.5.1-9003
 #' Copyright: Henrik Bengtsson (2022-2023)
-#' License: ISC
+#' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
 declare -i LCG_SEED
 export LCG_SEED
