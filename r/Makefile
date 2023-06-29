@@ -14,8 +14,6 @@ build:
 
 check: build
 	cd ".local" && R CMD check --as-cran port4me_*.tar.gz
-
-check_cli: build
 	cd ".local" && R CMD INSTALL port4me_*.tar.gz
 	module load CBI bats-core bats-assert bats-file; \
 	(cd tests/; bats *.bats)
