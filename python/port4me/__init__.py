@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.5.1-9002"
+__version__ = "0.5.1-9003"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -29,7 +29,12 @@ def uint_hash(s):
 
 def is_port_free(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return (s.connect_ex(("", port)) != 0)
+        try:
+            s.bind(("", port))
+            s.close()
+        except:
+            return(False)
+        return(True)
 
 
 def parse_ports(string):
