@@ -2,7 +2,7 @@ SHELL=bash
 
 all: install test
 
-test:
+check:
 	pytest
 
 requirements:
