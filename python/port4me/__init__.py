@@ -31,10 +31,9 @@ def is_port_free(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.bind(("", port))
-            s.close()
-        except:
-            return(False)
-        return(True)
+        except PermissionError:
+            return False
+        return True
 
 
 def parse_ports(string):
