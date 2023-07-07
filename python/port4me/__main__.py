@@ -15,5 +15,7 @@ args = vars(parser.parse_args())
 
 if args.pop("version"):
     print(__version__)
+elif args.get("list"):
+    print(*port4me(**args), sep="\n")
 else:
     print(port4me(**args))
