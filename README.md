@@ -1,6 +1,6 @@
 [![bash-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
 [![bash-shellcheck](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/shellcheck.yml)
-[![PyPI version](https://img.shields.io/pypi/v/port4me)](https://pypi.org/project/port4me/)[![python-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)
+[![python-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)[![PyPI version](https://img.shields.io/pypi/v/port4me)](https://pypi.org/project/port4me/)
 [![R-check](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
 [![R-CRAN check status](https://www.r-pkg.org/badges/version/port4me)](https://CRAN.R-project.org/web/checks/check_results_port4me.html)
 
