@@ -33,9 +33,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        
+        tar Jxf shellcheck-v0.9.0.linux.x86_64.tar.xz
+        mv shellcheck-v0.9.0/shellcheck .
+
+    - name: Session information
+      run: |
+        PATH=".:$PATH" shellcheck --version
+        python --version
+
     - name: Lint with flake8
       run: |
+        cd python/
+        flake8 --version
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
@@ -43,4 +52,14 @@ jobs:
         
     - name: Test with pytest
       run: |
+        cd python/
         pytest
+
+    - name: Check with Bats
+      run: |
+        export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
+        export BATS_ASSERT_HOME=$PWD/bats-assert-2.0.0
+        export PATH=$PWD/bats-core-1.7.0/bin:$PATH
+        bats --version
+        cd python/tests/
+        bats *.bats

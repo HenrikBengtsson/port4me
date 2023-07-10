@@ -38,6 +38,7 @@ jobs:
     - name: ShellCheck
       run: |
         cd bash/
+        shellcheck --version
         shellcheck incl/*.bash
         shellcheck -x port4me
 
@@ -46,5 +47,6 @@ jobs:
         export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
         export BATS_ASSERT_HOME=$PWD/bats-assert-2.0.0
         export PATH=$PWD/bats-core-1.7.0/bin:$PATH
+        bats --version
         cd bash/tests/
         bats *.bats
