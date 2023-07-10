@@ -56,7 +56,6 @@ jobs:
         
     - name: Test with pytest
       run: |
-        cd python/
         pytest
 
     - name: Check with Bats
