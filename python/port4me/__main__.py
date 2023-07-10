@@ -26,7 +26,9 @@ elif args.get("test"):
         exit(0)
     else:
         exit(1)
-elif args.get("list"):
-    print(*port4me(**args), sep="\n")
 else:
-    print(port4me(**args))
+    res=port4me(**args)
+    if isinstance(res, list):
+        print(*res, sep="\n")
+    else:
+        print(res)
