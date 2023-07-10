@@ -1,24 +1,26 @@
-on: [push, pull_request]
-
 name: "Bash checks"
 
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+
 jobs:
-  checks:
+  check:
     if: "! contains(github.event.head_commit.message, '[ci skip]')"
 
     timeout-minutes: 10
 
-    runs-on: ubuntu-20.04
-    
-    name: check-bash
+    runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      
     steps:
     - name: Checkout git repository
-      uses: actions/checkout@v2
-
+      uses: actions/checkout@v3
+    
     - name: Install dependencies
       run: |
         curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.7.0.tar.gz && tar xf v1.7.0.tar.gz
@@ -29,13 +31,15 @@ jobs:
         mv shellcheck-v0.9.0/shellcheck .
 
     - name: Session information
+      run: |
         PATH=".:$PATH" shellcheck --version
         BATS_SUPPORT_HOME=bats-support-0.3.0 BATS_ASSERT_HOME=bats-assert-2.0.0 PATH="bats-core-1.7.0/bin:$PATH" bats --version
 
     - name: ShellCheck
       run: |
         cd bash/
-        make shellcheck
+        shellcheck incl/*.bash
+        shellcheck -x port4me
 
     - name: Check with Bats
       run: |
@@ -44,4 +48,3 @@ jobs:
         export PATH=$PWD/bats-core-1.7.0/bin:$PATH
         cd bash/tests/
         bats *.bats
-
