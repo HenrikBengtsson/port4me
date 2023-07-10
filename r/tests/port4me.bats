@@ -94,6 +94,12 @@ setup() {
     assert_output "29525"
 }
 
+@test "Rscript -e port4me::port4me --user=alice jupyter-notebook" {
+    run Rscript -e port4me::port4me --user=alice jupyter-notebook
+    assert_success
+    assert_output "29525"
+}
+
 @test "Rscript -e port4me::port4me --user=alice --list=10" {
     run Rscript -e port4me::port4me --user=alice --list=10
     assert_success
