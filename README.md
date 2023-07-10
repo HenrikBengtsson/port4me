@@ -1,6 +1,6 @@
 [![Bash checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
 [![Python checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)
-(https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)[![PyPI version](https://img.shields.io/pypi/v/port4me)](https://pypi.org/project/port4me/)
+[![PyPI version](https://img.shields.io/pypi/v/port4me)](https://pypi.org/project/port4me/)
 [![R checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
 [![R-CRAN check status](https://www.r-pkg.org/badges/version/port4me)](https://CRAN.R-project.org/web/checks/check_results_port4me.html)
 
