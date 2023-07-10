@@ -33,6 +33,7 @@ jobs:
         curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.7.0.tar.gz && tar xf v1.7.0.tar.gz
         curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
         curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.0.0.tar.gz && tar xf v2.0.0.tar.gz
+        curl -L -O https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.xz
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
