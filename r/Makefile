@@ -12,9 +12,11 @@ build:
 	mkdir -p ".local"
 	cd ".local" && R CMD build ..
 
-check: build
+check:
 	cd ".local" && R CMD check --as-cran port4me_*.tar.gz
 	cd ".local" && R CMD INSTALL port4me_*.tar.gz
+
+check-cli:
 	module load CBI bats-core bats-assert bats-file; \
 	(cd tests/; bats *.bats)
 

@@ -5,6 +5,10 @@ all: install test
 check:
 	pytest
 
+check-cli:
+	module load CBI bats-core bats-assert bats-file; \
+	(cd tests/; bats *.bats)
+
 requirements:
 	python -m pip install --upgrade pip
 	pip install hatch flake8 pytest
