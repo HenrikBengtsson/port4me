@@ -11,6 +11,11 @@ setup() {
     assert_success
 }
 
+@test "port4me --help" {
+    run port4me --help
+    assert_success
+}
+
 @test "port4me" {
     run port4me
     assert_success

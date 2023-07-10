@@ -10,6 +10,11 @@ setup() {
     assert_success
 }
 
+@test "python -m port4me --help" {
+    run python -m port4me --help
+    assert_success
+}
+
 @test "python -m port4me" {
     run python -m port4me
     assert_success

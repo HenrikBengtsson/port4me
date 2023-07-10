@@ -10,6 +10,11 @@ setup() {
     assert_success
 }
 
+@test "Rscript -e port4me::port4me --help" {
+    run Rscript -e port4me::port4me --help
+    assert_success
+}
+
 @test "Rscript -e port4me::port4me" {
     run Rscript -e port4me::port4me
     assert_success
