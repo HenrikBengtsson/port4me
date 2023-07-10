@@ -1,14 +1,9 @@
 SHELL=bash
 
-test: shellcheck check
-
 check:
-	(cd bash; make check)
-	(cd r; make check)
-	(cd python; make check)
-
-shellcheck:
-	(cd bash; make shellcheck)
+	(cd bash; make check; make shellcheck)
+	(cd r; make check; make check-cli)
+	(cd python; make check; make check-cli)
 
 install-bash:
 	@[[ -n "$$PREFIX" ]] || { >&2 echo "ERROR: Installation folder 'PREFIX' is not set"; exit 1; }

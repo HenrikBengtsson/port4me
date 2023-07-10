@@ -24,7 +24,17 @@ jobs:
         curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.7.0.tar.gz && tar xf v1.7.0.tar.gz
         curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
         curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.0.0.tar.gz && tar xf v2.0.0.tar.gz
+        curl -L -O https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.xz
+        tar Jxf shellcheck-v0.9.0.linux.x86_64.tar.xz
+        mv shellcheck-v0.9.0/shellcheck .
+        
+    - name: Session information
+        PATH=".:$PATH" shellcheck --version
         BATS_SUPPORT_HOME=bats-support-0.3.0 BATS_ASSERT_HOME=bats-assert-2.0.0 PATH="bats-core-1.7.0/bin:$PATH" bats --version
+
+    - name: ShellCheck
+      run: |
+        make shellcheck
 
     - name: Check with Bats
       run: |
@@ -33,3 +43,4 @@ jobs:
         export PATH=$PWD/bats-core-1.7.0/bin:$PATH
         cd bash/tests/
         bats *.bats
+
