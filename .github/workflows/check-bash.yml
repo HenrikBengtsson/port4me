@@ -32,11 +32,12 @@ jobs:
 
     - name: Session information
       run: |
-        PATH=".:$PATH" shellcheck --version
+        PATH="$PWD:$PATH" shellcheck --version
         BATS_SUPPORT_HOME=bats-support-0.3.0 BATS_ASSERT_HOME=bats-assert-2.0.0 PATH="bats-core-1.7.0/bin:$PATH" bats --version
 
     - name: ShellCheck
       run: |
+        export PATH="$PWD:$PATH"
         cd bash/
         shellcheck --version
         shellcheck incl/*.bash
