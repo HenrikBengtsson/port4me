@@ -40,10 +40,15 @@ jobs:
         tar Jxf shellcheck-v0.9.0.linux.x86_64.tar.xz
         mv shellcheck-v0.9.0/shellcheck .
 
+    - name: Install port4me
+      run: |
+        pip install .
+        
     - name: Session information
       run: |
         PATH="$PWD:$PATH" shellcheck --version
         python --version
+        python -m port4me --version
 
     - name: Lint with flake8
       run: |
