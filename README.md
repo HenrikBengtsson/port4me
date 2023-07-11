@@ -151,8 +151,8 @@ tool.  For example,
 29525
 ```
 
-For conveniency, if the first option is unnames, then it is assumed it
-specifies the `--tool` option.  This mean we can use the following
+For conveniency, if the first option is unnamed, then it is assumed it
+specifies the `--tool` option.  This means we can use the following
 sort form as well:
 
 ```sh
@@ -182,8 +182,8 @@ to happen.  If a user is unlucky, they might experience this
 frequently.  For example, `alice` might find that the first port
 (30845) works only one out 10 times, the second port (19654) works 99
 out 100 times, and the third one (32310) works rarely.  If so, they
-might choose to exclude the ports that are most likely to be used by
-specifying them as a comma-separated values via option `--exclude`,
+might choose to exclude the ports that are most likely to be occupied
+by specifying them as a comma-separated values via option `--exclude`,
 e.g.
 
 ```sh
