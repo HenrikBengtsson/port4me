@@ -1,5 +1,5 @@
 Package: port4me
-Version: 0.5.1-9007
+Version: 0.6.0
 Depends:
     R (>= 4.0.0)
 Suggests:
