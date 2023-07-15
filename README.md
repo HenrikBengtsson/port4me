@@ -327,8 +327,8 @@ To install the Bash version of **portme**, do:
 VERSION=0.6.0
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
-export PREFIX=/path/to/port4me   ## must be an absolute path
-(cd "port4me-${VERSION}"; make install)
+export PREFIX=/path/to/port4me/   ## must be an absolute path to a folder
+(cd "port4me-${VERSION}/bash"; make install)
 ```
 
 Then run it as:
