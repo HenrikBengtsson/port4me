@@ -7,13 +7,6 @@
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
 
-_Note, although stable and well tested, consider this project to be
-under development. Feel free to kick the tires using the Bash, the
-Python, or the R implementations. Feedback is appreciated. /Henrik
-2023-06-21_
-
-## Features
-
 The **[port4me]** tool:
 
 * finds a free TCP port in [1024,65535] that the user can open
@@ -28,7 +21,7 @@ The **[port4me]** tool:
 
 * requires no configuration
 
-* implemented in Bash, Python, and R
+* is implemented in Bash, Python, and R
 
 * can be reproduced perfectly on all operating systems and in all
   common programming languages
