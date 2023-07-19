@@ -1,3 +1,10 @@
+# Version (development version)
+
+## Miscellaneous
+
+ * Remove unnessary whitespace prefix from the CLI help output.
+
+
 # Version 0.6.0 [2023-07-13]
 
 ## New Features

@@ -29,43 +29,43 @@ parse_cli_args <- function() {
 
 
 cli_help_string <- '
- port4me: Get the Same, Personal, Free TCP Port over and over
- 
- Usage:
-  Rscript -e port4me::port4me [options]
- 
- Options:  
-  --help             Display the full help page with examples
-  --version          Output version of this software
-  --debug            Output detailed debug information
+port4me: Get the Same, Personal, Free TCP Port over and over
 
-  --user=<string>    User name (default: $USER)
-  --tool=<string>    Name of software tool
-  --include=<ports>  Set of ports to be included
-                     (default: 1024-65535)
-  --exclude=<ports>  Set of ports to be excluded
-  --prepend=<ports>  Set of ports to be considered first
+Usage:
+ Rscript -e port4me::port4me [options]
 
-  --list=<n>         List the first \'n\', available or not, ports
+Options:  
+ --help             Display the full help page with examples
+ --version          Output version of this software
+ --debug            Output detailed debug information
 
-  --test=<port>      Return 0 if port is available, otherwise 1
+ --user=<string>    User name (default: $USER)
+ --tool=<string>    Name of software tool
+ --include=<ports>  Set of ports to be included
+                    (default: 1024-65535)
+ --exclude=<ports>  Set of ports to be excluded
+ --prepend=<ports>  Set of ports to be considered first
 
- Examples:
- Rscript -e port4me::port4me --version
+ --list=<n>         List the first \'n\', available or not, ports
 
- Rscript -e port4me::port4me
- Rscript -e port4me::port4me --tool=rstudio
- Rscript -e port4me::port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
- Rscript -e port4me::port4me rstudio    ## short for --tool=rstudio
+ --test=<port>      Return 0 if port is available, otherwise 1
 
- rserver --www-port "$(Rscript -e port4me::port4me rstudio)"
- jupyter notebook --port "$(Rscript -e port4me::port4me jupyter-notebook)"
+Examples:
+Rscript -e port4me::port4me --version
 
- Rscript -e port4me::port4me --test=8087 && echo "free" || echo "taken"
+Rscript -e port4me::port4me
+Rscript -e port4me::port4me --tool=rstudio
+Rscript -e port4me::port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
+Rscript -e port4me::port4me rstudio    ## short for --tool=rstudio
 
- Version: {{ version }}
- Copyright: Henrik Bengtsson (2022-2023)
- License: MIT
+rserver --www-port "$(Rscript -e port4me::port4me rstudio)"
+jupyter notebook --port "$(Rscript -e port4me::port4me jupyter-notebook)"
+
+Rscript -e port4me::port4me --test=8087 && echo "free" || echo "taken"
+
+Version: {{ version }}
+Copyright: Henrik Bengtsson (2022-2023)
+License: MIT
 '
 
 

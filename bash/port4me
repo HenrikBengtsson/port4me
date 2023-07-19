@@ -34,7 +34,7 @@
 #'
 #' port4me --test=8087 && echo "free" || echo "taken"
 #'
-#' Version: 0.6.0
+#' Version: 0.6.0-9001
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: MIT
 
@@ -59,7 +59,7 @@ function _p4me_help {
     local what res
 
     what=$1
-    res=$(grep "^#'" "$0" | cut -b 3-)
+    res=$(grep "^#'" "$0" | cut -b 4-)
 
     if [[ $what == "full" ]]; then
         res=$(echo "$res" | sed '/^---/d')
