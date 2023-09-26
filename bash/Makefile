@@ -8,7 +8,7 @@ check:
 
 shellcheck:
 	shellcheck incl/*.bash
-	shellcheck -x port4me
+	shellcheck port4me
 
 install:
 	@[[ -n "$$PREFIX" ]] || { >&2 echo "ERROR: Installation folder 'PREFIX' is not set"; exit 1; }
