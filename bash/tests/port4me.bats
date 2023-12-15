@@ -14,17 +14,17 @@ assert_busy_port() {
     fi
 
     ## Find an available TCP port
-    port=$(PORT4ME_PORT_COMMAND="${tool}" port4me --debug --tool="port4me-tests")
+    port=$(port4me --tool="port4me-tests")
     echo "Available TCP port: ${port}"
 
     ## Bind the TCP port temporarily
     timeout 5 nc -l "${port}" &  ## run in the background
     pid=$!
-    echo "Background process ${pid} bound TCP port ${port}"
+    echo "Background process (PID ${pid}) bound TCP port ${port}"
 
     ## Does 'port4me' detect the port as non-available?
     ok=true
-    if port4me --test="${port}"; then
+    if PORT4ME_PORT_COMMAND="${tool}" port4me --debug --test="${port}"; then
         ok=false
     fi
     echo "Result: ${ok}"
