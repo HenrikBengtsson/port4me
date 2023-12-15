@@ -120,6 +120,8 @@ setup() {
     local ok
     local -i pid
     local -i port
+
+    command -v "nc" || skip "Test requires that 'nc' is availble"
     
     ## Find an available TCP port
     port=$(port4me --tool="port4me-tests")
