@@ -131,7 +131,7 @@ setup() {
     ## Does 'port4me' detect the port as non-available?
     ok=true
     if port4me --test="${port}"; then
-        ok = false
+        ok=false
     fi
 
     ## Terminate background process again
