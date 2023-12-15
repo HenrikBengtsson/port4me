@@ -1,18 +1,21 @@
 # Version (development version)
 
+## Significant Changes
+
+ * `port4me` now defaults to `ss` for checking if a port is available
+   or not.  If that's not available, it falls back to `netstat`, and
+   then `ncat`.  The `nc` tool is no longer used, because it differs
+   between Linux distribution, e.g. on Rocky 8 `nc` is the same as
+   `ncat`, whereas on Ubuntu 22.04 it is the same as `nc.openbsd`.
+
 ## Miscellaneous
 
  * Remove unnessary whitespace prefix from the CLI help output.
 
 ## Bug Fixes
 
- * `port4me` now defaults to `ss` for checking if port is available or
-   not.  If that's not available, `netstat` is used.  If that is also
-   not available, `nc` is used.  The latter used to be the default.
+ * `port4me` failed to identified some TCP ports as occupied.
 
- * `port4me` incorrectly identified some occupied TCP ports as
-   available.
- 
 
 # Version 0.6.0 [2023-07-13]
 

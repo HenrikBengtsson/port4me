@@ -31,7 +31,7 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me && echo "free" || echo "taken"
 #'
-#' Version: 0.6.0-9004
+#' Version: 0.6.0-9005
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -61,12 +61,12 @@ _p4m_error() {
 #' openable=$?
 #'
 #' Requirements:
-#' * either 'nc', 'netstat', or 'ss'
+#' * either 'netstat', 'ss', or 'ncat'
 PORT4ME_PORT_COMMAND=${PORT4ME_PORT_COMMAND:-}
 _p4m_can_port_be_opened() {
     local -i port=${1:?}
     local -i res
-    local cmds=(netstat ss nc)
+    local cmds=(netstat ss ncat)
     local cmd
     
     (( port < 1 || port > 65535 )) && _p4m_error "Port is out of range [1,65535]: ${port}"
@@ -96,8 +96,8 @@ _p4m_can_port_be_opened() {
 	    ## occupied?
             return 1
         fi
-    elif [[ ${PORT4ME_PORT_COMMAND} == "nc" ]]; then
-	timeout 0.1 nc -l "$port" 2> /dev/null
+    elif [[ ${PORT4ME_PORT_COMMAND} == "ncat" ]]; then
+	timeout 0.1 ncat -l "$port" 2> /dev/null
 	res=$?
         if [[ ${res} -eq 2 ]]; then
 	    ## occupied?

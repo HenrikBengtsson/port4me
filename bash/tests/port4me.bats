@@ -153,8 +153,8 @@ assert_busy_port() {
     assert_busy_port
 }
 
-@test "port4me --test=<BUSY_PORT> works using 'nc'" {
-    assert_busy_port "nc"
+@test "port4me --test=<BUSY_PORT> works using 'ncat'" {
+    assert_busy_port "ncat"
 }
 
 @test "port4me --test=<BUSY_PORT> works using 'netstat'" {
