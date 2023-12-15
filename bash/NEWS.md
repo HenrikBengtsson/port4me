@@ -4,6 +4,11 @@
 
  * Remove unnessary whitespace prefix from the CLI help output.
 
+## Bug Fixes
+
+ * `port4me` incorrectly identified some occupied TCP ports as
+   available.
+ 
 
 # Version 0.6.0 [2023-07-13]
 

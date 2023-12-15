@@ -31,7 +31,7 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me && echo "free" || echo "taken"
 #'
-#' Version: 0.6.0
+#' Version: 0.6.0-9002
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -65,6 +65,7 @@ _p4m_error() {
 PORT4ME_PORT_COMMAND=
 _p4m_can_port_be_opened() {
     local -i port=${1:?}
+    local -i res
     local cmds=(nc netstat ss)
     local cmd
     
@@ -81,17 +82,25 @@ _p4m_can_port_be_opened() {
         [[ -z ${PORT4ME_PORT_COMMAND} ]] && _p4m_error "Cannot check if port is available or not. None of the following commands exist on this system: ${cmds[*]}"
     fi
 
+    ${PORT4ME_DEBUG:-false} && >&2 echo "Checking TCP port using '${PORT4ME_PORT_COMMAND}'"
+    
     ## Is port occupied?
     if [[ ${PORT4ME_PORT_COMMAND} == "nc" ]]; then
-        if nc -z 127.0.0.1 "$port"; then
+	timeout 0.1 nc -l "$port" 2> /dev/null
+	res=$?
+        if [[ ${res} -eq 2 ]]; then
+	    ## occupied?
             return 1
         fi
     elif [[ ${PORT4ME_PORT_COMMAND} == "ss" ]]; then
-        if ss -H -l -n src :"$port" | grep -q -E ":$port\b"; then
+	## -t == --tcp, -u == udp, -H = --no-header, -l = --listening, -n = --numeric
+        if ss -H -t -u -l -n "src = :${port}" | grep -q -E ":$port\b"; then
+	    ## occupied?
             return 1
         fi
     elif [[ ${PORT4ME_PORT_COMMAND} == "netstat" ]]; then
         if netstat -n -l -t | grep -q -E "^tcp\b[^:]+:$port\b"; then
+	    ## occupied?
             return 1
         fi
     fi
@@ -101,10 +110,12 @@ _p4m_can_port_be_opened() {
     ## WORKAROUND: If non-root, assume 1-1023 can't be opened
     if [[ "$EUID" != 0 ]]; then
         if (( port < 1024 )); then
+	    ## as-it was occupied
             return 1
         fi
     fi
-    
+
+    ## free
     return 0
 }
 
