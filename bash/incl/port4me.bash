@@ -31,7 +31,7 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me && echo "free" || echo "taken"
 #'
-#' Version: 0.6.0-9002
+#' Version: 0.6.0-9003
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -62,7 +62,7 @@ _p4m_error() {
 #'
 #' Requirements:
 #' * either 'nc', 'netstat', or 'ss'
-PORT4ME_PORT_COMMAND=
+PORT4ME_PORT_COMMAND=${PORT4ME_PORT_COMMAND:-}
 _p4m_can_port_be_opened() {
     local -i port=${1:?}
     local -i res
