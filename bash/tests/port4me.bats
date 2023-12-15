@@ -7,6 +7,39 @@ setup() {
 }
 
 
+assert_busy_port() {
+    local tool=${1}
+    if [[ -n "${tool}" ]]; then
+        command -v "${tool}" || skip "Test requires that '${tool}' is availble"
+    fi
+
+    ## Find an available TCP port
+    port=$(PORT4ME_PORT_COMMAND="${tool}" port4me --tool="port4me-tests")
+    echo "Available TCP port: ${port}"
+
+    ## Bind the TCP port temporarily
+    timeout 5 nc -l "${port}" &  ## run in the background
+    pid=$!
+    echo "Background process ${pid} bound TCP port ${port}"
+
+    ## Does 'port4me' detect the port as non-available?
+    ok=true
+    if port4me --test="${port}"; then
+        ok=false
+    fi
+    echo "Result: ${ok}"
+
+    ## Terminate background process again
+    kill -SIGTERM "${pid}" || true
+    wait "${pid}" || true
+
+    ## Failed?
+    ${ok} || fail "ERROR: port4me failed to detect port as non-available"
+
+    return 0
+}
+
+
 @test "port4me --version" {
     run port4me --version
     assert_success
@@ -117,29 +150,17 @@ setup() {
 }
 
 @test "port4me --test=<BUSY_PORT> works" {
-    local ok
-    local -i pid
-    local -i port
+    assert_busy_port
+}
 
-    command -v "nc" || skip "Test requires that 'nc' is availble"
-    
-    ## Find an available TCP port
-    port=$(port4me --tool="port4me-tests")
+@test "port4me --test=<BUSY_PORT> works using 'nc'" {
+    assert_busy_port "nc"
+}
 
-    ## Bind the TCP port temporarily
-    timeout 5 nc -l "${port}" &  ## run in the background
-    pid=$!
+@test "port4me --test=<BUSY_PORT> works using 'netstat'" {
+    assert_busy_port "netstat"
+}
 
-    ## Does 'port4me' detect the port as non-available?
-    ok=true
-    if port4me --test="${port}"; then
-        ok=false
-    fi
-
-    ## Terminate background process again
-    kill -SIGTERM "${pid}" || true
-    wait "${pid}" || true
-
-    ## Failed?
-    ${ok} || fail "ERROR: port4me failed to detect port as non-available"
+@test "port4me --test=<BUSY_PORT> works using 'ss'" {
+    assert_busy_port "ss"
 }
