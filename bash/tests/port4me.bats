@@ -14,7 +14,7 @@ assert_busy_port() {
     fi
 
     ## Find an available TCP port
-    port=$(PORT4ME_PORT_COMMAND="${tool}" port4me --tool="port4me-tests")
+    port=$(PORT4ME_PORT_COMMAND="${tool}" port4me --debug --tool="port4me-tests")
     echo "Available TCP port: ${port}"
 
     ## Bind the TCP port temporarily
