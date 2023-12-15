@@ -6,6 +6,7 @@ setup() {
     export PATH=..:$PATH
 }
 
+
 @test "port4me --version" {
     run port4me --version
     assert_success
@@ -113,4 +114,30 @@ setup() {
     assert_success
     truth=(30845 19654 32310 63992 15273 31420 62779 55372 24143 41300)
     [[ "${lines[*]}" == "${truth[*]}" ]]
+}
+
+@test "port4me --test=<BUSY_PORT> works" {
+    local ok
+    local -i pid
+    local -i port
+    
+    ## Find an available TCP port
+    port=$(port4me --tool="port4me-tests")
+
+    ## Bind the TCP port temporarily
+    timeout 5 nc -l "${port}" &  ## run in the background
+    pid=$!
+
+    ## Does 'port4me' detect the port as non-available?
+    ok=true
+    if port4me --test="${port}"; then
+        ok = false
+    fi
+
+    ## Terminate background process again
+    kill -SIGTERM "${pid}" || true
+    wait "${pid}" || true
+
+    ## Failed?
+    ${ok} || fail "ERROR: port4me failed to detect port as non-available"
 }
