@@ -1,4 +1,10 @@
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'r/**/*'
+  pull_request:
+    paths:
+      - 'r/**/*'
 
 name: "R checks"
 

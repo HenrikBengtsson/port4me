@@ -1,4 +1,10 @@
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'bash/**/*'
+  pull_request:
+    paths:
+      - 'bash/**/*'
 
 name: "Bash checks"
 
