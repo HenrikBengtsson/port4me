@@ -6,6 +6,10 @@
 
 ## Bug Fixes
 
+ * `port4me` now defaults to `ss` for checking if port is available or
+   not.  If that's not available, `netstat` is used.  If that is also
+   not available, `nc` is used.  The latter used to be the default.
+
  * `port4me` incorrectly identified some occupied TCP ports as
    available.
  
