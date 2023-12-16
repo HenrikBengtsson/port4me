@@ -73,7 +73,7 @@ jobs:
         bats *.bats
 
     - name: Lint with flake8
-      if: ${{ matrix.config.python }} == "3.10"
+      if: matrix.config.python == "3.10"
       run: |
         pip install flake8
         cd python/
@@ -84,21 +84,21 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Generate coverage report
-      if: ${{ matrix.config.python }} == "3.10"
+      if: matrix.config.python == "3.10"
       run: |
         pip install pytest-cov
         cd python/
         pytest --cov=port4me/ ## output summarize in GitHub logs
-        pytest --cov=port4me/ --cov-report=xml
+        pytest --cov=port4me/ --cov-report=xml:coverage.python.xml
         
     - name: Upload Coverage to Codecov
-      if: ${{ matrix.config.python }} == "3.10"
+      if: matrix.config.python == "3.10"
       uses: codecov/codecov-action@v3
       with:
         directory: python/
         env_vars: OS,PYTHON
-        files: coverage.xml
+        files: coverage.python.xml
         fail_ci_if_error: true
         flags: unittests
-        name: codecov-umbrella
+        name: codecov-umbrella-python
         verbose: true      
