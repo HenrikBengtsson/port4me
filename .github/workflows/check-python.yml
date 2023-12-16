@@ -21,6 +21,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    name: ubuntu-latest (Python ${{ matrix.config.python }})
+
     strategy:
       matrix:
         config:
