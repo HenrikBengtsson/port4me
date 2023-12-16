@@ -46,7 +46,8 @@ jobs:
         shellcheck --version
         shellcheck incl/*.bash
         shellcheck -x port4me
-
+        (cd tests; shellcheck -x *.bats)
+        
     - name: Check
       run: |
         echo "SHELL=${SHELL}"

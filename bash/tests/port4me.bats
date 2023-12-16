@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+# shellcheck disable=2030,2031
+
 setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
@@ -151,5 +153,6 @@ setup() {
 }
 
 @test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
-    _PORT4ME_CHECK_AVAILABLE_PORTS_="any" port4me --test=80
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_="any"
+    port4me --test=80
 }
