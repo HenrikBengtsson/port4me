@@ -50,8 +50,8 @@ jobs:
         echo "SHELL=${SHELL}"
         bash --version
         command -v bash
-        command -v kill
-        command -v timeout
+        command -v kill || true
+        command -v timeout || true
         curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.10.0.tar.gz && tar xf v1.10.0.tar.gz
         curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
         curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.1.0.tar.gz && tar xf v2.1.0.tar.gz
