@@ -2,10 +2,13 @@
 
 #' Find a free TCP port and bind to it for a moment
 #'
+#' @param ... port4me command with options
+#'
 #' @return
 #' Returns a string of format `"{port}:{pid}"`, where `{pid}` is the
 #' process ID of the background process binding the port `{port}`.
 bind_a_port() {
+    local -a cmd
     local -i port
     local -i pid
     local -i kk
@@ -13,6 +16,9 @@ bind_a_port() {
     local duration
     local delay
     local tf
+
+    cmd=("$@")    
+    >&2 echo "cmd: [n=${#cmd[@]}] ${cmd[*]}"
 
     ## Number of seconds that the port should be bound
     duration=5.0
@@ -25,7 +31,7 @@ bind_a_port() {
     tf=$(mktemp)
     for kk in $(seq "${max_tries}"); do
         ## (a) Find an available TCP port
-        port=$(PORT4ME_SKIP="$((kk - 1))" port4me --tool="port4me-tests")
+        port=$(PORT4ME_SKIP="$((kk - 1))" "${cmd[@]}" --tool="port4me-tests")
         >&2 echo "Trying with TCP port: ${port}"
 
         ## (b) Bind the TCP port temporarily
@@ -87,7 +93,7 @@ assert_busy_port() {
     >&2 echo "cmd: [n=${#cmd[@]}] ${cmd[*]}"
 
     ## Find an available TCP port and bind it (try for 10 seconds)
-    mapfile -t res < <(bind_a_port)
+    mapfile -t res < <(bind_a_port "${cmd[@]}")
     port=${res[0]}
     pid=${res[1]}
     [[ ${pid} -gt 0 ]] || fail "ERROR: port4me failed to bind a TCP port"    
