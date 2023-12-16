@@ -33,6 +33,7 @@ jobs:
           - {os: ubuntu-latest, python: '3.10' }
           - {os: ubuntu-latest, python: '3.11' }
           - {os: ubuntu-latest, python: '3.12' }
+          - {os: macOS-latest,  python: '3.11' }
 
     steps:
     - uses: actions/checkout@v4
