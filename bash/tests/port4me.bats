@@ -4,41 +4,8 @@ setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
     export PATH=..:$PATH
+    source "$(dirname "${BATS_TEST_FILENAME}")/incl/ports.sh"
 }
-
-
-assert_busy_port() {
-    local tool=${1}
-    if [[ -n "${tool}" ]]; then
-        command -v "${tool}" || skip "Test requires that '${tool}' is availble"
-    fi
-
-    ## Find an available TCP port
-    port=$(port4me --tool="port4me-tests")
-    echo "Available TCP port: ${port}"
-
-    ## Bind the TCP port temporarily
-    timeout 5 nc -l "${port}" &  ## run in the background
-    pid=$!
-    echo "Background process (PID ${pid}) bound TCP port ${port}"
-
-    ## Does 'port4me' detect the port as non-available?
-    ok=true
-    if PORT4ME_PORT_COMMAND="${tool}" port4me --debug --test="${port}"; then
-        ok=false
-    fi
-    echo "Result: ${ok}"
-
-    ## Terminate background process again
-    kill -SIGTERM "${pid}" || true
-    wait "${pid}" || true
-
-    ## Failed?
-    ${ok} || fail "ERROR: port4me failed to detect port as non-available"
-
-    return 0
-}
-
 
 @test "port4me --version" {
     run port4me --version
@@ -150,17 +117,20 @@ assert_busy_port() {
 }
 
 @test "port4me --test=<BUSY_PORT> works" {
-    assert_busy_port
+    assert_busy_port port4me
 }
 
 @test "port4me --test=<BUSY_PORT> works using 'ncat'" {
-    assert_busy_port "ncat"
+    command -v "ncat" > /dev/null || skip "Test requires that 'ncat' is availble"
+    PORT4ME_PORT_COMMAND="ncat" assert_busy_port port4me
 }
 
 @test "port4me --test=<BUSY_PORT> works using 'netstat'" {
-    assert_busy_port "netstat"
+    command -v "netstat" > /dev/null || skip "Test requires that 'netstat' is availble"
+    PORT4ME_PORT_COMMAND="netstat" assert_busy_port port4me
 }
 
 @test "port4me --test=<BUSY_PORT> works using 'ss'" {
-    assert_busy_port "ss"
+    command -v "ss" > /dev/null || skip "Test requires that 'ss' is availble"
+    PORT4ME_PORT_COMMAND="ss" assert_busy_port port4me
 }
