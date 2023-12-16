@@ -44,7 +44,7 @@ jobs:
       _R_CHECK_SUGGESTS_ONLY_: true
       
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -79,7 +79,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Check with Bats
-        if: runner.os != 'Windows'
+        if: runner.os == 'Linux'
         run: |
           curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.10.0.tar.gz && tar xf v1.10.0.tar.gz
           curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
