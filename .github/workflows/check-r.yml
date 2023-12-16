@@ -65,6 +65,11 @@ jobs:
           extra-packages: any::rcmdcheck any::covr any::jsonlite
           needs: check coverage
 
+      - name: Install port4me
+        run: |
+          cd r/
+          Rscript -e 'install.packages(".", repos = NULL)'
+
       - name: Session info
         run: |
           options(width = 100)
@@ -72,6 +77,18 @@ jobs:
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
+
+      - name: Check with Bats
+        run: |
+          curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.10.0.tar.gz && tar xf v1.10.0.tar.gz
+          curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
+          curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.1.0.tar.gz && tar xf v2.1.0.tar.gz
+          export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
+          export BATS_ASSERT_HOME=$PWD/bats-assert-2.1.0
+          export PATH=$PWD/bats-core-1.10.0/bin:$PATH
+          bats --version
+          cd r/tests/
+          bats *.bats
 
       - name: Check (!Windows)
         if: runner.os != 'Windows'
