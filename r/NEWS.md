@@ -2,6 +2,8 @@
 
 ## Miscellaneous
 
+ * Add unit test assert that a bound port is detected as such.
+ 
  * Remove unnessary whitespace prefix from the CLI help output.
 
 
