@@ -108,5 +108,5 @@ jobs:
           setwd("r")
           coverage <- covr::package_coverage(quiet = FALSE)
           print(coverage)
-          covr::codecov(coverage, quiet = FALSE)  ## Upload to codecov
+          covr::codecov(coverage)  ## Upload to codecov
         shell: Rscript {0}
