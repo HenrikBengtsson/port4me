@@ -5,7 +5,9 @@ parse_cli_args <- function() {
   args <- list()
   while (length(cli_args) > 0) {
     arg <- cli_args[1]
-    if (grepl(pattern <- "^--([[:alnum:]]+)=(.*)$", arg)) {
+    if (grepl(pattern <- "^--args$", arg)) {
+      ## Ignore --args
+    } else if (grepl(pattern <- "^--([[:alnum:]]+)=(.*)$", arg)) {
       name <- gsub(pattern, "\\1", arg)
       value <- gsub(pattern, "\\2", arg)
       if (grepl("^[+-]?[[:digit:]]+$", value)) {

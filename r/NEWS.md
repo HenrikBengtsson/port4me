@@ -6,6 +6,12 @@
  
  * Remove unnecessary whitespace prefix from the CLI help output.
 
+## Bug Fixes
+
+ * The command-line interface gave an error if special R option
+   `--args` was used as in `Rscript -e port4me::port4me --args
+   --list=5`.
+
 
 # Version 0.6.0 [2023-07-13]
 
