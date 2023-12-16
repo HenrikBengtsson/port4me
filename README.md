@@ -5,7 +5,7 @@
 [![Python Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/graph/badge.svg)](https://codecov.io/gh/HenrikBengtsson/port4me)
 
 [![R-CRAN check status](https://www.r-pkg.org/badges/version/port4me)](https://CRAN.R-project.org/web/checks/check_results_port4me.html)
-[![R checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
+[![R checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-r.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-r.yml)
 [![R Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/graph/badge.svg)](https://codecov.io/gh/HenrikBengtsson/port4me)
 
 
