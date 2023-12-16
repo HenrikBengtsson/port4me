@@ -108,20 +108,5 @@ jobs:
           setwd("r")
           coverage <- covr::package_coverage(quiet = FALSE)
           print(coverage)
-          coverage_json <- covr:::to_codecov(coverage)
-          jsonlite::write_json(coverage_json, path = "coverage-r.json")
-          system2("ls", args = c("-l", "-a"))
-          system2("cat", args = "coverage-r.json")
+          covr::codecov(coverage, quiet = FALSE)  ## Upload to codecov
         shell: Rscript {0}
-
-      - name: Upload Coverage to Codecov
-        if: matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release'
-        uses: codecov/codecov-action@v3
-        with:
-          directory: r/
-          env_vars: OS,R
-          files: coverage-r.json
-          fail_ci_if_error: true
-          flags: unittests
-          name: codecov-umbrella-r
-          verbose: true      
