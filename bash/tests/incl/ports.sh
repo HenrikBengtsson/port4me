@@ -32,6 +32,14 @@ bind_a_port() {
     timeout="timeout"
     if ! command -v "${timeout}" > /dev/null; then
         timeout="gtimeout"
+        if ! command -v "${timeout}" > /dev/null; then
+            >&2 echo "bind_a_port(): Neither 'timeout' nor 'gtimeout' exists, but are required"
+            port=0
+            pid=0
+            echo "${port}"
+            echo "${pid}"
+            return 1
+        fi
     fi
     
     ## Find an available TCP port and bind it (try for 10 seconds)
