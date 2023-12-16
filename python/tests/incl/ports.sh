@@ -1,14 +1,14 @@
 #! /usr/bin/env bash
 
 find_timeout() {
-    timeout="timeout"
     if command -v "timeout" > /dev/null; then
         echo "timeout"
     elif command -v "gtimeout" > /dev/null; then
         echo "gtimeout"
     else
         echo ""
-}       
+    fi
+}
 
 #' Find a free TCP port and bind to it for a moment
 #'

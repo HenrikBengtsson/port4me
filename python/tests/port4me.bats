@@ -3,7 +3,11 @@
 setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
-    source "$(dirname "${BATS_TEST_FILENAME}")/incl/ports.sh"
+
+    path="$(dirname "${BATS_TEST_FILENAME}")"
+
+    # shellcheck source=incl/ports.sh
+    source "${path}/incl/ports.sh"
 }
 
 @test "python -m port4me --version" {

@@ -2,10 +2,13 @@ SHELL=bash
 
 all: install test
 
-check:
+check: shellcheck
 	pytest
 
-check-cli:
+shellcheck:
+	(cd tests; shellcheck -x *.bats)
+
+check-cli: shellcheck
 	module load CBI bats-core bats-assert bats-file; \
 	(cd tests/; bats *.bats)
 
