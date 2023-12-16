@@ -93,9 +93,11 @@ assert_busy_port() {
     >&2 echo "cmd: [n=${#cmd[@]}] ${cmd[*]}"
 
     ## Find an available TCP port and bind it (try for 10 seconds)
-    mapfile -t res < <(bind_a_port "${cmd[@]}")
-    port=${res[0]}
-    pid=${res[1]}
+    ## NOTE: We don't use 'mapfile' here, because that requires
+    ## Bash (>= 4.0), but macOS only has Bash 3.
+    res=$(bind_a_port "${cmd[@]}")
+    port=${res//$'\n'*}
+    pid=${res/*$'\n'}
     [[ ${pid} -gt 0 ]] || fail "ERROR: port4me failed to bind a TCP port"    
     >&2 echo "Background process (PID ${pid}) bound TCP port ${port}"
 
