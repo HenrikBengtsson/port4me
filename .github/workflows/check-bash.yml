@@ -2,9 +2,11 @@ on:
   push:
     paths:
       - 'bash/**/*'
+      - .github/workflows/check-bash.yml
   pull_request:
     paths:
       - 'bash/**/*'
+      - .github/workflows/check-bash.yml
 
 name: "Bash checks"
 
