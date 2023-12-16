@@ -1,8 +1,11 @@
 [![Bash checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
-[![Python checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)
-[![R checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
+
 [![PyPI version](https://img.shields.io/pypi/v/port4me)](https://pypi.org/project/port4me/)
+[![Python checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)
+[![Python Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/graph/badge.svg)](https://codecov.io/gh/HenrikBengtsson/port4me)
+
 [![R-CRAN check status](https://www.r-pkg.org/badges/version/port4me)](https://CRAN.R-project.org/web/checks/check_results_port4me.html)
+[![R checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
 
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
