@@ -11,6 +11,7 @@ setup() {
     source "${path}/incl/ports.sh"
 }
 
+
 @test "port4me --version" {
     run port4me --version
     assert_success
@@ -27,12 +28,14 @@ setup() {
 }
 
 @test "port4me --user=alice" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run port4me --user=alice
     assert_success
     assert_output "30845"
 }
 
 @test "port4me with PORT4ME_USER=alice" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_USER=alice
     run port4me
     assert_success
@@ -40,18 +43,21 @@ setup() {
 }
 
 @test "port4me --user=bob" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run port4me --user=bob
     assert_success
     assert_output "54242"
 }
 
 @test "port4me --user=alice --tool=rstudio" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run port4me --user=alice --tool=rstudio
     assert_success
     assert_output "22486"
 }
 
 @test "port4me --user=alice with PORT4ME_TOOL=rstudio" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_TOOL=rstudio
     run port4me --user=alice
     assert_success
@@ -59,12 +65,14 @@ setup() {
 }
 
 @test "port4me --user=alice --exclude=30845,32310" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run port4me --user=alice --exclude=30845,32310
     assert_success
     assert_output "19654"
 }
 
 @test "port4me --user=alice with PORT4ME_EXCLUDE=30845,32310" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_EXCLUDE=30845,32310
     run port4me --user=alice
     assert_success
@@ -87,12 +95,14 @@ setup() {
 }
 
 @test "port4me --user=alice --include=2000-2123,4321,10000-10999" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run port4me --user=alice --include=2000-2123,4321,10000-10999
     assert_success
     assert_output "10451"
 }
 
 @test "port4me --user=alice with PORT4ME_INCLUDE=2000-2123,4321,10000-10999" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_INCLUDE=2000-2123,4321,10000-10999
     run port4me --user=alice
     assert_success
@@ -100,6 +110,7 @@ setup() {
 }
 
 @test "port4me --user=alice --tool=jupyter-notebook" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run port4me --user=alice --tool=jupyter-notebook
     assert_success
     assert_output "29525"
@@ -137,4 +148,8 @@ setup() {
 @test "port4me --test=<BUSY_PORT> works using 'ss'" {
     command -v "ss" > /dev/null || skip "Test requires that 'ss' is availble"
     PORT4ME_PORT_COMMAND="ss" assert_busy_port port4me
+}
+
+@test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
+    _PORT4ME_CHECK_AVAILABLE_PORTS_="any" port4me --test=80
 }

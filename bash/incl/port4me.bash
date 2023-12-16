@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9007
+#' Version: 0.6.0-9008
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -74,6 +74,14 @@ _p4m_can_port_be_opened() {
     
     (( port < 1 || port > 65535 )) && _p4m_error "Port is out of range [1,65535]: ${port}"
 
+    ## SPECIAL: Fake port availability?
+    if [[ -n ${_PORT4ME_CHECK_AVAILABLE_PORTS_} ]]; then
+        if [[ ${_PORT4ME_CHECK_AVAILABLE_PORTS_} == "any" ]]; then
+            return 0
+        fi
+        _p4m_error "Unknown value on _PORT4ME_CHECK_AVAILABLE_PORTS_: ${_PORT4ME_CHECK_AVAILABLE_PORTS_}"
+    fi
+    
     ## Identify port command and memoize, unless already done
     if [[ -z ${PORT4ME_PORT_COMMAND} ]]; then
         for cmd in "${cmds[@]}"; do
