@@ -8,6 +8,11 @@
    between Linux distribution, e.g. on Rocky 8 `nc` is the same as
    `ncat`, whereas on Ubuntu 22.04 it is the same as `nc.openbsd`.
 
+## New Features
+
+ * Now `port4me` gives an informative error message if Bash is older
+   than v4. For example, macOS only has Bash v3.2.
+
 ## Miscellaneous
 
  * Add unit test asserting that a bound port is detected as such.

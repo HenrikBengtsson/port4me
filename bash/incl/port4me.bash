@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9006
+#' Version: 0.6.0-9007
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -223,6 +223,11 @@ port4me() {
     local -i exclude include prepend
     local -i count tries
 
+    ## Assert Bash (>= 4)
+    if [[ "${BASH_VERSINFO[0]}" -lt 4 ]]; then
+        _p4m_error "port4me requires Bash (>= 4): ${BASH_VERSION}"
+    fi
+    
     if [[ $test -ne 0 ]]; then
         _p4m_can_port_be_opened "${test}"
         return $?
