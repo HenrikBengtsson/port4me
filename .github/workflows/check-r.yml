@@ -110,6 +110,8 @@ jobs:
           print(coverage)
           coverage_json <- covr:::to_codecov(coverage)
           jsonlite::write_json(coverage_json, path = "coverage-r.json")
+          system2("ls", args = c("-l", "-a"))
+          system2("cat", args = "coverage-r.json")
         shell: Rscript {0}
 
       - name: Upload Coverage to Codecov
