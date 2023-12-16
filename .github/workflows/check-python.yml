@@ -19,19 +19,20 @@ jobs:
 
     timeout-minutes: 10
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.os }}
 
-    name: ubuntu-latest (Python ${{ matrix.config.python }})
+    name: ${{ matrix.config.os }} (Python ${{ matrix.config.python }})
 
     strategy:
+      fail-fast: false
       matrix:
         config:
-          - {python: '3.7'  }
-          - {python: '3.8'  }
-          - {python: '3.9'  }
-          - {python: '3.10' }
-          - {python: '3.11' }
-          - {python: '3.12' }
+          - {os: ubuntu-latest, python: '3.7'  }
+          - {os: ubuntu-latest, python: '3.8'  }
+          - {os: ubuntu-latest, python: '3.9'  }
+          - {os: ubuntu-latest, python: '3.10' }
+          - {os: ubuntu-latest, python: '3.11' }
+          - {os: ubuntu-latest, python: '3.12' }
 
     steps:
     - uses: actions/checkout@v4
@@ -53,7 +54,6 @@ jobs:
         
     - name: Session information
       run: |
-        PATH="$PWD:$PATH" shellcheck --version
         python --version
         python -m port4me --version
 
@@ -62,7 +62,7 @@ jobs:
         pip install pytest
         pytest
 
-    - name: Check with Bats
+    - name: Check CLI
       run: |
         curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.10.0.tar.gz && tar xf v1.10.0.tar.gz
         curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz

@@ -24,6 +24,7 @@ jobs:
     name: ${{ matrix.config.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         config:
 #          - {os: macOS-latest  }
@@ -46,7 +47,7 @@ jobs:
         shellcheck incl/*.bash
         shellcheck -x port4me
 
-    - name: Check with Bats
+    - name: Check
       run: |
         echo "SHELL=${SHELL}"
         bash --version
