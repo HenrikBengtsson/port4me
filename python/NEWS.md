@@ -1,3 +1,10 @@
+# Version (development version)
+
+## Miscellaneous
+
+* Add unit test assert that a bound port is detected as such.
+
+
 # Version 0.6.0 [2023-07-13]
 
 ## Significant Changes
