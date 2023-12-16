@@ -101,6 +101,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Check CLI
+        if: runner.os != 'Windows'
         run: |
           curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.10.0.tar.gz && tar xf v1.10.0.tar.gz
           curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz

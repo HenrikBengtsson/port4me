@@ -1,5 +1,15 @@
 #! /usr/bin/env bash
 
+find_timeout() {
+    timeout="timeout"
+    if command -v "timeout" > /dev/null; then
+        echo "timeout"
+    elif command -v "gtimeout" > /dev/null; then
+        echo "gtimeout"
+    else
+        echo ""
+}       
+
 #' Find a free TCP port and bind to it for a moment
 #'
 #' @param ... port4me command with options
@@ -16,7 +26,6 @@ bind_a_port() {
     local duration
     local delay
     local tf
-    local timeout
 
     cmd=("$@")    
     >&2 echo "cmd: [n=${#cmd[@]}] ${cmd[*]}"
@@ -28,15 +37,6 @@ bind_a_port() {
     max_tries=5
     delay=2.0
 
-    ## If 'timeout' isn't available, try 'gtimeout'
-    timeout="timeout"
-    if ! command -v "${timeout}" > /dev/null; then
-        timeout="gtimeout"
-        if ! command -v "${timeout}" > /dev/null; then
-            skip "bind_a_port(): Required 'timeout' is not available. Nor is 'gtimeout'"
-        fi
-    fi
-
     ## Find an available TCP port and bind it (try for 10 seconds)
     tf=$(mktemp)
     for kk in $(seq "${max_tries}"); do
@@ -47,7 +47,7 @@ bind_a_port() {
         ## (b) Bind the TCP port temporarily
         {
             echo "begin"
-            "${timeout}" "${duration}" nc -l "${port}"
+            "$(find_timeout)" "${duration}" nc -l "${port}"
             echo "end"
         } > "${tf}" &  ## run in the background
         pid=$!
@@ -98,6 +98,10 @@ assert_busy_port() {
     local -i pid
     local -a cmd
     local -a res
+
+    if [[ -z $(find_timeout) ]]; then
+        skip "Test requires the 'timeout' command, which could not be found"
+    fi
 
     cmd=("$@")    
     >&2 echo "cmd: [n=${#cmd[@]}] ${cmd[*]}"
