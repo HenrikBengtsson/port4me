@@ -87,10 +87,10 @@ jobs:
           export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
           export BATS_ASSERT_HOME=$PWD/bats-assert-2.1.0
           export PATH=$PWD/bats-core-1.10.0/bin:$PATH
-          echo "SHELL=${SHELL}"
+          bash --version
           bats --version
           cd r/tests/
-          bash bats *.bats
+          bats *.bats
 
       - name: Check
         if: runner.os != 'Windows'

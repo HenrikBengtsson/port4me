@@ -36,6 +36,7 @@ jobs:
 
     - name: Session information
       run: |
+        bash --version
         PATH="$PWD:$PATH" shellcheck --version
         BATS_SUPPORT_HOME=bats-support-0.3.0 BATS_ASSERT_HOME=bats-assert-2.0.0 PATH="bats-core-1.7.0/bin:$PATH" bats --version
 
@@ -52,6 +53,7 @@ jobs:
         export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
         export BATS_ASSERT_HOME=$PWD/bats-assert-2.0.0
         export PATH=$PWD/bats-core-1.7.0/bin:$PATH
+        bash --version
         bats --version
         cd bash/tests/
         bats *.bats
