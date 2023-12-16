@@ -2,7 +2,7 @@
 
 ## Miscellaneous
 
-* Add unit test assert that a bound port is detected as such.
+* Add unit test asserting that a bound port is detected as such.
 
 
 # Version 0.6.0 [2023-07-13]
