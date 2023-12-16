@@ -31,7 +31,10 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me && echo "free" || echo "taken"
 #'
-#' Version: 0.6.0-9005
+#' Requirements:
+#' * Bash (>= 4)
+#'
+#' Version: 0.6.0-9006
 #' Copyright: Henrik Bengtsson (2022-2023)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
