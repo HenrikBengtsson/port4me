@@ -3,6 +3,7 @@
 setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
+    source "$(dirname "${BATS_TEST_FILENAME}")/incl/ports.sh"
 }
 
 @test "Rscript -e port4me::port4me --version" {
@@ -120,27 +121,6 @@ setup() {
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "port4me --test=<BUSY_PORT> works" {
-    ## Find an available TCP port
-    port=$(Rscript -e port4me::port4me --tool="port4me-tests")
-    echo "Available TCP port: ${port}"
-
-    ## Bind the TCP port temporarily
-    timeout 5 nc -l "${port}" &  ## run in the background
-    pid=$!
-    echo "Background process (PID ${pid}) bound TCP port ${port}"
-
-    ## Does 'port4me()' detect the port as non-available?
-    ok=true
-    if Rscript -e port4me::port4me --test="${port}"; then
-        ok=false
-    fi
-    echo "Result: ${ok}"
-
-    ## Terminate background process again
-    kill -SIGTERM "${pid}" || true
-    wait "${pid}" || true
-
-    ## Failed?
-    ${ok} || fail "ERROR: port4me() failed to detect port as non-available"
+@test "Rscript -e port4me::port4me --test=<BUSY_PORT> works" {
+    assert_busy_port Rscript -e port4me::port4me
 }
