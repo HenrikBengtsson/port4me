@@ -6,13 +6,13 @@ setup() {
     source "$(dirname "${BATS_TEST_FILENAME}")/incl/ports.sh"
 }
 
-@test "Rscript -e port4me::port4me --version" {
-    run Rscript -e port4me::port4me --version
+@test "Rscript -e port4me::port4me --args --version" {
+    run Rscript -e port4me::port4me --args --version
     assert_success
 }
 
-@test "Rscript -e port4me::port4me --help" {
-    run Rscript -e port4me::port4me --help
+@test "Rscript -e port4me::port4me --args --help" {
+    run Rscript -e port4me::port4me --args --help
     assert_success
 }
 
@@ -21,8 +21,8 @@ setup() {
     assert_success
 }
 
-@test "Rscript -e port4me::port4me --user=alice" {
-    run Rscript -e port4me::port4me --user=alice
+@test "Rscript -e port4me::port4me --args --user=alice" {
+    run Rscript -e port4me::port4me --args --user=alice
     assert_success
     assert_output "30845"
 }
@@ -34,93 +34,93 @@ setup() {
     assert_output "30845"
 }
 
-@test "Rscript -e port4me::port4me --user=bob" {
-    run Rscript -e port4me::port4me --user=bob
+@test "Rscript -e port4me::port4me --args --user=bob" {
+    run Rscript -e port4me::port4me --args --user=bob
     assert_success
     assert_output "54242"
 }
 
-@test "Rscript -e port4me::port4me --user=alice --tool=rstudio" {
-    run Rscript -e port4me::port4me --user=alice --tool=rstudio
+@test "Rscript -e port4me::port4me --args --user=alice --tool=rstudio" {
+    run Rscript -e port4me::port4me --args --user=alice --tool=rstudio
     assert_success
     assert_output "22486"
 }
 
-@test "Rscript -e port4me::port4me --user=alice with PORT4ME_TOOL=rstudio" {
+@test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_TOOL=rstudio" {
     export PORT4ME_TOOL=rstudio
-    run Rscript -e port4me::port4me --user=alice
+    run Rscript -e port4me::port4me --args --user=alice
     assert_success
     assert_output "22486"
 }
 
-@test "Rscript -e port4me::port4me --user=alice --exclude=30845,32310" {
-    run Rscript -e port4me::port4me --user=alice --exclude=30845,32310
+@test "Rscript -e port4me::port4me --args --user=alice --exclude=30845,32310" {
+    run Rscript -e port4me::port4me --args --user=alice --exclude=30845,32310
     assert_success
     assert_output "19654"
 }
 
-@test "Rscript -e port4me::port4me --user=alice with PORT4ME_EXCLUDE=30845,32310" {
+@test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_EXCLUDE=30845,32310" {
     export PORT4ME_EXCLUDE=30845,32310
-    run Rscript -e port4me::port4me --user=alice
+    run Rscript -e port4me::port4me --args --user=alice
     assert_success
     assert_output "19654"
 }
 
-@test "Rscript -e port4me::port4me --user=alice --prepend=4321,11001 --list=5" {
-    run Rscript -e port4me::port4me --user=alice --prepend=4321,11001 --list=5
+@test "Rscript -e port4me::port4me --args --user=alice --prepend=4321,11001 --list=5" {
+    run Rscript -e port4me::port4me --args --user=alice --prepend=4321,11001 --list=5
     assert_success
     truth=(4321 11001 30845 19654 32310)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "Rscript -e port4me::port4me --user=alice --list=5 with PORT4ME_PREPEND=4321,11001" {
+@test "Rscript -e port4me::port4me --args --user=alice --list=5 with PORT4ME_PREPEND=4321,11001" {
     export PORT4ME_PREPEND=4321,11001
-    run Rscript -e port4me::port4me --user=alice --list=5
+    run Rscript -e port4me::port4me --args --user=alice --list=5
     assert_success
     truth=(4321 11001 30845 19654 32310)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "Rscript -e port4me::port4me --user=alice --include=2000-2123,4321,10000-10999" {
-    run Rscript -e port4me::port4me --user=alice --include=2000-2123,4321,10000-10999
+@test "Rscript -e port4me::port4me --args --user=alice --include=2000-2123,4321,10000-10999" {
+    run Rscript -e port4me::port4me --args --user=alice --include=2000-2123,4321,10000-10999
     assert_success
     assert_output "10451"
 }
 
-@test "Rscript -e port4me::port4me --user=alice with PORT4ME_INCLUDE=2000-2123,4321,10000-10999" {
+@test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_INCLUDE=2000-2123,4321,10000-10999" {
     export PORT4ME_INCLUDE=2000-2123,4321,10000-10999
-    run Rscript -e port4me::port4me --user=alice
+    run Rscript -e port4me::port4me --args --user=alice
     assert_success
     assert_output "10451"
 }
 
-@test "Rscript -e port4me::port4me --user=alice --tool=jupyter-notebook" {
-    run Rscript -e port4me::port4me --user=alice --tool=jupyter-notebook
+@test "Rscript -e port4me::port4me --args --user=alice --tool=jupyter-notebook" {
+    run Rscript -e port4me::port4me --args --user=alice --tool=jupyter-notebook
     assert_success
     assert_output "29525"
 }
 
-@test "Rscript -e port4me::port4me --user=alice jupyter-notebook" {
-    run Rscript -e port4me::port4me --user=alice jupyter-notebook
+@test "Rscript -e port4me::port4me --args --user=alice jupyter-notebook" {
+    run Rscript -e port4me::port4me --args --user=alice jupyter-notebook
     assert_success
     assert_output "29525"
 }
 
-@test "Rscript -e port4me::port4me --user=alice --list=10" {
-    run Rscript -e port4me::port4me --user=alice --list=10
+@test "Rscript -e port4me::port4me --args --user=alice --list=10" {
+    run Rscript -e port4me::port4me --args --user=alice --list=10
     assert_success
     truth=(30845 19654 32310 63992 15273 31420 62779 55372 24143 41300)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "Rscript -e port4me::port4me --user=alice with PORT4ME_LIST=10" {
+@test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_LIST=10" {
     export PORT4ME_LIST=10
-    run Rscript -e port4me::port4me --user=alice
+    run Rscript -e port4me::port4me --args --user=alice
     assert_success
     truth=(30845 19654 32310 63992 15273 31420 62779 55372 24143 41300)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "Rscript -e port4me::port4me --test=<BUSY_PORT> works" {
-    assert_busy_port Rscript -e port4me::port4me
+@test "Rscript -e port4me::port4me --args --test=<BUSY_PORT> works" {
+    assert_busy_port Rscript -e port4me::port4me --args
 }
