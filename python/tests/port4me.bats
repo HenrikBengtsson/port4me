@@ -143,5 +143,5 @@ setup() {
 }
 
 @test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
-    _PORT4ME_CHECK_AVAILABLE_PORTS_="any"  Rscript -e port4me::port4me --args --test=80
+    _PORT4ME_CHECK_AVAILABLE_PORTS_="any" python -m port4me --test=80
 }
