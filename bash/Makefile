@@ -2,7 +2,9 @@ SHELL=bash
 
 test: shellcheck check
 
-check:
+check: check-cli
+
+check-cli:
 	module load CBI bats-core bats-assert bats-file; \
 	(cd tests/; bats *.bats)
 
