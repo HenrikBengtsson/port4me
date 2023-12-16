@@ -94,6 +94,7 @@ stopifnot(
 )
 
 
+truth <- c(30845, 19654, 32310, 63992, 15273, 31420, 62779, 55372, 24143, 41300)
 exclude <- c(30845, 32310)
 message(sprintf("- port4me(exclude = c(%s))", paste(exclude, collapse = ", ")))
 port <- port4me(exclude = exclude)
