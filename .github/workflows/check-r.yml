@@ -68,7 +68,7 @@ jobs:
       - name: Install port4me
         run: |
           cd r/
-          Rscript -e 'install.packages(".", repos = NULL)'
+          Rscript -e "install.packages('.', repos = NULL)"
 
       - name: Session info
         run: |
