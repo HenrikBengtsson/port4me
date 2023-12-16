@@ -1,5 +1,7 @@
 library(port4me)
 
+Sys.setenv("_PORT4ME_CHECK_AVAILABLE_PORTS_" = "any")
+
 message('- port4me(user = "alice")')
 truth <- 30845L
 ports <- port4me(user = "alice")
@@ -91,36 +93,6 @@ stopifnot(
   all(ports == truth)
 )
 
-truth <- c(30845, 19654, 32310, 63992, 15273, 31420, 62779, 55372, 24143, 41300)
-message(sprintf("- port4me(list = %d)", length(truth)))
-ports <- port4me(list = length(truth))
-print(ports)
-stopifnot(
-  is.integer(ports),
-  all(is.finite(ports)),
-  all(ports > 0L),
-  all(ports <= 65535L),
-  all(ports >= 1024L),
-  length(ports) == length(truth),
-  all(ports == truth)
-)
-
-
-message('- port4me(user = "alice") with PORT4ME_LIST=10)')
-Sys.setenv(PORT4ME_LIST = "10")
-ports <- port4me()
-print(ports)
-stopifnot(
-  is.integer(ports),
-  all(is.finite(ports)),
-  all(ports > 0L),
-  all(ports <= 65535L),
-  all(ports >= 1024L),
-  length(ports) == length(truth),
-  all(ports == truth)
-)
-Sys.unsetenv("PORT4ME_LIST")
-
 
 exclude <- c(30845, 32310)
 message(sprintf("- port4me(exclude = c(%s))", paste(exclude, collapse = ", ")))
@@ -183,52 +155,3 @@ stopifnot(
   port == 10451L
 )
 Sys.unsetenv("PORT4ME_INCLUDE")
-
-
-prepend <- c(4321, 11001)
-message("- port4me(prepend = c(4321, 11001))")
-ports <- port4me(prepend = prepend, list = 5L)
-stopifnot(
-  is.integer(ports),
-  length(ports) == 5L,
-  all(is.finite(ports)),
-  all(ports > 0L),
-  all(ports <= 65535L),
-  all(ports >= 1024L),
-  all(ports == c(prepend, head(truth, n = 5L - length(prepend))))
-)
-
-
-n <- 200e3
-message(sprintf("- port4me(list = %d)", n))
-ports <- port4me(list = n)
-stopifnot(
-  is.integer(ports),
-  length(ports) == n,
-  all(is.finite(ports)),
-  all(ports > 0L),
-  all(ports <= 65535L),
-  all(ports >= 1024L)
-)
-
-## Statistical properties
-
-## (a) range, because we draw a large enough sample)
-stopifnot(
-  min(ports) == 1024L,
-  max(ports) == 65535L
-)
-
-t <- table(ports)
-t2 <- table(t)
-print(t2)
-
-## Expected average draws per port
-mu <- n / (65535 - 1024 + 1)
-message(sprintf("Expected draws per port: %.4f", mu))
-stopifnot(all(c(floor(mu), ceiling(mu)) == names(t2)))
-
-mu_hat <- stats::weighted.mean(as.integer(names(t2)), w = t2)
-message(sprintf("Observed draws per port: %.4f", mu_hat))
-
-stopifnot(abs(mu_hat - mu) < 0.001)

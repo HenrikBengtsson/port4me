@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+# shellcheck disable=2030,2031
+
 setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
@@ -26,12 +28,14 @@ setup() {
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run Rscript -e port4me::port4me --args --user=alice
     assert_success
     assert_output "30845"
 }
 
 @test "Rscript -e port4me::port4me with PORT4ME_USER=alice" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_USER=alice
     run Rscript -e port4me::port4me
     assert_success
@@ -39,18 +43,21 @@ setup() {
 }
 
 @test "Rscript -e port4me::port4me --args --user=bob" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run Rscript -e port4me::port4me --args --user=bob
     assert_success
     assert_output "54242"
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice --tool=rstudio" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run Rscript -e port4me::port4me --args --user=alice --tool=rstudio
     assert_success
     assert_output "22486"
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_TOOL=rstudio" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_TOOL=rstudio
     run Rscript -e port4me::port4me --args --user=alice
     assert_success
@@ -58,12 +65,14 @@ setup() {
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice --exclude=30845,32310" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run Rscript -e port4me::port4me --args --user=alice --exclude=30845,32310
     assert_success
     assert_output "19654"
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_EXCLUDE=30845,32310" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_EXCLUDE=30845,32310
     run Rscript -e port4me::port4me --args --user=alice
     assert_success
@@ -86,12 +95,14 @@ setup() {
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice --include=2000-2123,4321,10000-10999" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run Rscript -e port4me::port4me --args --user=alice --include=2000-2123,4321,10000-10999
     assert_success
     assert_output "10451"
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_INCLUDE=2000-2123,4321,10000-10999" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_INCLUDE=2000-2123,4321,10000-10999
     run Rscript -e port4me::port4me --args --user=alice
     assert_success
@@ -99,12 +110,14 @@ setup() {
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice --tool=jupyter-notebook" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run Rscript -e port4me::port4me --args --user=alice --tool=jupyter-notebook
     assert_success
     assert_output "29525"
 }
 
 @test "Rscript -e port4me::port4me --args --user=alice jupyter-notebook" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run Rscript -e port4me::port4me --args --user=alice jupyter-notebook
     assert_success
     assert_output "29525"
@@ -128,3 +141,8 @@ setup() {
 @test "Rscript -e port4me::port4me --args --test=<BUSY_PORT> works" {
     assert_busy_port Rscript -e port4me::port4me --args
 }
+
+@test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
+    _PORT4ME_CHECK_AVAILABLE_PORTS_="any"  Rscript -e port4me::port4me --args --test=80
+}
+

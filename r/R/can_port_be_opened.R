@@ -14,7 +14,16 @@
 #' @noRd
 can_port_be_opened <- function(port) {
   stopifnot(length(port) == 1, is.numeric(port), is.finite(port), port >= 1, port <= 65535)
-  
+
+  ## SPECIAL: Fake port availability?
+  if (nzchar(Sys.getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"))) {
+    value <- Sys.getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_")
+    if (value == "any") {
+      return(TRUE)
+    }
+    stop("Unknown value on _PORT4ME_CHECK_AVAILABLE_PORTS_: ", sQuote(value))
+  }
+
   ## If not possible to query, return NA
   ## It works in R (>= 4.0.0)
   ns <- asNamespace("parallel")
