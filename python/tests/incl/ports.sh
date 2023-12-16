@@ -16,6 +16,7 @@ bind_a_port() {
     local duration
     local delay
     local tf
+    local timeout
 
     cmd=("$@")    
     >&2 echo "cmd: [n=${#cmd[@]}] ${cmd[*]}"
@@ -26,6 +27,12 @@ bind_a_port() {
     ## Max number of attempts and delay (in seconds) between attempts
     max_tries=5
     delay=2.0
+
+    ## If 'timeout' isn't available, try 'gtimeout'
+    timeout="timeout"
+    if ! command -v "${timeout}" > /dev/null; then
+        timeout="gtimeout"
+    fi
     
     ## Find an available TCP port and bind it (try for 10 seconds)
     tf=$(mktemp)
@@ -37,7 +44,7 @@ bind_a_port() {
         ## (b) Bind the TCP port temporarily
         {
             echo "begin"
-            timeout "${duration}" nc -l "${port}"
+            "${timeout}" "${duration}" nc -l "${port}"
             echo "end"
         } > "${tf}" &  ## run in the background
         pid=$!
