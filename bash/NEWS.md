@@ -12,7 +12,7 @@
 
  * Add unit test asserting that a bound port is detected as such.
 
- * Remove unnessary whitespace prefix from the CLI help output.
+ * Remove unnecessary whitespace prefix from the CLI help output.
 
 ## Bug Fixes
 
