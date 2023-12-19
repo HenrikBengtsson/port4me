@@ -202,7 +202,7 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
   lcg_set_seed(port4me_seed(user = user, tool = tool))
 
   if (!is.null(test)) {
-    return(can_port_be_opened(test))
+    return(can_port_be_bound(test))
   }
 
   if (!is.null(list)) max_tries <- list + skip
@@ -231,7 +231,7 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
     count <- count + 1L
     if (count <= skip) next
     if (is.null(list)) {
-      if (can_port_be_opened(port)) return(port)
+      if (can_port_be_bound(port)) return(port)
     } else {
       ports <- c(ports, port)
       if (length(ports) == list) return(ports)

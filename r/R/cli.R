@@ -31,7 +31,7 @@ parse_cli_args <- function() {
 
 
 cli_help_string <- '
-port4me: Get the Same, Personal, Free TCP Port over and over
+{{ package }}: {{ title }}
 
 Usage:
  Rscript -e port4me::port4me [options]
@@ -71,7 +71,7 @@ License: MIT
 '
 
 
-#' @importFrom utils packageVersion
+#' @importFrom utils packageDescription packageVersion
 #' @export
 print.cli_function <- function(x, ..., envir = parent.frame()) {
   if (interactive()) return(NextMethod())
@@ -87,10 +87,12 @@ print.cli_function <- function(x, ..., envir = parent.frame()) {
     cat(as.character(packageVersion(.packageName)), "\n", sep = "")
   } else if (isTRUE(args$help)) {
     msg <- cli_help_string
+    msg <- sub("{{ package }}", .packageName, msg, fixed = TRUE)
+    msg <- sub("{{ title }}", packageDescription(.packageName)[["Title"]], msg, fixed = TRUE)
     msg <- sub("{{ version }}", packageVersion(.packageName), msg, fixed = TRUE)
     cat(msg)
   } else {
-    res <- withVisible(do.call(port4me, args = args, envir = envir))
+    res <- withVisible(do.call(x, args = args, envir = envir))
     
     # Should the result be printed?
     if (res$visible) {
