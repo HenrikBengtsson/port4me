@@ -10,139 +10,141 @@ setup() {
 
     # shellcheck source=incl/ports.sh
     source "${path}/incl/ports.sh"
+
+    cli_call=(Rscript -e port4me::port4me --args)
 }
 
-@test "Rscript -e port4me::port4me --args --version" {
-    run Rscript -e port4me::port4me --args --version
+@test "<CLI call> --version" {
+    run "${cli_call[@]}" --version
     assert_success
 }
 
-@test "Rscript -e port4me::port4me --args --help" {
-    run Rscript -e port4me::port4me --args --help
+@test "<CLI call> --help" {
+    run "${cli_call[@]}" --help
     assert_success
 }
 
-@test "Rscript -e port4me::port4me" {
-    run Rscript -e port4me::port4me
+@test "<CLI call> (without arguments)" {
+    run "${cli_call[@]}"
     assert_success
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice" {
+@test "<CLI call> --user=alice" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
-    run Rscript -e port4me::port4me --args --user=alice
+    run "${cli_call[@]}" --user=alice
     assert_success
     assert_output "30845"
 }
 
-@test "Rscript -e port4me::port4me with PORT4ME_USER=alice" {
+@test "<CLI call> with PORT4ME_USER=alice (without arguments)" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_USER=alice
-    run Rscript -e port4me::port4me
+    run "${cli_call[@]}"
     assert_success
     assert_output "30845"
 }
 
-@test "Rscript -e port4me::port4me --args --user=bob" {
+@test "<CLI call> --user=bob" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
-    run Rscript -e port4me::port4me --args --user=bob
+    run "${cli_call[@]}" --user=bob
     assert_success
     assert_output "54242"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice --tool=rstudio" {
+@test "<CLI call> --user=alice --tool=rstudio" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
-    run Rscript -e port4me::port4me --args --user=alice --tool=rstudio
+    run "${cli_call[@]}" --user=alice --tool=rstudio
     assert_success
     assert_output "22486"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_TOOL=rstudio" {
+@test "<CLI call> --user=alice with PORT4ME_TOOL=rstudio" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_TOOL=rstudio
-    run Rscript -e port4me::port4me --args --user=alice
+    run "${cli_call[@]}" --user=alice
     assert_success
     assert_output "22486"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice --exclude=30845,32310" {
+@test "<CLI call> --user=alice --exclude=30845,32310" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
-    run Rscript -e port4me::port4me --args --user=alice --exclude=30845,32310
+    run "${cli_call[@]}" --user=alice --exclude=30845,32310
     assert_success
     assert_output "19654"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_EXCLUDE=30845,32310" {
+@test "<CLI call> --user=alice with PORT4ME_EXCLUDE=30845,32310" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_EXCLUDE=30845,32310
-    run Rscript -e port4me::port4me --args --user=alice
+    run "${cli_call[@]}" --user=alice
     assert_success
     assert_output "19654"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice --prepend=4321,11001 --list=5" {
-    run Rscript -e port4me::port4me --args --user=alice --prepend=4321,11001 --list=5
+@test "<CLI call> --user=alice --prepend=4321,11001 --list=5" {
+    run "${cli_call[@]}" --user=alice --prepend=4321,11001 --list=5
     assert_success
     truth=(4321 11001 30845 19654 32310)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice --list=5 with PORT4ME_PREPEND=4321,11001" {
+@test "<CLI call> --user=alice --list=5 with PORT4ME_PREPEND=4321,11001" {
     export PORT4ME_PREPEND=4321,11001
-    run Rscript -e port4me::port4me --args --user=alice --list=5
+    run "${cli_call[@]}" --user=alice --list=5
     assert_success
     truth=(4321 11001 30845 19654 32310)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice --include=2000-2123,4321,10000-10999" {
+@test "<CLI call> --user=alice --include=2000-2123,4321,10000-10999" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
-    run Rscript -e port4me::port4me --args --user=alice --include=2000-2123,4321,10000-10999
+    run "${cli_call[@]}" --user=alice --include=2000-2123,4321,10000-10999
     assert_success
     assert_output "10451"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_INCLUDE=2000-2123,4321,10000-10999" {
+@test "<CLI call> --user=alice with PORT4ME_INCLUDE=2000-2123,4321,10000-10999" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     export PORT4ME_INCLUDE=2000-2123,4321,10000-10999
-    run Rscript -e port4me::port4me --args --user=alice
+    run "${cli_call[@]}" --user=alice
     assert_success
     assert_output "10451"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice --tool=jupyter-notebook" {
+@test "<CLI call> --user=alice --tool=jupyter-notebook" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
-    run Rscript -e port4me::port4me --args --user=alice --tool=jupyter-notebook
+    run "${cli_call[@]}" --user=alice --tool=jupyter-notebook
     assert_success
     assert_output "29525"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice jupyter-notebook" {
+@test "<CLI call> --user=alice jupyter-notebook" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
-    run Rscript -e port4me::port4me --args --user=alice jupyter-notebook
+    run "${cli_call[@]}" --user=alice jupyter-notebook
     assert_success
     assert_output "29525"
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice --list=10" {
-    run Rscript -e port4me::port4me --args --user=alice --list=10
+@test "<CLI call> --user=alice --list=10" {
+    run "${cli_call[@]}" --user=alice --list=10
     assert_success
     truth=(30845 19654 32310 63992 15273 31420 62779 55372 24143 41300)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "Rscript -e port4me::port4me --args --user=alice with PORT4ME_LIST=10" {
+@test "<CLI call> --user=alice with PORT4ME_LIST=10" {
     export PORT4ME_LIST=10
-    run Rscript -e port4me::port4me --args --user=alice
+    run "${cli_call[@]}" --user=alice
     assert_success
     truth=(30845 19654 32310 63992 15273 31420 62779 55372 24143 41300)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "Rscript -e port4me::port4me --args --test=<BUSY_PORT> works" {
-    assert_busy_port Rscript -e port4me::port4me --args
+@test "<CLI call> --test=<BUSY_PORT> works" {
+    assert_busy_port "${cli_call[@]}"
 }
 
 @test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
-    _PORT4ME_CHECK_AVAILABLE_PORTS_="any"  Rscript -e port4me::port4me --args --test=80
+    _PORT4ME_CHECK_AVAILABLE_PORTS_="any"  "${cli_call[@]}" --test=80
 }
 
