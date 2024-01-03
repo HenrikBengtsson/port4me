@@ -17,6 +17,29 @@
 #' @keywords internal
 #' @noRd
 can_port_be_opened <- function(port) {
+  can_listen_to_port(port)
+}
+
+
+#' Check whether it possible to listen to a TCP port
+#'
+#' @param port (integer) A TCP port in \[1, 65535\].
+#'
+#' @return
+#' `can_port_be_opened(port)` returns a logical indicating whether the port
+#' can be listened to, or cannot be queried.  If the port can be listened
+#' to then `TRUE` is returned, and if not, then `FALSE` is returned, which
+#' may happen if the port is used by another process.
+#' If port querying is not supported, as in R (< 4.0.0),  then `NA` is
+#' returned.
+#'
+#' @seealso
+#' This function uses [base::serverSocket()] to test whether it is possible
+#' to _listen_ to the specified port.
+#'
+#' @keywords internal
+#' @noRd
+can_listen_to_port <- function(port) {
   stopifnot(length(port) == 1, is.numeric(port), is.finite(port), port >= 1, port <= 65535)
 
   ## SPECIAL: Fake port availability?
@@ -50,3 +73,5 @@ can_port_be_opened <- function(port) {
   
   free
 }
+
+
