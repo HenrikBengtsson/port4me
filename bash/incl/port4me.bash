@@ -34,8 +34,8 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9008
-#' Copyright: Henrik Bengtsson (2022-2023)
+#' Version: 0.6.0-9009
+#' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
 declare -i LCG_SEED
@@ -91,23 +91,46 @@ _p4m_can_port_be_opened() {
             fi
         done
         [[ -z ${PORT4ME_PORT_COMMAND} ]] && _p4m_error "Cannot check if port is available or not. None of the following commands exist on this system: ${cmds[*]}"
+    else
+        command -v "${PORT4ME_PORT_COMMAND}" > /dev/null || _p4m_error "Commands not found: ${PORT4ME_PORT_COMMAND}"
     fi
 
     ${PORT4ME_DEBUG:-false} && >&2 echo "Checking TCP port using '${PORT4ME_PORT_COMMAND}'"
     
     ## Is port occupied?
     if [[ ${PORT4ME_PORT_COMMAND} == "ss" ]]; then
-	## -t == --tcp, -u == udp, -H = --no-header, -l = --listening, -n = --numeric
-        if ss -H -t -u -l -n "src = :${port}" | grep -q -E ":$port\b"; then
+	## -t, --tcp           Display TCP sockets.
+        ## -n, --numeric       Do not try to resolve service names.
+        ## -a, --all           Display both listening and non-listening (for
+        ##                     TCP this means established connections) sockets.
+        ## -H, --no-header     Suppress header line.
+        ## EXPRESSION:
+        ## {dst|src} [=] HOST  Test if the destination or source matches HOST.
+        if ss -t -n -a -H "src = :${port}" | grep -q -E ":$port\b"; then
 	    ## occupied?
             return 1
         fi
     elif [[ ${PORT4ME_PORT_COMMAND} == "netstat" ]]; then
-        if netstat -n -l -t | grep -q -E "^tcp\b[^:]+:$port\b"; then
+        ## "[netstat] is mostly obsolete. Replacement for netstat is ss."
+        ## Source: 'man netstat'
+        ## netstat:
+        ## -t, --tcp
+        ## -n, --numeric    Show numerical addresses instead of trying to
+        ##                  determine symbolic host, port or user names
+        ## -a, --all        Show both listening and non-listening sockets. 
+        ## State:
+        ## CLOSE_WAIT       The remote end has shut down, waiting for the
+        ##                  socket to close.
+        ## ESTABLISHED      The socket has an established connection.
+        ## LISTEN           The socket is listening for incoming connections.
+        if netstat -t -n -a | grep -q -E "^tcp\b[^:]+:$port\b.*(CLOSE_WAIT|ESTABLISHED|LISTEN)"; then
 	    ## occupied?
             return 1
         fi
     elif [[ ${PORT4ME_PORT_COMMAND} == "ncat" ]]; then
+        ## -l, --listen     Bind and listen for incoming connections.
+        ##                  Listen for connections rather than connecting
+        ##                  to a remote machine.
 	timeout 0.1 ncat -l "$port" 2> /dev/null
 	res=$?
         if [[ ${res} -eq 2 ]]; then
