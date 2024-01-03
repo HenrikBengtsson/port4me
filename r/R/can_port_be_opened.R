@@ -10,6 +10,10 @@
 #' If port querying is not supported, as in R (< 4.0.0),  then `NA` is
 #' returned.
 #'
+#' @seealso
+#' This function uses [base::serverSocket()] to test whether it is possible
+#' to _listen_ to the specified port.
+#'
 #' @keywords internal
 #' @noRd
 can_port_be_opened <- function(port) {
@@ -36,6 +40,7 @@ can_port_be_opened <- function(port) {
 
   ## Prevent user interrupts from giving false results
   suspendInterrupts({
+    ## Test if possible to listen to port
     con <- tryCatch(serverSocket(port), error = identity)
   })
 
