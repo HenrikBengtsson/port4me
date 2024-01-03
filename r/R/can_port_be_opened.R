@@ -119,6 +119,9 @@ can_bind_port <- function(port, timeout = 5.0) {
   parse(text = code)  ## validate code
 
   bin <- file.path(R.home("bin"), "Rscript")
+  if (!file_test("-f", bin)) {
+    bin <- file.path(R.home("bin"), "Rscript.exe")
+  }
   stopifnot(file_test("-f", bin))
   
   system2(bin, args = c("-e", shQuote(code)), wait = FALSE, stdout = nullfile(), stderr = nullfile())
