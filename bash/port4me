@@ -37,8 +37,8 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9008
-#' Copyright: Henrik Bengtsson (2022-2023)
+#' Version: 0.6.0-9009
+#' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 
 this="${BASH_SOURCE%/}"

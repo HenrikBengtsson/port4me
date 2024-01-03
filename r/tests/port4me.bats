@@ -140,11 +140,11 @@ setup() {
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "<CLI call> --test=<BUSY_PORT> works" {
-    assert_busy_port "${cli_call[@]}"
+@test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
+    _PORT4ME_CHECK_AVAILABLE_PORTS_="any" "${cli_call[@]}" --test=80
 }
 
-@test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
-    _PORT4ME_CHECK_AVAILABLE_PORTS_="any"  "${cli_call[@]}" --test=80
+@test "<CLI call> --test=<BUSY_PORT> works" {
+    assert_busy_port "${cli_call[@]}"
 }
 
