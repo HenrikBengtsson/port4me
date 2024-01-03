@@ -12,6 +12,10 @@
 
  * Now `port4me` gives an informative error message if Bash is older
    than v4. For example, macOS only has Bash v3.2.
+   
+ * Now `port4me --user=<user> <tool>` works. Previously it was only
+   possible to specify an unnamed `--tool=<tool>` option if it was the
+   first option specified.
 
 ## Miscellaneous
 

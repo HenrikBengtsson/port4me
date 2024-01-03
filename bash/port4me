@@ -37,7 +37,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9009
+#' Version: 0.6.0-9010
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 
@@ -79,7 +79,7 @@ function _p4me_help {
 # -------------------------------------------------------------------------
 action=port
 PORT4ME_DEBUG=${PORT4ME_DEBUG:-false}
-is_first=true
+tool_specified=false
 
 _p4me_parse_cli_args() {
     local key value
@@ -103,7 +103,8 @@ _p4me_parse_cli_args() {
             if [[ "${key}" == "user" ]]; then
                 PORT4ME_USER=${value}
             elif [[ "${key}" == "tool" ]]; then
-                PORT4ME_TOOL=${value}
+                PORT4ME_TOOL=${value} 
+                tool_specified=true
             elif [[ "${key}" == "exclude" ]]; then
                 PORT4ME_EXCLUDE=${value}
             elif [[ "${key}" == "include" ]]; then
@@ -119,13 +120,13 @@ _p4me_parse_cli_args() {
             else
                 _p4m_error "Unknown option: $1"
             fi
-        elif $is_first; then
+        elif ! $tool_specified; then
             PORT4ME_TOOL=${1}
+            tool_specified=true
         else
-            _p4m_error "An unnamed \"--tool\" option is only allowed in the first position: $1"
+            _p4m_error "The \"--tool\" option has already been specified: $1"
         fi
         shift
-        is_first=false
     done
 }
 
