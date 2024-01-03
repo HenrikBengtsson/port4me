@@ -8,6 +8,9 @@
 
 ## Bug Fixes
 
+ * `port4me()` would only verify that it was possible to listen to 
+   port. Now it also verifies that the port can be bound.
+ 
  * The command-line interface gave an error if special R option
    `--args` was used as in `Rscript -e port4me::port4me --args
    --list=5`.
