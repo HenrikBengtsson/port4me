@@ -111,6 +111,7 @@ can_bind_port <- function(port, timeout = 5.0) {
   hostname <- "127.0.0.1"
   
   ack_file <- tempfile()
+  ack_file <- normalizePath(ack_file, winslash = "/")
 
   ## LAUNCH BACKGROUND PROCESS
   code <- sprintf("ack_file <- '%s'; cat(Sys.getpid(), file = ack_file); t0 <- Sys.time(); tryCatch({ con <- socketConnection('%s', port = %d, server = TRUE, blocking = TRUE, timeout = %f); close(con); cat('TRUE', file = ack_file) }, error = function(...) { cat('FALSE', file = ack_file) })", ack_file, hostname, port, timeout)
