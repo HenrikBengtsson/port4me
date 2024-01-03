@@ -98,6 +98,7 @@ assert_busy_port() {
     local -i pid
     local -a cmd
     local -a res
+    local tf
 
     if [[ -z $(find_timeout) ]]; then
         skip "Test requires the 'timeout' command, which could not be found"
@@ -116,8 +117,9 @@ assert_busy_port() {
     >&2 echo "Background process (PID ${pid}) bound TCP port ${port}"
 
     ## Does 'port4me' detect the port as non-available?
+    tf=$(mktemp)
     ok=true
-    if "${cmd[@]}" --test="${port}"; then
+    if "${cmd[@]}" --test="${port}" &> "${tf}"; then
         ok=false
     fi
     >&2 echo "Result: ${ok}"
@@ -129,5 +131,11 @@ assert_busy_port() {
     ## Failed?
     ${ok} || fail "ERROR: port4me failed to detect port as non-available"
 
+    if [[ -s "${tf}" ]]; then
+        >&2 echo "port4me --test=<port> output:"
+        >&2 cat "${tf}"
+        fail "ERROR: port4me --test=<port> should not produce any output"
+    fi
+    
     return 0
 }
