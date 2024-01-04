@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0-9003"
+__version__ = "0.6.0-9004"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -36,6 +36,8 @@ def is_port_free(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.bind(("", port))
+        except OSError:
+            return False
         except PermissionError:
             return False
         return True
