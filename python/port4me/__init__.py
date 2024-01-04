@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0-9004"
+__version__ = "0.6.0-9005"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -32,13 +32,15 @@ def is_port_free(port):
         if getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_") == "any":
             return True
         raise ValueError("unknown value of environment variable '_PORT4ME_CHECK_AVAILABLE_PORTS_': "+ getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"))
-        
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.bind(("", port))
-        except OSError:
+        except PermissionError:   ## Lack of permission to bind to port
             return False
-        except PermissionError:
+        except OSError:           ## Fail to bind port, e.g. already taken
+            return False
+        except Exception:         ## Any other reasons
             return False
         return True
 
