@@ -112,6 +112,9 @@ def test_bob_skip_exclude():
     assert port4me(user='bob', list=2, skip=1, exclude=[54242, 14723]) == [42139, 55707]
 
 
+def test_port_22_is_reserved():
+    assert port4me(test=22) == False
+    
 def test_port_80_is_reserved():
     assert port4me(test=80) == False
 
