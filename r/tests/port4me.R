@@ -156,3 +156,15 @@ stopifnot(
   port == 10451L
 )
 Sys.unsetenv("PORT4ME_INCLUDE")
+
+
+message("- port4me() can detect busy port")
+Sys.unsetenv("_PORT4ME_CHECK_AVAILABLE_PORTS_")
+## Start dynamic help, if not already running, and get its port
+port <- tools::startDynamicHelp(NA)
+message("Dynamic help port: ", port)
+res <- port4me(test = port)
+message("Port is available: ", res)
+stopifnot(identical(res, FALSE))
+
+
