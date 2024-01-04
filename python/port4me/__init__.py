@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0-9005"
+__version__ = "0.6.0-9006"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -39,8 +39,6 @@ def is_port_free(port):
         except PermissionError:   ## Lack of permission to bind to port
             return False
         except OSError:           ## Fail to bind port, e.g. already taken
-            return False
-        except Exception:         ## Any other reasons
             return False
         return True
 

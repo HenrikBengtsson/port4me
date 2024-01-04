@@ -144,6 +144,11 @@ setup() {
     _PORT4ME_CHECK_AVAILABLE_PORTS_="any" "${cli_call[@]}" --test=80
 }
 
+@test "<CLI call> --test=80 fail" {
+    run "${cli_call[@]}" --test=80
+    assert_failure
+}
+
 @test "<CLI call> --test=<BUSY_PORT> works" {
     assert_busy_port "${cli_call[@]}"
 }
