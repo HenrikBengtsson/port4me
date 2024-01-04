@@ -55,6 +55,7 @@ jobs:
         
     - name: Session information
       run: |
+        python -c "import os; print('EUID='+str(os.geteuid()))"
         python --version
         python -m port4me --version
 
