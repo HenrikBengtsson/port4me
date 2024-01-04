@@ -110,3 +110,15 @@ def test_bob():
 
 def test_bob_skip_exclude():
     assert port4me(user='bob', list=2, skip=1, exclude=[54242, 14723]) == [42139, 55707]
+
+
+def test_port_is_reserved():
+    assert port4me(test=80) == False
+
+def test_port_is_busy():
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("", 0))  ## 0 = ask operating system for a free, random port
+    addr, port = s.getsockname()
+    assert port4me(test=port) == False
+    
