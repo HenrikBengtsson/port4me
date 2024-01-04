@@ -121,4 +121,5 @@ def test_port_is_busy():
     s.bind(("", 0))  ## 0 = ask operating system for a free, random port
     addr, port = s.getsockname()
     assert port4me(test=port) == False
+    s.close()
     
