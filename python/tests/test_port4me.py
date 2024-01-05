@@ -113,6 +113,7 @@ def test_bob_skip_exclude():
 
 def test_port_80_is_blocked():
     import platform
+    import pytest
     if platform.system() != "Linux":
         pytest.skip("Privileged ports are only blocked on Linux: " + platform.system())
     assert port4me(test=80) == False
