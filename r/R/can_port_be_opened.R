@@ -94,10 +94,12 @@ can_listen_to_port <- function(port) {
 #' @noRd
 can_bind_port <- local({
   known_methods <- c("backgroundProcess", "startDynamicHelp")
+  fail_count <- integer(length = 2L)
+  names(fail_count) <- known_methods
   
-  function(port) {
-    methods <- getOption("port4me.test_methods", known_methods)
-  
+  function(port, methods = getOption("port4me.test_methods", c("backgroundProcess", "startDynamicHelp"))) {
+    stopifnot(is.character(methods), !any(is.na(methods)))
+    
     unknown <- setdiff(methods, known_methods)
     if (length(unknown) > 0) {
       warning("Ignoring unknown values in R option 'port4me.test_method': ",
@@ -109,7 +111,16 @@ can_bind_port <- local({
     if (length(methods) == 0L) {
       methods <- known_methods
     }
-    
+
+    ## Ignore methods that failed more than 5 times (potential speedup)
+    methods <- methods[fail_count[methods] <= 5L]
+
+    ## If none of the methods work, we will keep trying all of them
+    if (length(methods) == 0L) {
+      methods <- known_methods
+      fail_count[] <- 0L
+    }
+
     res <- NA
     for (method in methods) {
       if (method == "startDynamicHelp") {
@@ -120,7 +131,15 @@ can_bind_port <- local({
         next  ## Should never happen
       }
       res <- can_bind_port(port)
-      if (!is.na(res)) return(res)
+      if (is.na(res)) {
+        ## Unless previous success, memoize failures
+        if (fail_count[method] >= 0L) {
+          fail_count[method] <- fail_count[method] + 1L
+        }
+      } else {
+        fail_count[method] <- -1L  ## Mark success (needed only once)
+        return(res)
+      }
     }
     
     res
