@@ -11,7 +11,7 @@
       methods <- intersect(methods, known_methods)
     }
     if (length(methods) > 0) {
-      options(port4me.test_method = methods)
+      options(port4me.test_methods = methods)
     }
   }
 }
