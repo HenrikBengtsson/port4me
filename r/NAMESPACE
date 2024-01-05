@@ -2,6 +2,7 @@
 
 S3method(print,cli_function)
 export(port4me)
+importFrom(tools,startDynamicHelp)
 importFrom(utils,file_test)
 importFrom(utils,packageDescription)
 importFrom(utils,packageVersion)

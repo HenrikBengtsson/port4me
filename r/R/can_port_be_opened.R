@@ -23,6 +23,18 @@ can_port_be_opened <- function(port) {
   }
 
   if (identical(can_listen_to_port(port), FALSE)) return(FALSE)
+
+  method <- getOption("port4me.test_method", "startDynamicHelp")
+  if (method == "startDynamicHelp") {
+    can_bind_port <- can_bind_port_startDynamicHelp
+  } else if (method == "backgroundProcess") {
+    can_bind_port <- can_bind_port_backgroundProcess
+  } else {
+    warning("Ignoring unknown value of R option 'port4me.test_method': ",
+            sQuote(method))
+    can_bind_port <- can_bind_port_startDynamicHelp
+  }
+  
   can_bind_port(port)
 }
 
@@ -90,7 +102,7 @@ can_listen_to_port <- function(port) {
 #' @noRd
 #'
 #' @importFrom utils file_test
-can_bind_port <- function(port, timeout = 5.0) {
+can_bind_port_backgroundProcess <- function(port, timeout = 5.0) {
   stopifnot(
     length(port) == 1L,
     is.numeric(port),
@@ -157,4 +169,81 @@ can_bind_port <- function(port, timeout = 5.0) {
   file.remove(ack_file)
 
   identical(result, "TRUE")
-} ## can_bind_port()
+} ## can_bind_port_bg_process()
+
+
+#' @importFrom tools startDynamicHelp
+can_bind_port_startDynamicHelp <- function(port) {
+  stopifnot(
+    length(port) == 1L,
+    is.numeric(port),
+    is.finite(port),
+    port > 0, port <= 65535
+  )
+  
+  ## Preserve original settings and state
+  oenv <- Sys.getenv("R_DISABLE_HTTPD", NA_character_)
+  oports <- getOption("help.ports", NULL)
+  oport <- NA_integer_
+  cport <- NA_integer_
+  on.exit(suppressMessages({
+    ## (a) Shut down temporarily dynamic help server, if still open
+    if (!is.na(cport)) {
+      tryCatch(startDynamicHelp(FALSE), error = identity)
+    }
+    
+    ## (b) Reopen previously running dynamic help server
+    if (!is.na(oport)) {
+      options(help.ports = oport)
+      port <- tryCatch(startDynamicHelp(TRUE), error = identity)
+      if (inherits(port, "error")) {
+        warning(sprintf("can_bind_port() failed to restart the dynamic help server on port %d. Please, try to call tools::startDynamicHelp(TRUE) manually", oport))
+      } else if (port != oport) {
+        warning(sprintf("can_bind_port() restarted the dynamic help server on a different port (%d) than before (%d)", port, oport))
+      }
+    }
+    
+    ## (c) Undo changes to R option 'help.ports'
+    options(help.ports = oports)
+
+    ## (c) Undo changes to environment variable 'R_DISABLE_HTTPD'
+    if (is.na(oenv)) {
+      Sys.unsetenv("R_DISABLE_HTTPD")
+    } else {
+      Sys.setenv("R_DISABLE_HTTPD" = oenv)
+    }
+  }))
+
+  Sys.unsetenv("R_DISABLE_HTTPD")
+
+  ## Stop dynamic help, if it's already running
+  options(help.ports = 0L)
+  oport <- tryCatch(suppressMessages({
+    oport <- startDynamicHelp(NA)
+    if (oport == 0L) {
+      oport <- NA_integer_
+    } else if (oport == port) {
+      oport <- NA_integer_
+      return(FALSE)
+    } else {
+      res <- startDynamicHelp(FALSE)
+      stopifnot(res == 0L)
+    }
+    oport
+  }), error = function(...) {
+    NA_integer_
+  })
+
+  ## Retry to bind port 'port'
+  options(help.ports = port)
+  res <- tryCatch(suppressMessages({
+    ## (a) Try to open dynamic help
+    cport <- startDynamicHelp(TRUE)
+    ## (b) Shut it down immediately, if successful
+    ans <- startDynamicHelp(FALSE)
+    if (ans == 0L) cport <- NA_integer_
+    TRUE
+  }), error = function(...) FALSE)
+
+  res
+}
