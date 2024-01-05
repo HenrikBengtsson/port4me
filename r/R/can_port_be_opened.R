@@ -24,7 +24,7 @@ can_port_be_opened <- function(port) {
 
   if (identical(can_listen_to_port(port), FALSE)) return(FALSE)
 
-  method <- getOption("port4me.test_method", "startDynamicHelp")
+  method <- getOption("port4me.test_method", "backgroundProcess")
   if (method == "startDynamicHelp") {
     can_bind_port <- can_bind_port_startDynamicHelp
   } else if (method == "backgroundProcess") {
@@ -136,7 +136,7 @@ can_bind_port_backgroundProcess <- function(port, timeout = 5.0) {
   }
   stopifnot(file_test("-f", bin))
   
-  system2(bin, args = c("-e", shQuote(code)), wait = FALSE, stdout = nullfile(), stderr = nullfile())
+  system2(bin, args = c("--vanilla", "-e", shQuote(code)), wait = FALSE, stdout = nullfile(), stderr = nullfile())
 
   ## Wait for ACK file
   t0 <- Sys.time()
