@@ -22,20 +22,18 @@ can_port_be_opened <- function(port) {
     stop("Unknown value on _PORT4ME_CHECK_AVAILABLE_PORTS_: ", sQuote(value))
   }
 
+  ## can_listen_to_port() may return NA
   if (identical(can_listen_to_port(port), FALSE)) return(FALSE)
 
-  method <- getOption("port4me.test_method", "backgroundProcess")
-  if (method == "startDynamicHelp") {
-    can_bind_port <- can_bind_port_startDynamicHelp
-  } else if (method == "backgroundProcess") {
-    can_bind_port <- can_bind_port_backgroundProcess
-  } else {
-    warning("Ignoring unknown value of R option 'port4me.test_method': ",
-            sQuote(method))
-    can_bind_port <- can_bind_port_startDynamicHelp
+  res <- can_bind_port(port)
+
+  ## can_bind_port() may return NA
+  if (is.na(res)) {
+    warning("port4me: Can listen to TCP port, but could not infer if it is possible to bind to it; will assume not: ", port)
+    res <- FALSE
   }
-  
-  can_bind_port(port)
+
+  res
 }
 
 
@@ -64,6 +62,7 @@ can_listen_to_port <- function(port) {
   ## It works in R (>= 4.0.0)
   ns <- asNamespace("parallel")
   if (!exists("serverSocket", envir = ns, mode = "function")) return(NA)
+  
   serverSocket <- get("serverSocket", envir = ns, mode = "function")
 
   ## suspendInterrupts() is available in R (>= 3.5.0), so we're good here,
@@ -88,13 +87,53 @@ can_listen_to_port <- function(port) {
 #' 
 #' @param port (numeric) port number to test
 #'
+#' @return TRUE if the port can be bound, otherwise FALSE.
+#' If it cannot be decided, FALSE is returned.
+#'
+#' @keywords internal
+#' @noRd
+can_bind_port <- local({
+  known_methods <- c("backgroundProcess", "startDynamicHelp")
+  
+  function(port) {
+    methods <- getOption("port4me.test_methods", known_methods)
+  
+    unknown <- setdiff(methods, known_methods)
+    if (length(unknown) > 0) {
+      warning("Ignoring unknown values in R option 'port4me.test_method': ",
+              paste(sQuote(unknown), collapse = ", "))
+      methods <- unique(intersect(methods, known_methods))
+    }
+  
+    ## Fall back to all known methods
+    if (length(methods) == 0L) {
+      methods <- known_methods
+    }
+    
+    res <- NA
+    for (method in methods) {
+      if (method == "startDynamicHelp") {
+        can_bind_port <- can_bind_port_startDynamicHelp
+      } else if (method == "backgroundProcess") {
+        can_bind_port <- can_bind_port_backgroundProcess
+      } else {
+        next  ## Should never happen
+      }
+      res <- can_bind_port(port)
+      if (!is.na(res)) return(res)
+    }
+    
+    res
+  }
+})
+
+
+#' Check if a TCP port can be bound
+#' 
 #' @param timeout (numeric) Maximum number of seconds to try before
 #' giving up.
 #'
-#' @return TRUE if the port can be bound, otherwise FALSE.
-#' If it cannot be decided, NA is returned.
-#'
-#' @seealso
+#' @details
 #' This function uses [base::socketConnection()] in a background R process
 #' to test whether it is possible to _bind_ to the specified port.
 #'
@@ -172,6 +211,12 @@ can_bind_port_backgroundProcess <- function(port, timeout = 5.0) {
 } ## can_bind_port_bg_process()
 
 
+#' @details
+#' This function uses [tools::startDynamicHelp()] to test whether it
+#' is possible to _bind_ to the specified port.
+#' @keywords internal
+#' @noRd
+#'
 #' @importFrom tools startDynamicHelp
 can_bind_port_startDynamicHelp <- function(port) {
   stopifnot(
