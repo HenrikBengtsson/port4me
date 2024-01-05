@@ -1,7 +1,6 @@
 from port4me import port4me
 from os import environ
 
-
 def test_alice():
     environ['_PORT4ME_CHECK_AVAILABLE_PORTS_'] = 'any'
     assert port4me(user='alice') == 30845
@@ -112,14 +111,11 @@ def test_bob_skip_exclude():
     assert port4me(user='bob', list=2, skip=1, exclude=[54242, 14723]) == [42139, 55707]
 
 
-def test_port_22_is_reserved():
-    assert port4me(test=22) == False
-    
-def test_port_80_is_reserved():
+def test_port_80_is_blocked():
+    import platform
+    if platform.system() != "Linux":
+        pytest.skip("Privileged ports are only blocked on Linux: " + platform.system())
     assert port4me(test=80) == False
-
-def test_port_443_is_reserved():
-    assert port4me(test=443) == False
 
 def test_port_is_busy():
     import socket

@@ -145,6 +145,8 @@ setup() {
 }
 
 @test "<CLI call> --test=80 fail" {
+    [[ $(uname -s) == "Linux" ]] || skip "Privileged ports are only blocked on Linux: $(uname -s)"
+
     run "${cli_call[@]}" --test=80
     assert_failure
 }
