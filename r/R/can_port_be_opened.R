@@ -124,13 +124,24 @@ can_bind_port <- local({
     res <- NA
     for (method in methods) {
       if (method == "startDynamicHelp") {
-        can_bind_port <- can_bind_port_startDynamicHelp
+        can_bind_port_fcn <- can_bind_port_startDynamicHelp
       } else if (method == "backgroundProcess") {
-        can_bind_port <- can_bind_port_backgroundProcess
+        can_bind_port_fcn <- can_bind_port_backgroundProcess
       } else {
         next  ## Should never happen
       }
-      res <- can_bind_port(port)
+
+      res <- tryCatch(local({
+        setTimeLimit(cpu = 10.0, elapsed = 10.0, transient = TRUE)
+        on.exit({
+          setTimeLimit(cpu = Inf, elapsed = Inf, transient = FALSE)
+        })
+        can_bind_port_fcn(port)
+      }), error = function(ex) {
+        warning(conditionMessage(ex))
+        NA
+      })
+      
       if (is.na(res)) {
         ## Unless previous success, memoize failures
         if (fail_count[method] >= 0L) {
