@@ -346,12 +346,6 @@ from within R:
 install.packages("port4me")
 ```
 
-To install the development version, do:
-
-```r
-remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
-```
-
 To try it out, call:
 
 ```r

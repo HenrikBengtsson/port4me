@@ -1,5 +1,3 @@
-
-
 <div id="badges"><!-- pkgdown markup -->
 <a href="https://CRAN.R-project.org/web/checks/check_results_port4me.html"><img border="0" src="https://www.r-pkg.org/badges/version/port4me" alt="CRAN check status"/></a>       
 </div>
@@ -376,8 +374,11 @@ or
     -   given hashcode *h*, we can generate the initial LCG seed as *h*
         modulo *m*
 
+
 ## Installation
+
 R package port4me is available on [CRAN](https://cran.r-project.org/package=port4me) and can be installed in R as:
+
 ```r
 install.packages("port4me")
 ```
@@ -386,10 +387,11 @@ install.packages("port4me")
 ### Pre-release version
 
 To install the pre-release version that is available in Git branch `develop` on GitHub, use:
+
 ```r
-remotes::install_github("HenrikBengtsson/port4me", ref="develop")
+remotes::install_github("HenrikBengtsson/port4me", subdir = "r", ref = "develop")
 ```
+
 This will install the package from source.  
 
 <!-- pkgdown-drop-below -->
-
