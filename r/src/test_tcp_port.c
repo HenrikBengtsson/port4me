@@ -21,7 +21,7 @@ static int test_tcp_port(int port) {
   // Create the listening socket
   int listenfd = socket(AF_INET, SOCK_STREAM, 0); // IPv4 TCP socket
   if (listenfd < 0) {
-    return 1;
+    return 10;
   }
 
   // Allow immediate reuse of a port in TIME_WAIT state.
@@ -31,17 +31,17 @@ static int test_tcp_port(int port) {
 #else
   int enable = 1;
   if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
-    return 2;
+    return 20;
   }
 #endif
 
   // Bind the socket to the specific TCP port
   if (bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
-    return 3;
+    return 30;
   }
 
   if (listen(listenfd, 0) < 0) {
-    return 4;
+    return 40;
   }
 
 

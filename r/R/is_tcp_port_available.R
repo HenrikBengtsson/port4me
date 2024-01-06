@@ -42,13 +42,13 @@ is_tcp_port_available <- function(port, test = c("bind", "listen")) {
   if (nzchar(Sys.getenv("PORT4ME_DEBUG"))) {
     reason <- if (res == 0) {
       "available (can bind and listen)"
-    } else if (res == 1) {
+    } else if (res %/% 10 == 1) {
       "not available (cannot set up socket)"
-    } else if (res == 2) {
+    } else if (res %/% 10 == 2) {
       "not available (cannot reuse port in TIME_WAIT state)"
-    } else if (res == 3) {
+    } else if (res %/% 10 == 3) {
       "not available (cannot bind to port)"
-    } else if (res == 4) {
+    } else if (res %/% 10 == 4) {
       "not available (cannot listen)"
     }
     message(sprintf("port4me:::is_tcp_port_available(%d): %s", port, reason))
