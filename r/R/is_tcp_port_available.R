@@ -1,6 +1,14 @@
-#' R needs to initialize Internet before we can create sockets.
-#' See 'src/main/internet.c' in the R source code.
-#' This is needed on MS Windows.
+#' Initialize R's internet module
+#'
+#' R needs to initialize it's Internet module before we can create sockets.
+#' This is automatically done when R starts on Linux and macOS, but not on
+#' MS Windows.
+#'
+#' This function triggers the initialization, but calling one of R's
+#' built-in functions that does so.  See 'src/main/internet.c' in the
+#' R source code for where this happens under the hood.
+#'
+#' @noRd
 initialize_internet <- local({
   done <- (.Platform[["OS.type"]] != "windows")
   
