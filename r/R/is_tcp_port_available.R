@@ -41,7 +41,7 @@ is_tcp_port_available <- function(port, test = c("bind", "listen")) {
   
   if (nzchar(Sys.getenv("PORT4ME_DEBUG"))) {
     reason <- if (res == 0) {
-      "available"
+      "available (can bind and listen)"
     } else if (res == 1) {
       "not available (cannot set up socket)"
     } else if (res == 2) {
