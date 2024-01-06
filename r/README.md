@@ -389,7 +389,7 @@ install.packages("port4me")
 To install the pre-release version that is available in Git branch `develop` on GitHub, use:
 
 ```r
-remotes::install_github("HenrikBengtsson/port4me", subdir = "r", ref = "develop")
+remotes::install_github("HenrikBengtsson/port4me/r@develop")
 ```
 
 This will install the package from source.  
