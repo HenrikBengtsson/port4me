@@ -31,7 +31,7 @@ is_tcp_port_available <- function(port, test = c("bind", "listen")) {
   if (nzchar(Sys.getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"))) {
     value <- Sys.getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_")
     if (value == "any") {
-      warning("port4me:::is_tcp_port_available() returns TRUE because _PORT4ME_CHECK_AVAILABLE_PORTS_=any")
+#      warning("port4me:::is_tcp_port_available() returns TRUE because _PORT4ME_CHECK_AVAILABLE_PORTS_=any")
       return(TRUE)
     }
     stop("Unknown value on _PORT4ME_CHECK_AVAILABLE_PORTS_: ", sQuote(value))
