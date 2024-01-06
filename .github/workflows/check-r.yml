@@ -44,7 +44,6 @@ jobs:
       _R_CHECK_LENGTH_1_LOGIC2_: true
       _R_CHECK_MATRIX_DATA_: true
       _R_CHECK_SUGGESTS_ONLY_: true
-      _R_PORT4ME_TEST_METHODS_: "startDynamicHelp,backgroundProcess"
       
     steps:
       - uses: actions/checkout@v4

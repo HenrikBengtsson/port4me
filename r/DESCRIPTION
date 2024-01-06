@@ -1,10 +1,9 @@
 Package: port4me
-Version: 0.6.0-9020
+Version: 0.6.0-9021
 Depends:
     R (>= 4.0.0)
 Imports:
-    utils,
-    tools
+    utils
 Suggests:
     rmarkdown,
     knitr

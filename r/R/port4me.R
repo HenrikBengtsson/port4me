@@ -164,6 +164,7 @@ port4me_test <- function() {
 #' The default values of the arguments can be controlled via environment
 #' variables.  See [port4me.settings] for details.
 #'
+#' @importFrom utils str
 #' @export
 port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, exclude = NULL, skip = NULL, list = NULL, test = NULL, max_tries = 65535L, must_work = TRUE) {
   if (is.null(tool)) tool <- port4me_tool()
@@ -202,13 +203,13 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
   lcg_set_seed(port4me_seed(user = user, tool = tool))
 
   if (!is.null(test)) {
-    return(can_port_be_opened(test))
+    return(is_tcp_port_available(test))
   }
 
   if (!is.null(list)) max_tries <- list + skip
 
   if (isTRUE(as.logical(Sys.getenv("PORT4ME_DEBUG", "false")))) {
-    utils::str(list(
+    str(list(
       include = include,
       exclude = exclude,
       prepend = prepend
@@ -231,7 +232,7 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
     count <- count + 1L
     if (count <= skip) next
     if (is.null(list)) {
-      if (can_port_be_opened(port)) return(port)
+      if (is_tcp_port_available(port)) return(port)
     } else {
       ports <- c(ports, port)
       if (length(ports) == list) return(ports)
