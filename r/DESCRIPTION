@@ -1,5 +1,5 @@
 Package: port4me
-Version: 0.6.0-9027
+Version: 0.6.0-9028
 Imports:
     utils
 Suggests:
@@ -9,8 +9,14 @@ Suggests:
 VignetteBuilder:
     knitr
 Title: Get the Same, Personal, Free 'TCP' Port over and over
-Authors@R: c(person("Henrik", "Bengtsson", role=c("aut", "cre", "cph"),
-                                          email = "henrikb@braju.com"))
+Authors@R: c(
+  person("Henrik", "Bengtsson",
+         role=c("aut", "cre", "cph"),
+         email = "henrikb@braju.com",
+         comment = c(ORCID = "0000-0002-7579-5165")),
+  person("Jeroen", "Ooms", role = "ctb", 
+         comment = c("C code for testing availability of TCP ports",
+                     ORCID = "0000-0002-4035-0289")))
 Description: An R implementation of the cross-platform, language-independent "port4me" algorithm (<https://github.com/HenrikBengtsson/port4me>), which (1) finds a free Transmission Control Protocol ('TCP') port in [1024,65535] that the user can open, (2) is designed to work in multi-user environments, (3), gives different users, different ports, (4) gives the user the same port over time with high probability, (5) gives different ports for different software tools, and (6) requires no configuration.
 License: MIT + file LICENSE
 URL: https://github.com/HenrikBengtsson/port4me
