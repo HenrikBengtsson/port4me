@@ -1,3 +1,32 @@
+#' R needs to initialize Internet before we can create sockets.
+#' See 'src/main/internet.c' in the R source code.
+#' This is needed on MS Windows.
+initialize_internet <- local({
+  done <- (.Platform[["OS.type"]] != "windows")
+  
+  function() {
+    ## Already done?
+    if (done) return()
+  
+    ns <- baseenv()
+    if (exists("serverSocket", mode = "function", envir = ns, inherits = FALSE)) {
+      ## R (>= 4.0.0)
+      serverSocket <- get("serverSocket", mode = "function", envir = ns, inherits = FALSE)
+      con <- serverSocket(port = 0L)
+      close(con)
+    } else {
+      ## R (< 4.0.0)
+      tryCatch({
+        con <- socketConnection(port = 0L, server = FALSE, blocking = FALSE, timeout = 0.0)
+        close(con)
+      }, error = identity)
+    }
+    
+    done <<- TRUE
+  }
+})
+
+
 #' Check whether a TCP port is available
 #'
 #' @param port (integer) TCP port in $\[1,65535\]$ to test.
@@ -37,6 +66,7 @@ is_tcp_port_available <- function(port, test = c("bind", "listen")) {
     stop("Unknown value on _PORT4ME_CHECK_AVAILABLE_PORTS_: ", sQuote(value))
   }
 
+  initialize_internet()
   res <- .Call(C_R_test_tcp_port, port)
   
   if (nzchar(Sys.getenv("PORT4ME_DEBUG"))) {
