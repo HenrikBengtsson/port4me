@@ -1,5 +1,9 @@
 # Version (development version)
 
+## Significant Changes
+
+ * Now package works also on R (< 4.0.0).
+
 ## Miscellaneous
 
  * Add unit test asserting that a bound port is detected as such.
