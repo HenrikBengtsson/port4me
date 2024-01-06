@@ -162,10 +162,10 @@ Sys.unsetenv("PORT4ME_INCLUDE")
 message("- port4me() can detect busy port")
 Sys.unsetenv("_PORT4ME_CHECK_AVAILABLE_PORTS_")
 port <- NA_integer_
-if (interactive() || .Platform[["OS.type"]] == "linux") {
+if (.Platform[["OS.type"]] == "linux") {
   ## Start dynamic help, if not already running, and get its port
   ## HELP WANTED: On both macOS and MS Windows, this port is still
-  ## available when running on non-interactive mode. Why?
+  ## available. Why?
   ## system("python -m port4me --test=<port>") confirms this.
   ## /HB 2024-01-06
   port <- tools::startDynamicHelp(NA)
