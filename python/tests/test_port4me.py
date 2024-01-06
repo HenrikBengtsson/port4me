@@ -125,4 +125,3 @@ def test_port_is_busy():
     addr, port = s.getsockname()
     assert port4me(test=port) == False
     s.close()
-    

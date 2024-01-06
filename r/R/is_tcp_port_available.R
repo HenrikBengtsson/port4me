@@ -31,18 +31,28 @@ is_tcp_port_available <- function(port, test = c("bind", "listen")) {
   if (nzchar(Sys.getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"))) {
     value <- Sys.getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_")
     if (value == "any") {
+      warning("port4me:::is_tcp_port_available() returns TRUE because _PORT4ME_CHECK_AVAILABLE_PORTS_=any")
       return(TRUE)
     }
     stop("Unknown value on _PORT4ME_CHECK_AVAILABLE_PORTS_: ", sQuote(value))
   }
-  
-  if (all(c("listen", "bind") %in% test)) {
-    test2 <- 3L
-  } else if ("bind" %in% test) {
-    test2 <- 1L
-  } else if ("listen" %in% test) {
-    test2 <- 2L
-  }
 
-  .Call(C_R_test_tcp_port, port, test2)
+  res <- .Call(C_R_test_tcp_port, port)
+  
+  if (nzchar(Sys.getenv("PORT4ME_DEBUG"))) {
+    reason <- if (res == 0) {
+      "available"
+    } else if (res == 1) {
+      "not available (cannot set up socket)"
+    } else if (res == 2) {
+      "not available (cannot reuse port in TIME_WAIT state)"
+    } else if (res == 3) {
+      "not available (cannot bind to port)"
+    } else if (res == 4) {
+      "not available (cannot listen)"
+    }
+    message(sprintf("port4me:::is_tcp_port_available(%d): %s", port, reason))
+  }
+  
+  (res == 0L)
 }

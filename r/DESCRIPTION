@@ -1,10 +1,11 @@
 Package: port4me
-Version: 0.6.0-9022
+Version: 0.6.0-9024
 Depends:
     R (>= 4.0.0)
 Imports:
     utils
 Suggests:
+    tools,
     rmarkdown,
     knitr
 VignetteBuilder:

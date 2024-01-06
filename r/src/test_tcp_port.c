@@ -10,41 +10,38 @@
 
 // Adopted from https://github.com/ropensci/ssh/blob/master/src/tunnel.c
 // which is released under the MIT license
-static int test_tcp_port(int port, int test) {
+static int test_tcp_port(int port) {
   // Define server socket
   struct sockaddr_in serv_addr;
   memset(&serv_addr, '0', sizeof(serv_addr));
-  serv_addr.sin_family = AF_INET;
-  serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  serv_addr.sin_family = AF_INET;                 // IPv4
+  serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);  // all available interfaces
   serv_addr.sin_port = htons(port);
 
   // Create the listening socket
-  int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+  int listenfd = socket(AF_INET, SOCK_STREAM, 0); // IPv4 TCP socket
   if (listenfd < 0) {
-    return 0;
+    return 1;
   }
 
   // Allow immediate reuse of a port in TIME_WAIT state.
-  // for Windows see TcpTimedWaitDelay (doesn't work)
-#ifndef _WIN32
+#ifdef _WIN32
+  // TODO:
+  // See TcpTimedWaitDelay (doesn't work)
+#else
   int enable = 1;
   if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
-    return 0;
+    return 2;
   }
 #endif
 
-  // Test if we can bind to the port?
-  if (test & 1) {
-    if (bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
-      return 0;
-    }
+  // Bind the socket to the specific TCP port
+  if (bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+    return 3;
   }
 
-  // Test if we can listen to the port?
-  if (test & 2) {
-    if (listen(listenfd, 0) < 0) {
-      return 0;
-    }
+  if (listen(listenfd, 0) < 0) {
+    return 4;
   }
 
 
@@ -54,14 +51,15 @@ static int test_tcp_port(int port, int test) {
   close(listenfd);
 #endif
   
-  return 1;
+  return 0;
 }
 
 
-SEXP R_test_tcp_port(SEXP port_, SEXP test_) {
+SEXP R_test_tcp_port(SEXP port_) {
+  SEXP ans;
   int port = 0;
-  int test = 0;
-
+  int res = 0;
+  
   /* Argument 'port': */
   if (!isInteger(port_)) {
     error("Argument 'port' must be an integer");
@@ -70,17 +68,11 @@ SEXP R_test_tcp_port(SEXP port_, SEXP test_) {
   }
   port = (int)asInteger(port_);
 
-  /* Argument 'test': */
-  if (!isInteger(test_)) {
-    error("Argument 'test' must be an integer");
-  } else if (xlength(test_) != 1) {
-    error("Argument 'test' must be an single integer");
-  }
-  test = (int)asInteger(test_);
+  res = test_tcp_port(port);
 
-  if (test_tcp_port(port, test)) {
-    return(ScalarLogical(TRUE));
-  } else {
-    return(ScalarLogical(FALSE));
-  }
+  PROTECT(ans = allocVector(INTSXP, 1));
+  INTEGER(ans)[0] = res;
+  UNPROTECT(1);
+  
+  return ans;
 }  

@@ -5,7 +5,7 @@
 #define CALLDEF(name, n) {#name, (DL_FUNC) &name, n}
 
 static R_CallMethodDef callMethods[]  = {
-  CALLDEF(R_test_tcp_port, 2),
+  CALLDEF(R_test_tcp_port, 1),
   {NULL, NULL, 0}
 };
 
