@@ -1,6 +1,6 @@
 #' Initialize R's internet module
 #'
-#' R needs to initialize it's Internet module before we can create sockets.
+#' R needs to initialize its Internet module before we can create sockets.
 #' This is automatically done when R starts on Linux and macOS, but not on
 #' MS Windows.
 #'
