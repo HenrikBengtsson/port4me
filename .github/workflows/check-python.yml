@@ -101,7 +101,7 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         env_vars: OS,PYTHON
-        files: python/coverage.python.xml
+        files: coverage.python.xml
         fail_ci_if_error: true
         flags: python
         name: codecov-umbrella-python
