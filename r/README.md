@@ -1,5 +1,7 @@
 <div id="badges"><!-- pkgdown markup -->
-<a href="https://CRAN.R-project.org/web/checks/check_results_port4me.html"><img border="0" src="https://www.r-pkg.org/badges/version/port4me" alt="CRAN check status"/></a>       
+<a href="https://CRAN.R-project.org/web/checks/check_results_port4me.html"><img border="0" src="https://www.r-pkg.org/badges/version/port4me" alt="R-CRAN check status"/><a>
+<a href="https://github.com/HenrikBengtsson/port4me/actions/workflows/check-r.yml"><img border="0" src="https://github.com/HenrikBengtsson/port4me/actions/workflows/check-r.yml/badge.svg" alt="R checks"></a>
+<a href="https://app.codecov.io/gh/HenrikBengtsson/port4me?flags%5B0%5D=r"><img border="0" src="https://codecov.io/gh/HenrikBengtsson/port4me/branch/develop/graph/badge.svg?flag=r" alt="R Code Coverage"/></a>
 </div>
 
 # port4me: Get the Same, Personal, Free 'TCP' Port over and over 
