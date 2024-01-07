@@ -2,11 +2,11 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/port4me)](https://pypi.org/project/port4me/)
 [![Python checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)
-[![Python Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/graph/badge.svg?flag=r)](https://app.codecov.io/gh/HenrikBengtsson/port4me?flags%5B0%5D=python)
+[![Python Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/branch/develop/graph/badge.svg?flag=r)](https://app.codecov.io/gh/HenrikBengtsson/port4me?flags%5B0%5D=python)
 
 [![R-CRAN check status](https://www.r-pkg.org/badges/version/port4me)](https://CRAN.R-project.org/web/checks/check_results_port4me.html)
 [![R checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-r.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-r.yml)
-[![R Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/graph/badge.svg?flag=r)](https://app.codecov.io/gh/HenrikBengtsson/port4me?flags%5B0%5D=r)
+[![R Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/branch/develop/graph/badge.svg?flag=r)](https://app.codecov.io/gh/HenrikBengtsson/port4me?flags%5B0%5D=r)
 
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
