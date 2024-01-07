@@ -127,7 +127,8 @@ jobs:
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release'
         run: |
           setwd("r")
-          coverage <- covr::package_coverage(quiet = FALSE)
+          ## relative_path = ".." => reported files r/R/*.R, r/src/*.{c,h}
+          coverage <- covr::package_coverage(relative_path = "..", quiet = FALSE)
           print(coverage)
           covr::codecov(coverage = coverage, flags = "r", quiet = FALSE)  ## Upload to codecov
         shell: Rscript {0}
