@@ -93,8 +93,8 @@ jobs:
       if: matrix.config.python == '3.10'
       run: |
         pip install pytest-cov
-        pytest --rootdir=python/tests --cov=. ## output summarize in GitHub logs
-        pytest --rootdir=python/tests --cov=. --cov-report=xml:python/coverage.xml
+        pytest --rootdir=python --cov=python/port4me ## output summarize in GitHub logs
+        pytest --rootdir=python --cov=python/port4me --cov-report=xml:python/coverage.xml
         
     - name: Upload Coverage to Codecov
       if: matrix.config.python == '3.10'
