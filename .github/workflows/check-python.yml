@@ -94,14 +94,14 @@ jobs:
       run: |
         pip install pytest-cov
         pytest --cov=python/port4me/ ## output summarize in GitHub logs
-        pytest --cov=python/port4me/ --cov-report=xml:coverage.python.xml
+        pytest --cov=python/port4me/ --cov-report=xml:python/coverage.xml
         
     - name: Upload Coverage to Codecov
       if: matrix.config.python == '3.10'
       uses: codecov/codecov-action@v3
       with:
         env_vars: OS,PYTHON
-        files: coverage.python.xml
+        files: python/coverage.xml
         fail_ci_if_error: true
         flags: python
         name: codecov-umbrella-python
