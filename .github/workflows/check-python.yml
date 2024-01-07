@@ -93,8 +93,12 @@ jobs:
       if: matrix.config.python == '3.10'
       run: |
         pip install pytest-cov
-        pytest --rootdir=python --cov=python/port4me ## output summarize in GitHub logs
-        pytest --rootdir=python --cov=python/port4me --cov-report=xml:python/coverage.xml
+        cd python
+        pytest --cov=port4me ## output summarize in GitHub logs
+        pytest --cov=port4me --cov-report=xml:coverage.xml
+        ## AD HOC: Make reported paths relative to the root of repository
+        sed -i  's/filename="/filename="python\/port4me\//g' python/coverage.xml
+
         
     - name: Upload Coverage to Codecov
       if: matrix.config.python == '3.10'
