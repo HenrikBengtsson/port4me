@@ -162,7 +162,7 @@ Sys.unsetenv("PORT4ME_INCLUDE")
 message("- port4me() can detect busy port")
 Sys.unsetenv("_PORT4ME_CHECK_AVAILABLE_PORTS_")
 port <- NA_integer_
-if (.Platform[["OS.type"]] == "unix") {
+if (.Platform[["OS.type"]] == "unix" && Sys.info()[["sysname"]] != "Darwin") {
   ## Start dynamic help, if not already running, and get its port
   ## HELP WANTED: On both macOS and MS Windows, this port is still
   ## available. Why?
@@ -179,7 +179,3 @@ if (!is.na(port)) {
 } else {
   message("Skipping; don't know how to test on ", sQuote(.Platform[["OS.type"]]))
 }
-
-
-
-
