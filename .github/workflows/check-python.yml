@@ -97,7 +97,7 @@ jobs:
         pytest --cov=port4me ## output summarize in GitHub logs
         pytest --cov=port4me --cov-report=xml:coverage.xml
         ## AD HOC: Make reported paths relative to the root of repository
-        sed -i  's/filename="/filename="python\/port4me\//g' python/coverage.xml
+        sed -i  's/filename="/filename="python\/port4me\//g' coverage.xml
 
         
     - name: Upload Coverage to Codecov
