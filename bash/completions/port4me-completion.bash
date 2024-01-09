@@ -25,7 +25,7 @@ _port4me_completion() {
              return 0
              ;;
         *)
-             mapfile -t COMPREPLY < <(compgen -W "--exclude= --include= --list= --prepend= --test= --tool= --user=" -- "${curr}")
+             mapfile -t COMPREPLY < <(compgen -W "--exclude= --include= --list= --prepend= --skip= --test= --tool= --user=" -- "${curr}")
              compopt -o nospace
              return 0
              ;;

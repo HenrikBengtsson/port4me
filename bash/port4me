@@ -12,11 +12,13 @@
 #'
 #'  --user=<string>    User name (default: $USER)
 #'  --tool=<string>    Name of software tool
+#'
 #'  --include=<ports>  Set of ports to be included
 #'                     (default: 1024-65535)
 #'  --exclude=<ports>  Set of ports to be excluded
 #'  --prepend=<ports>  Set of ports to be considered first
 #'
+#'  --skip=<n>         Number of ports to skip
 #'  --list=<n>         List the first 'n', available or not, ports
 #'
 #'  --test=<port>      Return 0 if port is available, otherwise 1
