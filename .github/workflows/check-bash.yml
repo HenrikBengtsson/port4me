@@ -63,5 +63,5 @@ jobs:
         export PATH=$PWD/bats-core-1.10.0/bin:$PATH
         export PATH=$PWD/bash:$PATH
         bats --version
-        cd bash/tests/
-        bats *.bats
+        cd bash/
+        make check-cli

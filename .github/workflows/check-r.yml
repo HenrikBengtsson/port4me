@@ -113,8 +113,9 @@ jobs:
           export PATH=$PWD/bats-core-1.10.0/bin:$PATH
           bash --version
           bats --version
-          cd r/tests/
-          bats *.bats
+          cd r/
+          make check-cli
+
 
       - name: Upload check results
         if: failure()
