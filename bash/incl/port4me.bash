@@ -258,6 +258,13 @@ port4me() {
     if [[ "${BASH_VERSINFO[0]}" -lt 4 ]]; then
         _p4m_error "port4me requires Bash (>= 4): ${BASH_VERSION}"
     fi
+
+    if [[ -n ${PORT4ME_TEST} ]]; then
+        tmp_int=${PORT4ME_TEST}
+        if (( tmp_int < 1 || tmp_int > 65535 )); then
+            _p4m_error "PORT4ME_TEST is out of range [1,65535]: ${tmp_int}"
+        fi
+    fi
     
     if [[ $test -ne 0 ]]; then
         _p4m_can_port_be_opened "${test}"

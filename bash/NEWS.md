@@ -30,7 +30,10 @@
  * `port4me` failed to identified some TCP ports as occupied.
 
  * `port4me --list=<n>` did not respect `PORT4ME_SKIP`.
- 
+
+ * `port4me --test=0` would output a random port, instead of giving an
+   out-of-range error.
+   
 
 # Version 0.6.0 [2023-07-13]
 
