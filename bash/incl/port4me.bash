@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9011
+#' Version: 0.6.0-9012
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -277,14 +277,17 @@ port4me() {
     
     if ${PORT4ME_DEBUG:-false}; then
         {
-            echo "PORT4ME_EXCLUDE=${PORT4ME_EXCLUDE}"
-            echo "PORT4ME_EXCLUDE_SITE=${PORT4ME_EXCLUDE_SITE}"
-            echo "PORT4ME_EXCLUDE_UNSAFE=${PORT4ME_EXCLUDE_UNSAFE}"
-            echo "PORT4ME_INCLUDE=${PORT4ME_INCLUDE}"
-            echo "PORT4ME_INCLUDE_SITE=${PORT4ME_INCLUDE_SITE}"
-            echo "PORT4ME_PREPEND=${PORT4ME_PREPEND}"
-            echo "PORT4ME_PREPEND_SITE=${PORT4ME_PREPEND_SITE}"
-            echo "PORT4ME_INCLUDE_MIN=${PORT4ME_INCLUDE_MIN}"
+            echo "PORT4ME_EXCLUDE=${PORT4ME_EXCLUDE:-<not set>}"
+            echo "PORT4ME_EXCLUDE_SITE=${PORT4ME_EXCLUDE_SITE:-<not set>}"
+            echo "PORT4ME_EXCLUDE_UNSAFE=${PORT4ME_EXCLUDE_UNSAFE:-<not set>}"
+            echo "PORT4ME_INCLUDE=${PORT4ME_INCLUDE:-<not set>}"
+            echo "PORT4ME_INCLUDE_SITE=${PORT4ME_INCLUDE_SITE:-<not set>}"
+            echo "PORT4ME_PREPEND=${PORT4ME_PREPEND:-<not set>}"
+            echo "PORT4ME_PREPEND_SITE=${PORT4ME_PREPEND_SITE:-<not set>}"
+            echo "PORT4ME_INCLUDE_MIN=${PORT4ME_INCLUDE_MIN:-<not set>}"
+            echo "PORT4ME_SKIP=${PORT4ME_SKIP:-<not set>}"
+            echo "PORT4ME_LIST=${PORT4ME_LIST:-<not set>}"
+            echo "PORT4ME_TEST=${PORT4ME_TEST:-<not set>}"
             echo "Ports to prepend: [n=${#prepend}] ${prepend[*]}"
             echo "Ports to include: [n=${#include}] ${include[*]}"
             echo "Ports to exclude: [n=${#exclude}] ${exclude[*]}"
@@ -334,17 +337,18 @@ port4me() {
             fi
         fi
         
-        tries=$(( tries + 1 ))
         count=$((count + 1))
 
+        ## Skip?
+        if (( count <= skip )); then
+            continue
+        fi
+
+        tries=$(( tries + 1 ))
+        
         if (( list > 0 )); then
             printf "%d\n" "$port"
         else            
-            ## Skip?
-            if (( count <= skip )); then
-                continue
-            fi
-            
             ${PORT4ME_DEBUG:-false} && >&2 printf "%d. port=%d\n" "$count" "$port"
     
             if _p4m_can_port_be_opened "$port"; then

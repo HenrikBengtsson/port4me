@@ -29,6 +29,8 @@
 
  * `port4me` failed to identified some TCP ports as occupied.
 
+ * `port4me --list=<n>` did not respect `PORT4ME_SKIP`.
+ 
 
 # Version 0.6.0 [2023-07-13]
 
