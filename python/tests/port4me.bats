@@ -140,6 +140,13 @@ setup() {
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
+@test "<CLI call> --user=alice with PORT4ME_SKIP=2" {
+    export PORT4ME_SKIP=2
+    run "${cli_call[@]}" --user=alice
+    assert_success
+    assert_output "32310"
+}
+
 @test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
     _PORT4ME_CHECK_AVAILABLE_PORTS_="any" "${cli_call[@]}" --test=80
 }
