@@ -24,8 +24,8 @@ assert_bats:
 	echo "BATS_SUPPORT_HOME=$${BATS_SUPPORT_HOME:?}"
 	echo "BATS_ASSERT_HOME=$${BATS_ASSERT_HOME:?}"
 
-check-cli: assert_bats shellcheck
-	(cd tests/; PORT4ME_CLI_CALL="Rscript -e port4me::port4me" bats *.bats)
+check-cli: assert_bats
+	(cd tests/; PORT4ME_CLI_CALL="Rscript -e port4me::port4me --args" bats *.bats)
 
 incl/OVERVIEW.md: vignettes/port4me-overview.Rmd
 	Rscript -e "rmarkdown::render('vignettes/port4me-overview.Rmd', rmarkdown::md_document(), output_dir = '$(@D)', output_file = '$(@F)')"

@@ -1,15 +1,15 @@
 SHELL=bash
 
-test: shellcheck check
+test: check
 
-check: check-cli
+check: shellcheck check-cli
 
 assert_bats:
 	command -v "bats"
 	echo "BATS_SUPPORT_HOME=$${BATS_SUPPORT_HOME:?}"
 	echo "BATS_ASSERT_HOME=$${BATS_ASSERT_HOME:?}"
 
-check-cli:
+check-cli: assert_bats
 	(cd tests/; PATH="..:$${PATH}" PORT4ME_CLI_CALL="port4me" bats *.bats)
 
 shellcheck:
