@@ -4,8 +4,12 @@ test: shellcheck check
 
 check: check-cli
 
+assert_bats:
+	command -v "bats"
+	echo "BATS_SUPPORT_HOME=$${BATS_SUPPORT_HOME:?}"
+	echo "BATS_ASSERT_HOME=$${BATS_ASSERT_HOME:?}"
+
 check-cli:
-	module load CBI bats-core bats-assert bats-file; \
 	(cd tests/; PATH="..:$${PATH}" PORT4ME_CLI_CALL="port4me" bats *.bats)
 
 shellcheck:

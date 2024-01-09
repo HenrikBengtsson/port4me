@@ -19,8 +19,12 @@ check: shellcheck build
 shellcheck:
 	(cd tests; shellcheck -x *.bats)
 
-check-cli: shellcheck
-	module load CBI bats-core bats-assert bats-file; \
+assert_bats:
+	command -v "bats"
+	echo "BATS_SUPPORT_HOME=$${BATS_SUPPORT_HOME:?}"
+	echo "BATS_ASSERT_HOME=$${BATS_ASSERT_HOME:?}"
+
+check-cli: assert_bats shellcheck
 	(cd tests/; PORT4ME_CLI_CALL="Rscript -e port4me::port4me" bats *.bats)
 
 incl/OVERVIEW.md: vignettes/port4me-overview.Rmd
