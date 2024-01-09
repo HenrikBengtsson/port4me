@@ -178,14 +178,19 @@ def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip
     gen = port4me_gen(tool, user, prepend, include, exclude, min_port, max_port)
 
     if skip is None:
-        skip = getenv("PORT4ME_SKIP", 0)
+        skip = getenv("PORT4ME_SKIP", "0")
         skip = int(skip)
-    assert skip >= 0, "Argument 'skip' must be postive: " + str(skip)
+    assert skip >= 0, "Argument 'skip' must be at least zero: " + str(skip)
 
     if list is None:
-        list = getenv("PORT4ME_LIST", 1)
-        list = int(list)
-    assert list >= 1, "Argument 'list' must be at least one: " + str(list)
+        list = getenv("PORT4ME_LIST", "")
+        if list == "":
+            list = None
+        else:
+            list = int(list)
+            assert list >= 1, "PORT4ME_LIST must be at least one: " + str(list)
+    else:
+        assert list >= 1, "Argument 'list' must be at least one: " + str(list)
 
     gen = islice(gen, skip, None)
 
