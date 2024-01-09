@@ -148,6 +148,14 @@ setup() {
     assert_output "32310"
 }
 
+@test "<CLI call> --user=alice --list=3 with PORT4ME_SKIP=2" {
+    export PORT4ME_SKIP=2
+    run "${cli_call[@]}" --user=alice --list=3
+    assert_success
+    truth=(32310 63992 15273)
+    [[ "${lines[*]}" == "${truth[*]}" ]]
+}
+
 @test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
     _PORT4ME_CHECK_AVAILABLE_PORTS_="any" "${cli_call[@]}" --test=80
 }
