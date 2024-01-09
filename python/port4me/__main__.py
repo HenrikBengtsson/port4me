@@ -8,6 +8,7 @@ parser.add_argument("--user", type=str, help="Used in the seed when generating p
 parser.add_argument("--prepend", type=parse_ports, metavar="PORTS", help="A list of ports to try first")
 parser.add_argument("--include", type=parse_ports, metavar="PORTS", help="If specified, skip any ports not in this list")
 parser.add_argument("--exclude", type=parse_ports, metavar="PORTS", help="Skip any ports in this list")
+parser.add_argument("--skip", type=int, metavar="N", help="Number of ports to skip")
 parser.add_argument("--list", type=int, metavar="N", help="Instead of returning a single port, return a list of this many ports without checking if they are free.")
 parser.add_argument("--test", type=int, metavar="PORT", help="If specified, return whether the port `PORT` is not in use. All other parameters will be ignored.")
 parser.add_argument("--version", action="store_true", help="Show version")

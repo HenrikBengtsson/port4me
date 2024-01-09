@@ -140,6 +140,12 @@ setup() {
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
+@test "<CLI call> --user=alice --skip=2" {
+    run "${cli_call[@]}" --user=alice --skip=2
+    assert_success
+    assert_output "32310"
+}
+
 @test "<CLI call> --user=alice with PORT4ME_SKIP=2" {
     export PORT4ME_SKIP=2
     run "${cli_call[@]}" --user=alice
@@ -147,9 +153,8 @@ setup() {
     assert_output "32310"
 }
 
-@test "<CLI call> --user=alice --list=3 with PORT4ME_SKIP=2" {
-    export PORT4ME_SKIP=2
-    run "${cli_call[@]}" --user=alice --list=3
+@test "<CLI call> --user=alice --list=3 --skip=2" {
+    run "${cli_call[@]}" --user=alice --list=3 --skip=2
     assert_success
     truth=(32310 63992 15273)
     [[ "${lines[*]}" == "${truth[*]}" ]]
