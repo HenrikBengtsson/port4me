@@ -9,6 +9,7 @@ check-cli:
 	(cd tests/; PATH="..:$${PATH}" bats *.bats)
 
 shellcheck:
+	shellcheck completions/*.bash
 	shellcheck incl/*.bash
 	shellcheck port4me
 	(cd tests; shellcheck -x *.bats)

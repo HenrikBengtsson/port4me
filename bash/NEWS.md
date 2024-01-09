@@ -10,6 +10,8 @@
 
 ## New Features
 
+ * Add Bash completion.
+ 
  * Now `port4me` gives an informative error message if Bash is older
    than v4. For example, macOS only has Bash v3.2.
    
