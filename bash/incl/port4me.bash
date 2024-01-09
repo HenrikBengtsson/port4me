@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9009
+#' Version: 0.6.0-9011
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -143,7 +143,7 @@ _p4m_can_port_be_opened() {
     ## don't have the right to open it, e.g. port 1-1023.
     ## WORKAROUND: If non-root, assume 1-1023 can't be opened
     if [[ "$EUID" != 0 ]]; then
-        if (( port < 1024 )); then
+        if (( port < "${PORT4ME_INCLUDE_MIN:-1024}" )); then
 	    ## as-it was occupied
             return 1
         fi
@@ -251,7 +251,7 @@ port4me() {
     local -i list=${PORT4ME_LIST:-0}
     local -i test=${PORT4ME_TEST:-0}
 
-    local -i exclude include prepend
+    local -i exclude include prepend include_min
     local -i count tries
 
     ## Assert Bash (>= 4)
@@ -267,6 +267,14 @@ port4me() {
     mapfile -t exclude < <(_p4m_parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE},${PORT4ME_EXCLUDE_UNSAFE}")
     mapfile -t include < <(_p4m_parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}")
     mapfile -t prepend < <(_p4m_parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}")
+
+    if [[ -n ${PORT4ME_INCLUDE_MIN} ]]; then
+        include_min=${PORT4ME_INCLUDE_MIN}
+        if (( include_min < 1 || include_min > 65535 )); then
+            _p4m_error "PORT4ME_INCLUDE_MIN is out of range [1,65535]: ${include_min}"
+        fi
+    fi
+    
     if ${PORT4ME_DEBUG:-false}; then
         {
             echo "PORT4ME_EXCLUDE=${PORT4ME_EXCLUDE}"
@@ -276,6 +284,7 @@ port4me() {
             echo "PORT4ME_INCLUDE_SITE=${PORT4ME_INCLUDE_SITE}"
             echo "PORT4ME_PREPEND=${PORT4ME_PREPEND}"
             echo "PORT4ME_PREPEND_SITE=${PORT4ME_PREPEND_SITE}"
+            echo "PORT4ME_INCLUDE_MIN=${PORT4ME_INCLUDE_MIN}"
             echo "Ports to prepend: [n=${#prepend}] ${prepend[*]}"
             echo "Ports to include: [n=${#include}] ${include[*]}"
             echo "Ports to exclude: [n=${#exclude}] ${exclude[*]}"
@@ -287,7 +296,7 @@ port4me() {
     fi
     
     LCG_SEED=$(_p4m_string_to_seed)
-
+    
     count=0
     tries=0
     while (( tries < max_tries )); do
@@ -300,8 +309,8 @@ port4me() {
             _p4m_lcg > /dev/null
             
             ## Skip?
-            if (( LCG_SEED < 1024 || LCG_SEED > 65535 )); then
-              ${PORT4ME_DEBUG:-false} && >&2 printf "Skip to next, because LCG_SEED is out of range: %d\n" "$LCG_SEED"
+            if (( LCG_SEED < "${PORT4ME_INCLUDE_MIN:-1024}" || LCG_SEED > 65535 )); then
+              ${PORT4ME_DEBUG:-false} && >&2 printf "Skip to next, because LCG_SEED is out of range [${PORT4ME_INCLUDE_MIN:-1024},65535]: %d\n" "$LCG_SEED"
               continue
             fi
             
