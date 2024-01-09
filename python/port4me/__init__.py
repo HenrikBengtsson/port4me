@@ -183,7 +183,7 @@ def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip
     assert skip >= 0, "Argument 'skip' must be postive: " + str(skip)
 
     if list is None:
-        list = getenv("PORT4ME_LIST", 0)
+        list = getenv("PORT4ME_LIST", 1)
         list = int(list)
     assert list >= 1, "Argument 'list' must be at least one: " + str(list)
 
