@@ -21,7 +21,7 @@ shellcheck:
 
 check-cli: shellcheck
 	module load CBI bats-core bats-assert bats-file; \
-	(cd tests/; bats *.bats)
+	(cd tests/; PORT4ME_CLI_CALL="Rscript -e port4me::port4me" bats *.bats)
 
 incl/OVERVIEW.md: vignettes/port4me-overview.Rmd
 	Rscript -e "rmarkdown::render('vignettes/port4me-overview.Rmd', rmarkdown::md_document(), output_dir = '$(@D)', output_file = '$(@F)')"

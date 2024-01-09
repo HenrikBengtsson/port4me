@@ -11,7 +11,7 @@ setup() {
     # shellcheck source=incl/ports.sh
     source "${path}/incl/ports.sh"
 
-    cli_call=(Rscript -e port4me::port4me --args)
+    read -r -a cli_call <<< "${PORT4ME_CLI_CALL:?}"
 }
 
 @test "<CLI call> --version" {
@@ -166,7 +166,7 @@ setup() {
 
 @test "<CLI call> --test=80 fail" {
     [[ $(uname -s) == "Linux" ]] || skip "Privileged ports are only blocked on Linux: $(uname -s)"
-
+    
     run "${cli_call[@]}" --test=80
     assert_failure
 }
@@ -174,4 +174,3 @@ setup() {
 @test "<CLI call> --test=<BUSY_PORT> works" {
     assert_busy_port "${cli_call[@]}"
 }
-

@@ -6,7 +6,7 @@ check: check-cli
 
 check-cli:
 	module load CBI bats-core bats-assert bats-file; \
-	(cd tests/; PATH="..:$${PATH}" bats *.bats)
+	(cd tests/; PATH="..:$${PATH}" PORT4ME_CLI_CALL="port4me" bats *.bats)
 
 shellcheck:
 	shellcheck completions/*.bash

@@ -8,9 +8,9 @@ check: shellcheck
 shellcheck:
 	(cd tests; shellcheck -x *.bats)
 
-check-cli: shellcheck
+check-cli:
 	module load CBI bats-core bats-assert bats-file; \
-	(cd tests/; bats *.bats)
+	(cd tests/; PORT4ME_CLI_CALL="python -m port4me" bats *.bats)
 
 requirements:
 	python -m pip install --upgrade pip

@@ -2,10 +2,15 @@ SHELL=bash
 VERSION=0.6.0-
 OLD_VERSION=0.6.0
 
-check:
-	(cd bash; make check; make shellcheck)
-	(cd r; make check; make check-cli)
-	(cd python; make check; make check-cli)
+check: check-cli
+	(cd bash; make check)
+	(cd python; make check)
+	(cd r; make check)
+
+check-cli:
+	(cd bash; make shellcheck)
+	(cd python; make check-cli)
+	(cd r; make check-cli)
 
 install-bash:
 	cd bash; make install
