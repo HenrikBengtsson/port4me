@@ -9,6 +9,9 @@
 * `port4me(test = port)` would throw an `OSError` exception instead of
   returning `False` if the port was busy.
 
+* `port4me(list = 0)` would behave like `list = 1`.  Now it gives it
+  produces an error.
+
 
 # Version 0.6.0 [2023-07-13]
 
