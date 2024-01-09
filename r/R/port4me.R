@@ -179,7 +179,7 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   if (!is.null(list)) {
-    stopifnot(is.numeric(list), length(list) == 1L, !is.na(list), list >= 0)
+    stopifnot(is.numeric(list), length(list) == 1L, !is.na(list), list >= 1)
   }
   stopifnot(length(max_tries) == 1L, is.numeric(max_tries), !is.na(max_tries), max_tries > 0, is.finite(max_tries))
   max_tries <- as.integer(max_tries)

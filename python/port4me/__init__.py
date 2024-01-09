@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0-9006"
+__version__ = "0.6.0-9007"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -180,11 +180,14 @@ def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip
     if skip is None:
         skip = getenv("PORT4ME_SKIP", 0)
         skip = int(skip)
-    gen = islice(gen, skip, None)
+    assert skip >= 0, "Argument 'skip' must be postive: " + str(skip)
 
     if list is None:
         list = getenv("PORT4ME_LIST", 0)
         list = int(list)
+    assert list >= 1, "Argument 'list' must be at least one: " + str(list)
+
+    gen = islice(gen, skip, None)
 
     if list:
         return _list(islice(gen, list))

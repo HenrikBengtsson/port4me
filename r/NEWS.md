@@ -19,6 +19,8 @@
    `--args` was used as in `Rscript -e port4me::port4me --args
    --list=5`.
 
+ * Now `port4me(list = n)` gives an error for `n < 1`.
+
 
 # Version 0.6.0 [2023-07-13]
 

@@ -251,8 +251,8 @@ port4me() {
     local -i list=${PORT4ME_LIST:-0}
     local -i test=${PORT4ME_TEST:-0}
 
-    local -i exclude include prepend include_min
-    local -i count tries
+    local -i exclude include prepend
+    local -i count tries tmp_int
 
     ## Assert Bash (>= 4)
     if [[ "${BASH_VERSINFO[0]}" -lt 4 ]]; then
@@ -269,9 +269,23 @@ port4me() {
     mapfile -t prepend < <(_p4m_parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}")
 
     if [[ -n ${PORT4ME_INCLUDE_MIN} ]]; then
-        include_min=${PORT4ME_INCLUDE_MIN}
-        if (( include_min < 1 || include_min > 65535 )); then
-            _p4m_error "PORT4ME_INCLUDE_MIN is out of range [1,65535]: ${include_min}"
+        tmp_int=${PORT4ME_INCLUDE_MIN}
+        if (( tmp_int < 1 || tmp_int > 65535 )); then
+            _p4m_error "PORT4ME_INCLUDE_MIN is out of range [1,65535]: ${tmp_int}"
+        fi
+    fi
+
+    if [[ -n ${PORT4ME_LIST} ]]; then
+        tmp_int=${PORT4ME_LIST}
+        if (( tmp_int < 1 )); then
+            _p4m_error "PORT4ME_LIST must not be postive: ${tmp_int}"
+        fi
+    fi
+
+    if [[ -n ${PORT4ME_SKIP} ]]; then
+        tmp_int=${PORT4ME_SKIP}
+        if (( tmp_int < 0 )); then
+            _p4m_error "PORT4ME_SKIP must not be negative: ${tmp_int}"
         fi
     fi
     
