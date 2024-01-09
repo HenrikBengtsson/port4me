@@ -216,6 +216,14 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
     ))
   }
 
+  port4me_include_min <- Sys.getenv("PORT4ME_INCLUDE_MIN", "1024")
+  port4me_include_min <- as.integer(port4me_include_min)
+  stopifnot(
+    !is.na(port4me_include_min),
+    port4me_include_min >= 1L,
+    port4me_include_min <= 65535L
+  )
+
   ports <- integer(0)
   count <- 0L
   tries <- 0L
@@ -224,7 +232,7 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
       port <- prepend[1]
       prepend <- prepend[-1]
     } else {
-      port <- lcg_port()
+      port <- lcg_port(min = port4me_include_min)
     }
     if (port %in% exclude) next
     if (length(include) > 0 && (! port %in% include)) next
