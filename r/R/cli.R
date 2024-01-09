@@ -48,6 +48,7 @@ Options:
  --exclude=<ports>  Set of ports to be excluded
  --prepend=<ports>  Set of ports to be considered first
 
+ --skip=<n>         Number of ports to skip
  --list=<n>         List the first \'n\', available or not, ports
 
  --test=<port>      Return 0 if port is available, otherwise 1
@@ -66,7 +67,7 @@ jupyter notebook --port "$(Rscript -e port4me::port4me jupyter-notebook)"
 Rscript -e port4me::port4me --test=8087 && echo "free" || echo "taken"
 
 Version: {{ version }}
-Copyright: Henrik Bengtsson (2022-2023)
+Copyright: Henrik Bengtsson (2022-2024)
 License: MIT
 '
 
