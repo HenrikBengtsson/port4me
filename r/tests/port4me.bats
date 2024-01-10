@@ -174,3 +174,62 @@ setup() {
 @test "<CLI call> --test=<BUSY_PORT> works" {
     assert_busy_port "${cli_call[@]}"
 }
+
+
+## -------------------------------------------------------------
+## Errors
+## -------------------------------------------------------------
+@test "<CLI call> --test=65536 gives error" {
+    run "${cli_call[@]}" --test=65536
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+
+@test "<CLI call> --test=foo gives error" {
+    run "${cli_call[@]}" --test=foo
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+
+@test "<CLI call> --list=-1 gives error" {
+    run "${cli_call[@]}" --list=-1
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+
+@test "<CLI call> --list=foo gives error" {
+    run "${cli_call[@]}" --list=foo
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+
+@test "<CLI call> --skip=-1 gives error" {
+    run "${cli_call[@]}" --skip=-1
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+
+@test "<CLI call> --skip=foo gives error" {
+    run "${cli_call[@]}" --skip=foo
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+
+@test "<CLI call> --exclude=foo gives error" {
+    run "${cli_call[@]}" --exclude=foo
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+
+@test "<CLI call> --include=foo gives error" {
+    run "${cli_call[@]}" --include=foo
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+
+@test "<CLI call> --prepend=foo gives error" {
+    run "${cli_call[@]}" --prepend=foo
+    assert_failure
+    assert_output --regexp "(error|ERROR|Error)"
+}
+

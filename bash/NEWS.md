@@ -36,6 +36,8 @@
 
  * `port4me --prepend=<ports>` would sort `<ports>`.
  
+ * `port4me --skip=<invalid>` would not given an error.
+ 
 
 # Version 0.6.0 [2023-07-13]
 

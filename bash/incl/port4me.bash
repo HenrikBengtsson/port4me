@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9013
+#' Version: 0.6.0-9015
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -60,6 +60,12 @@ _p4m_error() {
 _p4m_signal_error() {
     if grep -q -E "ERROR<<<(.*)>>>" <<< "$*"; then
         _p4m_error "$(sed -E "s/.*ERROR<<<(.*)>>>,*/\1/g" <<< "$*")"
+    fi
+}
+
+_p4m_assert_integer() {
+    if grep -q -E "^[[:digit:]]+$" <<< "$*"; then
+        _p4m_error "Not an integer: $*"
     fi
 }
 
@@ -274,18 +280,53 @@ port4me() {
         _p4m_error "port4me requires Bash (>= 4): ${BASH_VERSION}. As a workaround, you could install the Python version (python -m pip port4me) and define a Bash function as: port4me() { python -m port4me \"\$@\"; }"
     fi
 
+    ## Validate arguments
     if [[ -n ${PORT4ME_TEST} ]]; then
+        if ! grep -q -E "^[[:digit:]]+$" <<< "${PORT4ME_TEST}"; then
+            _p4m_error "PORT4ME_TEST is not an integer: ${PORT4ME_TEST}"
+        fi
         tmp_int=${PORT4ME_TEST}
         if (( tmp_int < 1 || tmp_int > 65535 )); then
             _p4m_error "PORT4ME_TEST is out of range [1,65535]: ${tmp_int}"
         fi
     fi
     
+    ## Check port availability?
     if [[ $test -ne 0 ]]; then
         _p4m_can_port_be_opened "${test}"
         return $?
     fi
 
+    if [[ -n ${PORT4ME_INCLUDE_MIN} ]]; then
+        if ! grep -q -E "^[[:digit:]]+$" <<< "${PORT4ME_INCLUDE_MIN}"; then
+            _p4m_error "PORT4ME_INCLUDE_MIN is not an integer: ${PORT4ME_INCLUDE_MIN}"
+        fi
+        tmp_int=${PORT4ME_INCLUDE_MIN}
+        if (( tmp_int < 1 || tmp_int > 65535 )); then
+            _p4m_error "PORT4ME_INCLUDE_MIN is out of range [1,65535]: ${tmp_int}"
+        fi
+    fi
+
+    if [[ -n ${PORT4ME_LIST} ]]; then
+        if ! grep -q -E "^[[:digit:]]+$" <<< "${PORT4ME_LIST}"; then
+            _p4m_error "PORT4ME_LIST is not an integer: ${PORT4ME_LIST}"
+        fi
+        tmp_int=${PORT4ME_LIST}
+        if (( tmp_int < 1 )); then
+            _p4m_error "PORT4ME_LIST must not be postive: ${tmp_int}"
+        fi
+    fi
+
+    if [[ -n ${PORT4ME_SKIP} ]]; then
+        if ! grep -q -E "^[[:digit:]]+$" <<< "${PORT4ME_SKIP}"; then
+            _p4m_error "PORT4ME_SKIP is not an integer: ${PORT4ME_SKIP}"
+        fi
+        tmp_int=${PORT4ME_SKIP}
+        if (( tmp_int < 0 )); then
+            _p4m_error "PORT4ME_SKIP must not be negative: ${tmp_int}"
+        fi
+    fi
+    
     mapfile -t exclude < <(_p4m_parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE},${PORT4ME_EXCLUDE_UNSAFE}")
     _p4m_signal_error "${exclude[@]}"
 
@@ -295,27 +336,6 @@ port4me() {
     mapfile -t prepend < <(_p4m_parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}" false)
     _p4m_signal_error "${prepend[@]}"
 
-    if [[ -n ${PORT4ME_INCLUDE_MIN} ]]; then
-        tmp_int=${PORT4ME_INCLUDE_MIN}
-        if (( tmp_int < 1 || tmp_int > 65535 )); then
-            _p4m_error "PORT4ME_INCLUDE_MIN is out of range [1,65535]: ${tmp_int}"
-        fi
-    fi
-
-    if [[ -n ${PORT4ME_LIST} ]]; then
-        tmp_int=${PORT4ME_LIST}
-        if (( tmp_int < 1 )); then
-            _p4m_error "PORT4ME_LIST must not be postive: ${tmp_int}"
-        fi
-    fi
-
-    if [[ -n ${PORT4ME_SKIP} ]]; then
-        tmp_int=${PORT4ME_SKIP}
-        if (( tmp_int < 0 )); then
-            _p4m_error "PORT4ME_SKIP must not be negative: ${tmp_int}"
-        fi
-    fi
-    
     if ${PORT4ME_DEBUG:-false}; then
         {
             echo "PORT4ME_EXCLUDE=${PORT4ME_EXCLUDE:-<not set>}"
