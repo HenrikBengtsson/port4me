@@ -214,6 +214,8 @@ if (.Platform[["OS.type"]] == "unix" && Sys.info()[["sysname"]] != "Darwin") {
 }
 
 if (!is.na(port)) {
+  Sys.setenv(PORT4ME_DEBUG = "true")
+  
   res <- port4me(test = port)
   message(sprintf("port4me(test = %d) == %s", port, res))
   stopifnot(identical(res, FALSE))
@@ -231,6 +233,8 @@ if (!is.na(port)) {
 
   res <- port4me(include = port, exclude = setdiff(1:65535, port), max_tries = 1L, must_work = FALSE)
   stopifnot(res == -1L)
+
+  Sys.unsetenv("PORT4ME_DEBUG")
 } else {
   message("Skipping; don't know how to test on ", sQuote(.Platform[["OS.type"]]))
 }
@@ -262,4 +266,3 @@ message('- port4me() with PORT4ME_DEBUG = true')
 Sys.setenv(PORT4ME_DEBUG = "true")
 port <- port4me()
 print(port)
-

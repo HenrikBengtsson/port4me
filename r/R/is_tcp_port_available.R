@@ -11,15 +11,15 @@
 #' @noRd
 initialize_internet <- local({
   done <- (.Platform[["OS.type"]] != "windows")
+  baseenv <- baseenv()
   
   function() {
     ## Already done?
     if (done) return()
   
-    ns <- baseenv()
-    if (exists("serverSocket", mode = "function", envir = ns, inherits = FALSE)) {
+    if (exists("serverSocket", mode = "function", envir = baseenv, inherits = FALSE)) {
       ## R (>= 4.0.0)
-      serverSocket <- get("serverSocket", mode = "function", envir = ns, inherits = FALSE)
+      serverSocket <- get("serverSocket", mode = "function", envir = baseenv, inherits = FALSE)
       con <- serverSocket(port = 0L)
       close(con)
     } else {
