@@ -54,8 +54,10 @@ lcg <- local({
 
     ## Sanity checks
     if (seed_next < 0) {
+        ## NOTE: I don't think this can ever happen with above modulo
         stop(sprintf("New LCG seed is negative (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, seed))
     } else if (seed_next > modulus) {
+        ## NOTE: I don't think this can ever happen with above modulo
         stop(sprintf("New LCG seed is too large (%.0f), which could be because non-functional LCG parameters: (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", seed_next, a, c, modulus, seed))
     } else if (seed_next  == seed) {
         stop(sprintf("New LCG seed is same a current seed, with (a, c, modulus) = (%.0f, %.0f, %.0f) with seed = %.0f", a, c, modulus, seed))
