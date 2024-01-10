@@ -81,18 +81,18 @@ setup() {
     assert_output "19654"
 }
 
-@test "<CLI call> --user=alice --prepend=4321,11001 --list=5" {
-    run "${cli_call[@]}" --user=alice --prepend=4321,11001 --list=5
+@test "<CLI call> --user=alice --prepend=11001,4321 --list=5" {
+    run "${cli_call[@]}" --user=alice --prepend=11001,4321 --list=5
     assert_success
-    truth=(4321 11001 30845 19654 32310)
+    truth=(11001 4321 30845 19654 32310)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "<CLI call> --user=alice --list=5 with PORT4ME_PREPEND=4321,11001" {
-    export PORT4ME_PREPEND=4321,11001
+@test "<CLI call> --user=alice --list=5 with PORT4ME_PREPEND=11001,4321" {
+    export PORT4ME_PREPEND=11001,4321
     run "${cli_call[@]}" --user=alice --list=5
     assert_success
-    truth=(4321 11001 30845 19654 32310)
+    truth=(11001 4321 30845 19654 32310)
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 

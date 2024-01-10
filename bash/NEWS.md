@@ -33,7 +33,9 @@
 
  * `port4me --test=0` would output a random port, instead of giving an
    out-of-range error.
-   
+
+ * `port4me --prepend=<ports>` would sort `<ports>`.
+ 
 
 # Version 0.6.0 [2023-07-13]
 

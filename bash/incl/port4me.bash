@@ -57,6 +57,12 @@ _p4m_error() {
     exit 1
 }
 
+_p4m_signal_error() {
+    if grep -q -E "ERROR<<<(.*)>>>" <<< "$*"; then
+        _p4m_error "$(sed -E "s/.*ERROR<<<(.*)>>>,*/\1/g" <<< "$*")"
+    fi
+}
+
 #' Check if TCP port can be opened
 #'
 #' Examples:
@@ -173,9 +179,10 @@ _p4m_string_to_uint() {
 
 _p4m_parse_ports() {
     local spec=${1:?}
+    local sort=${2:-true}
     local specs
     local -a ports
-    
+
     ## Prune and pre-parse input
     spec=${spec//\{chrome\}/${PORT4ME_EXCLUDE_UNSAFE_CHROME}}
     spec=${spec//\{firefox\}/${PORT4ME_EXCLUDE_UNSAFE_FIREFOX}}
@@ -184,7 +191,10 @@ _p4m_parse_ports() {
     spec=${spec## }
     spec=${spec%% }
     spec=${spec// /$'\n'}
-    spec=$(sort -n -u <<< "${spec}")
+    spec=$(uniq <<< "${spec}")
+    if $sort; then
+        spec=$(sort -u <<< "${spec}")
+    fi
 
     ## Split input into lines
     mapfile -t specs <<< "${spec}"
@@ -198,6 +208,11 @@ _p4m_parse_ports() {
             ports+=($(seq "$from" "$to"))
         elif grep -q -E "^${pattern}$" <<< "$spec"; then
             ports+=("$spec")
+        elif grep -q -E "^[[:blank:]]*$" <<< "$spec"; then
+            true
+        else
+            echo "ERROR<<<Unknown port specification: ${spec}>>>"
+            return 0
         fi
     done
     
@@ -251,7 +266,7 @@ port4me() {
     local -i list=${PORT4ME_LIST:-0}
     local -i test=${PORT4ME_TEST:-0}
 
-    local -i exclude include prepend
+    local -a exclude include prepend
     local -i count tries tmp_int
 
     ## Assert Bash (>= 4)
@@ -270,10 +285,15 @@ port4me() {
         _p4m_can_port_be_opened "${test}"
         return $?
     fi
-    
+
     mapfile -t exclude < <(_p4m_parse_ports "${PORT4ME_EXCLUDE},${PORT4ME_EXCLUDE_SITE},${PORT4ME_EXCLUDE_UNSAFE}")
+    _p4m_signal_error "${exclude[@]}"
+
     mapfile -t include < <(_p4m_parse_ports "${PORT4ME_INCLUDE},${PORT4ME_INCLUDE_SITE}")
-    mapfile -t prepend < <(_p4m_parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}")
+    _p4m_signal_error "${include[@]}"
+    
+    mapfile -t prepend < <(_p4m_parse_ports "${PORT4ME_PREPEND},${PORT4ME_PREPEND_SITE}" false)
+    _p4m_signal_error "${prepend[@]}"
 
     if [[ -n ${PORT4ME_INCLUDE_MIN} ]]; then
         tmp_int=${PORT4ME_INCLUDE_MIN}
@@ -342,7 +362,7 @@ port4me() {
             ${PORT4ME_DEBUG:-false} && >&2 printf "Port drawn: %d\n" "$port"
         fi
 
-        ## Skip?
+        ## Exclude?
         if (( ${#exclude[@]} > 0 )); then
             if [[ " ${exclude[*]} " == *" $port "* ]]; then
                 ${PORT4ME_DEBUG:-false} && >&2 printf "Port excluded: %d\n" "$port"
