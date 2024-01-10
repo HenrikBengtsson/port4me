@@ -1,13 +1,15 @@
 parse_cli_args <- function() {
   ## Parse command-line arguments
   cli_args <- commandArgs(trailingOnly = TRUE)
+  ## Allow for testing different CLI options
+  cli_args <- getOption(".port4me.commandArgs", cli_args)
   
   args <- list()
   while (length(cli_args) > 0) {
     arg <- cli_args[1]
     if (grepl(pattern <- "^--args$", arg)) {
       ## Ignore --args
-    } else if (grepl(pattern <- "^--([[:alnum:]]+)=(.*)$", arg)) {
+    } else if (grepl(pattern <- "^--([[:alpha:]][[:alnum:]]*)=(.*)$", arg)) {
       name <- gsub(pattern, "\\1", arg)
       value <- gsub(pattern, "\\2", arg)
       if (grepl("^[+-]?[[:digit:]]+$", value)) {
@@ -15,7 +17,7 @@ parse_cli_args <- function() {
         if (!is.na(value_int)) value <- value_int
       }
       args[[name]] <- value
-    } else if (grepl(pattern <- "^--([[:alnum:]]+)$", arg)) {
+    } else if (grepl(pattern <- "^--([[:alpha:]][[:alnum:]]*)$", arg)) {
       name <- gsub(pattern, "\\1", arg)
       args[[name]] <- I(TRUE)
     } else if (grepl(pattern <- "^--", arg)) {
