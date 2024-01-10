@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9012
+#' Version: 0.6.0-9013
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -256,7 +256,7 @@ port4me() {
 
     ## Assert Bash (>= 4)
     if [[ "${BASH_VERSINFO[0]}" -lt 4 ]]; then
-        _p4m_error "port4me requires Bash (>= 4): ${BASH_VERSION}"
+        _p4m_error "port4me requires Bash (>= 4): ${BASH_VERSION}. As a workaround, you could install the Python version (python -m pip port4me) and define a Bash function as: port4me() { python -m port4me \"\$@\"; }"
     fi
 
     if [[ -n ${PORT4ME_TEST} ]]; then
