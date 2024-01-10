@@ -158,7 +158,48 @@ stopifnot(
 Sys.unsetenv("PORT4ME_INCLUDE")
 
 
+message('- port4me(exclude = "1024-1099")')
+port <- port4me(exclude = "1024-1099")
 
+message('- port4me(include = "1024-1099")')
+port <- port4me(include = "1024-1099")
+
+message('- port4me(prepend = "1024-1099")')
+port <- port4me(prepend = "1024-1099")
+
+prepend <- c(2000:2123, 4321, 10000:10999)
+message("- port4me(prepend = c(2000:2123, 4321, 10000:10999))")
+port <- port4me(prepend = prepend)
+print(port)
+stopifnot(
+  length(port) == 1L,
+  is.integer(port),
+  is.finite(port),
+  port > 0L,
+  port <= 65535L,
+  port >= 1024L,
+  port == prepend[1]
+)
+
+
+
+message("- port4me(skip = 1L)")
+port <- port4me(user = "alice", skip = 1L)
+print(port)
+stopifnot(
+  length(port) == 1L,
+  is.integer(port),
+  is.finite(port),
+  port > 0L,
+  port <= 65535L,
+  port >= 1024L,
+  port == 19654L
+)
+
+
+# -------------------------------------------------------
+# Check TCP port
+# -------------------------------------------------------
 message("- port4me() can detect busy port")
 Sys.unsetenv("_PORT4ME_CHECK_AVAILABLE_PORTS_")
 port <- NA_integer_
@@ -174,8 +215,51 @@ if (.Platform[["OS.type"]] == "unix" && Sys.info()[["sysname"]] != "Darwin") {
 
 if (!is.na(port)) {
   res <- port4me(test = port)
-  message("Port is available: ", res)
+  message(sprintf("port4me(test = %d) == %s", port, res))
   stopifnot(identical(res, FALSE))
+
+  Sys.setenv(PORT4ME_TEST = port)
+  res <- port4me()
+  message(sprintf("Sys.setenv('PORT4ME_TEST'='%d'); port4me() == %s", port, res))
+  stopifnot(identical(res, FALSE))
+  Sys.unsetenv("PORT4ME_TEST")
+
+  res <- tryCatch({
+    port4me(include = port, exclude = setdiff(1:65535, port), max_tries = 1L)
+  }, error = identity)
+  stopifnot(inherits(res, "error"))
+
+  res <- port4me(include = port, exclude = setdiff(1:65535, port), max_tries = 1L, must_work = FALSE)
+  stopifnot(res == -1L)
 } else {
   message("Skipping; don't know how to test on ", sQuote(.Platform[["OS.type"]]))
 }
+
+
+
+# -------------------------------------------------------
+# Exceptions
+# -------------------------------------------------------
+message('- port4me(user = "") produces an error')
+res <- tryCatch({
+  port4me(user = "")
+}, error = identity)
+stopifnot(inherits(res, "error"))
+
+
+message('- port4me(include = "<invalid>") produces an error')
+res <- tryCatch({
+  port4me(include = "<invalid>")
+}, error = identity)
+stopifnot(inherits(res, "error"))
+
+
+
+# -------------------------------------------------------
+# Addition tests to increase test coverage
+# -------------------------------------------------------
+message('- port4me() with PORT4ME_DEBUG = true')
+Sys.setenv(PORT4ME_DEBUG = "true")
+port <- port4me()
+print(port)
+
