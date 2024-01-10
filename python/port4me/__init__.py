@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0-9009"
+__version__ = "0.6.0-9010"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -136,7 +136,7 @@ _list = list  # necessary to avoid conflicts with list() and the parameter which
 
 
 def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip=None,
-            list=None, test=None, max_tries=65535, must_work=True, min_port=1024, max_port=65535):
+            list=None, test=None, max_tries=65535, must_work=True, min_port=1024):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
 
@@ -167,15 +167,13 @@ def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip
         If True, then an error is produced if no port could be found. If False, then `-1` is returned.
     min_port : int, optional
         Skips any ports that are smaller than this
-    max_port : int, optional
-        Skips any ports that are larger than this
     """
     if test:
         return is_port_free(test)
 
     tries = 1
 
-    gen = port4me_gen(tool, user, prepend, include, exclude, min_port, max_port)
+    gen = port4me_gen(tool, user, prepend, include, exclude, min_port)
 
     if skip is None:
         skip = getenv("PORT4ME_SKIP", "0")
