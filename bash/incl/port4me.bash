@@ -401,7 +401,7 @@ port4me() {
             ## Make sure to sort 'include'; required by _p4m_lcg_port()
             mapfile -t subset < <(printf "%s\n" "${include[@]}" | sort -n -u)
         else
-           subset=($(seq 1024 65535))
+           mapfile -t subset < <(seq 1024 65535)
         fi
 
         ## Exclude?
