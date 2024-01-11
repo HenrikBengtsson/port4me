@@ -31,10 +31,14 @@
 #' PORT4ME_LIST=5 port4me
 #' PORT4ME_TEST=4321 port4me && echo "free" || echo "taken"
 #'
+#' Warning:
+#' Then smaller the set of ports that PORT4ME_INCLUDE, PORT4ME_EXCLUDE, etc.
+#' define, the longer the run time will be.
+#'
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9018
+#' Version: 0.6.0-9019
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -213,7 +217,13 @@ _p4m_parse_ports() {
             # shellcheck disable=SC2207
             ports+=($(seq "$from" "$to"))
         elif grep -q -E "^${pattern}$" <<< "$spec"; then
-            ports+=("$spec")
+            ## Ignore '0':s. The is required, because on MS Windows, we cannot
+            ## distinguish from set and unset environment variables, meaning we
+            ## need to use PORT4ME_EXCLUDE_UNSAFE="0", because "" would trigger
+            ## the default value.
+            if [[ $spec != "0" ]]; then
+                ports+=("$spec")
+            fi
         elif grep -q -E "^[[:blank:]]*$" <<< "$spec"; then
             true
         else
@@ -265,6 +275,7 @@ _p4m_lcg() {
 _p4m_lcg_port() {
     local -i min=${1:?}
     local -i max=${2:?}
+    local -i count
     local -a subset
     local has_subset=false
     local subset_str=""
@@ -282,8 +293,16 @@ _p4m_lcg_port() {
         has_subset=true
     fi
 
+    if ${PORT4ME_DEBUG}; then
+        {
+            echo "(min,max): ($min,$max)"
+            echo "subset: [n=${#subset[@]}]"
+        } >&3
+    fi
+    
     ## Sample values in [0,m-2] (sic!), but reject until in [min,max],
     ## or in 'subset' set.
+    count=65536
     while ! ${ready}; do
         _p4m_lcg > /dev/null
 
@@ -298,6 +317,11 @@ _p4m_lcg_port() {
                 ## Within [min,max]?
                 ready=true
             fi
+        fi
+
+        count=$((count - 1))
+        if [[ $count -lt 0 ]]; then
+            _p4m_error "[INTERNAL]: _p4m_lcg_port() did not find a port after 65536 attempts"
         fi
     done
 }

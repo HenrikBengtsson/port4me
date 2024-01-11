@@ -36,10 +36,14 @@
 #'
 #' port4me --test=8087 && echo "free" || echo "taken"
 #'
+#' Warning:
+#' Then smaller the set of ports that --include=<ports> and
+#' --exclude=<ports> define, the longer the run time will be.
+#'
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9018
+#' Version: 0.6.0-9019
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 
