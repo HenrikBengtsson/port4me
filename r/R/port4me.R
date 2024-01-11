@@ -217,9 +217,11 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
   }
 
   ## Subset of ports to draw from
+  min <- 1024L
+  max <- 65535L
   if (length(include) > 0 || length(exclude) > 0) {
     if (length(exclude) > 0 && length(include) == 0) {
-      include <- 1024:65535  ## default
+      include <- min:max  ## default
     }
     subset <- unique(setdiff(include, exclude))
   } else {
@@ -234,7 +236,7 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
       port <- prepend[1]
       prepend <- prepend[-1]
     } else {
-      port <- lcg_port(min = port4me_include_min, subset = subset)
+      port <- lcg_port(min = min, max = max, subset = subset)
     }
     tries <- tries + 1L
     count <- count + 1L
