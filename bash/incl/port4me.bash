@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9017
+#' Version: 0.6.0-9018
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -395,14 +395,26 @@ port4me() {
     
     subset=()
 
-    if (( ${#include[@]} > 0 )); then
-        subset=("${include[@]}")
-#        >&2 echo "subset: [n=${#subset[@]}] ${subset[*]}"
-        mapfile -t subset < <(printf "%s\n" "${subset[@]}" | sort -n -u)
-#        >&2 echo "subset: [n=${#subset[@]}] ${subset[*]}"
+    if [[ ${#include[@]} -gt 0 ]] || [[ ${#exclude[@]} -gt 0 ]]; then
+        ## Include?
+        if [[ ${#include[@]} -gt 0 ]]; then
+            ## Make sure to sort 'include'; required by _p4m_lcg_port()
+            mapfile -t subset < <(printf "%s\n" "${include[@]}" | sort -n -u)
+        else
+           subset=($(seq 1024 65535))
+        fi
+
+        ## Exclude?
+        if [[ ${#exclude[@]} -gt 0 ]]; then
+            ## Make sure to sort 'exclude'; required by _p4m_lcg_port()
+            mapfile -t subset < <(diff --new-line-format="" --unchanged-line-format="" <(printf "%d\n" "${subset[@]}") <(printf "%d\n" "${exclude[@]}" | sort -n -u))
+        fi
+        
+        if ${PORT4ME_DEBUG:-false}; then
+            >&2 echo "Ports to consider: [n=${#subset[@]}] ${subset[*]}"
+        fi
     fi
 
-    
     LCG_SEED=$(_p4m_string_to_seed)
     
     count=0
@@ -417,14 +429,6 @@ port4me() {
             _p4m_lcg_port 1024 65535 "${subset[@]}"
             port=${LCG_SEED:?}
             ${PORT4ME_DEBUG:-false} && >&2 printf "Port drawn: %d\n" "$port"
-        fi
-
-        ## Exclude?
-        if (( ${#exclude[@]} > 0 )); then
-            if [[ " ${exclude[*]} " == *" $port "* ]]; then
-                ${PORT4ME_DEBUG:-false} && >&2 printf "Port excluded: %d\n" "$port"
-                continue
-            fi
         fi
 
         count=$((count + 1))
