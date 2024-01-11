@@ -59,6 +59,13 @@ parse_ports <- function(ports) {
     }
   })
   ports <- unlist(ports, use.names = FALSE)
+
+  ## Ignore '0':s. The is required, because on MS Windows, we cannot
+  ## distinguish from set and unset environment variables, meaning we
+  ## need to use PORT4ME_EXCLUDE_UNSAFE="0", because "" would trigger
+  ## the default value.
+  ports <- setdiff(ports, 0L)
+  
   stopifnot(!anyNA(ports))
   if (is.null(ports)) ports <- integer(0L)
   ports

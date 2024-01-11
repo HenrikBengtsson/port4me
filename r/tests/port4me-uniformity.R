@@ -2,7 +2,7 @@ library(port4me)
 lcg_set_seed <- port4me:::lcg_set_seed
 
 Sys.setenv("_PORT4ME_CHECK_AVAILABLE_PORTS_" = "any")
-Sys.setenv("PORT4ME_EXCLUDE_UNSAFE" = "")
+Sys.setenv("PORT4ME_EXCLUDE_UNSAFE" = "0")
 Sys.setenv(PORT4ME_USER = "alice")
 
 assert_port4me <- function(min = 1024L, max = 65535L, seed = 0L) {
