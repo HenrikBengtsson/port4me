@@ -2,7 +2,7 @@
 
 ## Significant Changes
 
- * Remove the `max_port` argument from `port4me()`.
+ * Remove arguments `min_port` and `max_port` from `port4me()`.
 
 ## Miscellaneous
 

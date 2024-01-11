@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0-9010"
+__version__ = "0.6.0-9011"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -125,6 +125,9 @@ def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None, 
     elif isinstance(exclude, str):
         exclude = parse_ports(exclude)
 
+    ## TODO: Make 'min_port' and 'max_port' agile to 'include' and 'exclude'
+    ## https://github.com/HenrikBengtsson/port4me/issues/60
+    
     for port in port4me_gen_unfiltered(tool, user, prepend):
         if ((min_port <= port <= max_port)
                 and (not include or port in include)
@@ -136,7 +139,7 @@ _list = list  # necessary to avoid conflicts with list() and the parameter which
 
 
 def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip=None,
-            list=None, test=None, max_tries=65535, must_work=True, min_port=1024):
+            list=None, test=None, max_tries=65535, must_work=True):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
 
@@ -165,15 +168,13 @@ def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip
         Raise a TimeoutError if it takes more than this many tries to find a port. Default is 65536.
     must_work : bool, optional
         If True, then an error is produced if no port could be found. If False, then `-1` is returned.
-    min_port : int, optional
-        Skips any ports that are smaller than this
     """
     if test:
         return is_port_free(test)
 
     tries = 1
 
-    gen = port4me_gen(tool, user, prepend, include, exclude, min_port)
+    gen = port4me_gen(tool, user, prepend, include, exclude)
 
     if skip is None:
         skip = getenv("PORT4ME_SKIP", "0")
