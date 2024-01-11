@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9015
+#' Version: 0.6.0-9016
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -155,7 +155,7 @@ _p4m_can_port_be_opened() {
     ## don't have the right to open it, e.g. port 1-1023.
     ## WORKAROUND: If non-root, assume 1-1023 can't be opened
     if [[ "$EUID" != 0 ]]; then
-        if (( port < "${PORT4ME_INCLUDE_MIN:-1024}" )); then
+        if (( port < 1024 )); then
 	    ## as-it was occupied
             return 1
         fi
@@ -247,8 +247,10 @@ _p4m_lcg() {
 
     ## Sanity checks
     if (( seed_next < 0 )); then
+        ## NOTE: I don't think this can ever happen with above modulo
         _p4m_error "INTERNAL: New LCG seed is non-positive: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     elif (( seed_next > modulus )); then
+        ## NOTE: I don't think this can ever happen with above modulo
         _p4m_error "INTERNAL: New LCG seed is too large: $seed_next, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
     elif (( seed_next == seed )); then
         _p4m_error "INTERNAL: New LCG seed is same a current seed, where (a, c, modulus) = ($a, $c, $modulus) with seed = $seed"
@@ -258,6 +260,24 @@ _p4m_lcg() {
     
     echo "${LCG_SEED}"
 }
+
+
+_p4m_lcg_port() {
+    local -i min=${1:?}
+    local -i max=${2:?}
+    local ready=false
+    
+    ## Sample values in [0,m-2] (sic!), but reject until in [min,max],
+    while ! ${ready}; do
+        _p4m_lcg > /dev/null
+
+        ## Reject?
+        if (( LCG_SEED >= min && LCG_SEED <= max )); then
+            ready=true
+        fi
+    done
+}
+
 
 _p4m_string_to_seed() {
     local seed=${PORT4ME_USER:-${USER:?}},${PORT4ME_TOOL}
@@ -295,16 +315,6 @@ port4me() {
     if [[ $test -ne 0 ]]; then
         _p4m_can_port_be_opened "${test}"
         return $?
-    fi
-
-    if [[ -n ${PORT4ME_INCLUDE_MIN} ]]; then
-        if ! grep -q -E "^[[:digit:]]+$" <<< "${PORT4ME_INCLUDE_MIN}"; then
-            _p4m_error "PORT4ME_INCLUDE_MIN is not an integer: ${PORT4ME_INCLUDE_MIN}"
-        fi
-        tmp_int=${PORT4ME_INCLUDE_MIN}
-        if (( tmp_int < 1 || tmp_int > 65535 )); then
-            _p4m_error "PORT4ME_INCLUDE_MIN is out of range [1,65535]: ${tmp_int}"
-        fi
     fi
 
     if [[ -n ${PORT4ME_LIST} ]]; then
@@ -345,7 +355,6 @@ port4me() {
             echo "PORT4ME_INCLUDE_SITE=${PORT4ME_INCLUDE_SITE:-<not set>}"
             echo "PORT4ME_PREPEND=${PORT4ME_PREPEND:-<not set>}"
             echo "PORT4ME_PREPEND_SITE=${PORT4ME_PREPEND_SITE:-<not set>}"
-            echo "PORT4ME_INCLUDE_MIN=${PORT4ME_INCLUDE_MIN:-<not set>}"
             echo "PORT4ME_SKIP=${PORT4ME_SKIP:-<not set>}"
             echo "PORT4ME_LIST=${PORT4ME_LIST:-<not set>}"
             echo "PORT4ME_TEST=${PORT4ME_TEST:-<not set>}"
@@ -370,14 +379,7 @@ port4me() {
             (( port < 1 || port > 65535 )) && _p4m_error "Prepended port out of range [1,65535]: ${port}"
             prepend=("${prepend[@]:1}") ## drop first element
         else
-            _p4m_lcg > /dev/null
-            
-            ## Skip?
-            if (( LCG_SEED < "${PORT4ME_INCLUDE_MIN:-1024}" || LCG_SEED > 65535 )); then
-              ${PORT4ME_DEBUG:-false} && >&2 printf "Skip to next, because LCG_SEED is out of range [${PORT4ME_INCLUDE_MIN:-1024},65535]: %d\n" "$LCG_SEED"
-              continue
-            fi
-            
+            _p4m_lcg_port 1024 65535
             port=${LCG_SEED:?}
             ${PORT4ME_DEBUG:-false} && >&2 printf "Port drawn: %d\n" "$port"
         fi
