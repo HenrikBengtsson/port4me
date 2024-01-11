@@ -251,7 +251,7 @@ that Chrome blocks], and `{firefox}` expands to to the value of
 that Firefox blocks].
 
 
-Analogously to excluding a set of ports, one can limit the range of
+Analogously to excluding a set of ports, one can limit the set of
 ports to be scanned by specifying command-line option `--include`,
 e.g.
 
