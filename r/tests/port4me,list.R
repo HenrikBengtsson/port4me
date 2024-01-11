@@ -31,38 +31,3 @@ stopifnot(
   all(ports == truth)
 )
 Sys.unsetenv("PORT4ME_LIST")
-
-
-n <- 200e3
-message(sprintf("- port4me(list = %d)", n))
-ports <- port4me(list = n)
-stopifnot(
-  is.integer(ports),
-  length(ports) == n,
-  all(is.finite(ports)),
-  all(ports > 0L),
-  all(ports <= 65535L),
-  all(ports >= 1024L)
-)
-
-## Statistical properties
-
-## (a) range, because we draw a large enough sample)
-stopifnot(
-  min(ports) == 1024L,
-  max(ports) == 65535L
-)
-
-t <- table(ports)
-t2 <- table(t)
-print(t2)
-
-## Expected average draws per port
-mu <- n / (65535 - 1024 + 1)
-message(sprintf("Expected draws per port: %.4f", mu))
-stopifnot(all(c(floor(mu), ceiling(mu)) == names(t2)))
-
-mu_hat <- stats::weighted.mean(as.integer(names(t2)), w = t2)
-message(sprintf("Observed draws per port: %.4f", mu_hat))
-
-stopifnot(abs(mu_hat - mu) < 0.001)

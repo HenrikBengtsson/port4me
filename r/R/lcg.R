@@ -93,11 +93,20 @@ lcg_get_seed <- function() {
   lcg(seed = NA_integer_)
 }
 
-lcg_port <- function(min = 1024, max = 65535) {
-  ## Sample values in [0,m-2] (sic!), but reject until in [1024,65535]
-  repeat {
-    res <- lcg()
-    if (res >= min && res <= max) break
+
+lcg_port <- function(min = 1024L, max = 65535L, subset = NULL) {
+  if (!is.null(subset)) {
+    min <- min(subset)
+    max <- max(subset)
   }
-  as.integer(res)
+  
+  ## Sample values in [0,m-2] (sic!), but reject until in [min,max],
+  ## and within the 'subset' set
+  repeat {
+    port <- lcg()
+    if (port < min || port > max) next
+    if (is.null(subset) || is.element(port, subset)) break
+  }
+  
+  as.integer(port)
 }
