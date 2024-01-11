@@ -11,9 +11,6 @@ m <- environment(lcg)[["modulus"]]
 message(sprintf("- LCG parameters (a,c,m): (%d,%d,%d)", a, c, m))
 stopifnot(a == 75L, c == 74L, m == 2^16+1)
 
-seed <- 0L
-message(sprintf("Initializing seed: %d", seed))
-lcg_set_seed(seed = seed)
 
 message("lcg() draws from all values in {0, ..., m-1} except one of them")
 seeds <- 0:(m-1)
@@ -26,13 +23,16 @@ counts <- integer(length = m)
 names(counts) <- seq(from = 0L, to = m - 1L)
 counts[seed_skip + 1L] <- 1L
 
-dt <- system.time({
+seed <- 0L
+message(sprintf("Initializing seed: %d", seed))
+lcg_set_seed(seed = seed)
+
 for (kk in seq_len(m - 1L)) {
   idx <- lcg() + 1L
   stopifnot(idx >= 1L, idx <= m)
   counts[idx] <- counts[idx] + 1L
 }
-})
+
 print(dt)
 stopifnot(sum(counts) == m)
 stopifnot(all(counts > 0L)) ## technically => all(counts == 1)
@@ -45,3 +45,41 @@ dist <- table(counts)
 names(dist) <- sprintf("n=%s", names(dist))
 print(dist)
 stopifnot(all(counts == 1L))
+
+
+message("lcg_port() draws uniformly from {min, ..., max}")
+
+assert_lcg_port <- function(min = 1024L, max = 65535L) {
+  n <- max - min + 1L
+  counts <- integer(length = n)
+  names(counts) <- min:max
+  
+  lcg_set_seed(seed = 0L)
+  
+  for (kk in seq_len(n)) {
+    idx <- lcg_port(min = min, max = max) - min + 1L
+    stopifnot(idx >= 1L, idx <= n)
+    counts[idx] <- counts[idx] + 1L
+  }
+  stopifnot(sum(counts) == n)
+  
+  message("- Distribution of counts:")
+  dist <- table(counts)
+  names(dist) <- sprintf("n=%s", names(dist))
+  print(dist)
+  stopifnot(all(counts == 1L))
+} ## assert_lcg_port()
+
+
+message("lcg_port() draws uniformly from {1024, ..., 65535}")
+assert_lcg_port()
+
+message("lcg_port(min = 1) draws uniformly from {1, ..., 65535}")
+assert_lcg_port(min = 1)
+
+message("lcg_port(min = 50, max = 100) draws uniformly from {50, ..., 100}")
+assert_lcg_port(min = 50, max = 100)
+
+
+
+
