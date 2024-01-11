@@ -2,8 +2,6 @@ lcg_get_seed <- port4me:::lcg_get_seed
 lcg_set_seed <- port4me:::lcg_set_seed
 lcg_port <- port4me:::lcg_port
 lcg <- port4me:::lcg
-source("R/lcg.R")
-lcg <- compiler::cmpfun(lcg)
 
 a <- environment(lcg)[["a"]]
 c <- environment(lcg)[["c"]]
@@ -49,12 +47,12 @@ stopifnot(all(counts == 1L))
 
 message("lcg_port() draws uniformly from {min, ..., max}")
 
-assert_lcg_port <- function(min = 1024L, max = 65535L) {
+assert_lcg_port <- function(min = 1024L, max = 65535L, seed = 0L) {
   n <- max - min + 1L
   counts <- integer(length = n)
   names(counts) <- min:max
   
-  lcg_set_seed(seed = 0L)
+  lcg_set_seed(seed = seed)
   
   for (kk in seq_len(n)) {
     idx <- lcg_port(min = min, max = max) - min + 1L
@@ -79,7 +77,3 @@ assert_lcg_port(min = 1)
 
 message("lcg_port(min = 50, max = 100) draws uniformly from {50, ..., 100}")
 assert_lcg_port(min = 50, max = 100)
-
-
-
-

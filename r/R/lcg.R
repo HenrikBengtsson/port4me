@@ -1,6 +1,9 @@
 #' Linear Congruential Generator
 #'
 #' @param seed (optional) Initiates the LCG seed, iff specified.
+#' The initial seed should be a finite, numeric scalar.
+#' If NA, then the current seed is returned.
+#' 
 #'
 #' @return
 #' An integer in `{0, 1, ..., modulus-1}`.
@@ -25,12 +28,19 @@ lcg <- local({
   function(seed = NULL) {
     if (!is.null(seed)) {
       if (is.na(seed)) return(.seed)
-      seed <- as.integer(seed)
-      stopifnot(length(seed) == 1L, is.numeric(seed), !is.na(seed), seed >= 0L)
       
+      ## Note, initial seed may be any finite numeric scalar
+      stopifnot(length(seed) == 1L, is.numeric(seed), !is.na(seed),
+                is.finite(seed), seed >= 0)
+
       ## Make sure seed is within [0,modulus-1] to avoid integer overflow
       seed <- seed %% modulus
+
+      ## At this point it is safe to coerce to an integer
+      seed <- as.integer(seed)
+      
       .seed <<- seed
+      
       return(.seed)
     }
     
