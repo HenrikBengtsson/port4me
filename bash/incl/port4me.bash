@@ -34,7 +34,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.6.0-9016
+#' Version: 0.6.0-9017
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -265,15 +265,39 @@ _p4m_lcg() {
 _p4m_lcg_port() {
     local -i min=${1:?}
     local -i max=${2:?}
+    local -a subset
+    local has_subset=false
+    local subset_str=""
     local ready=false
-    
+
+    if [[ $# -gt 2 ]]; then    
+        shift
+        shift
+        subset=("$@")
+        
+        ## NOTE: 'subset' must be sorted.
+        min=${subset[0]}
+        max=${subset[-1]}
+        subset_str=" ${subset[*]} "
+        has_subset=true
+    fi
+
     ## Sample values in [0,m-2] (sic!), but reject until in [min,max],
+    ## or in 'subset' set.
     while ! ${ready}; do
         _p4m_lcg > /dev/null
 
-        ## Reject?
+        ## Accept?
         if (( LCG_SEED >= min && LCG_SEED <= max )); then
-            ready=true
+            if ${has_subset}; then
+                ## Within 'subset'?
+                if [[ ${subset_str} == *" $LCG_SEED "* ]]; then
+                    ready=true
+                fi
+            else
+                ## Within [min,max]?
+                ready=true
+            fi
         fi
     done
 }
@@ -367,6 +391,17 @@ port4me() {
     if (( list > 0 )); then
         max_tries=${list}
     fi
+
+    
+    subset=()
+
+    if (( ${#include[@]} > 0 )); then
+        subset=("${include[@]}")
+#        >&2 echo "subset: [n=${#subset[@]}] ${subset[*]}"
+        mapfile -t subset < <(printf "%s\n" "${subset[@]}" | sort -n -u)
+#        >&2 echo "subset: [n=${#subset[@]}] ${subset[*]}"
+    fi
+
     
     LCG_SEED=$(_p4m_string_to_seed)
     
@@ -379,7 +414,7 @@ port4me() {
             (( port < 1 || port > 65535 )) && _p4m_error "Prepended port out of range [1,65535]: ${port}"
             prepend=("${prepend[@]:1}") ## drop first element
         else
-            _p4m_lcg_port 1024 65535
+            _p4m_lcg_port 1024 65535 "${subset[@]}"
             port=${LCG_SEED:?}
             ${PORT4ME_DEBUG:-false} && >&2 printf "Port drawn: %d\n" "$port"
         fi
@@ -392,14 +427,6 @@ port4me() {
             fi
         fi
 
-        ## Not included?
-        if (( ${#include[@]} > 0 )); then
-            if [[ " ${include[*]} " != *" $port "* ]]; then
-                ${PORT4ME_DEBUG:-false} && >&2 printf "Port not included: %d\n" "$port"
-                continue
-            fi
-        fi
-        
         count=$((count + 1))
 
         ## Skip?
