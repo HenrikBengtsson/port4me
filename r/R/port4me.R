@@ -216,18 +216,10 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
     ))
   }
 
-  port4me_include_min <- Sys.getenv("PORT4ME_INCLUDE_MIN", "1024")
-  port4me_include_min <- as.integer(port4me_include_min)
-  stopifnot(
-    !is.na(port4me_include_min),
-    port4me_include_min >= 1L,
-    port4me_include_min <= 65535L
-  )
-
   ## Subset of ports to draw from
   if (length(include) > 0 || length(exclude) > 0) {
     if (length(exclude) > 0 && length(include) == 0) {
-      include <- port4me_include_min:65535
+      include <- 1024:65535  ## default
     }
     subset <- unique(setdiff(include, exclude))
   } else {
