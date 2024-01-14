@@ -52,6 +52,11 @@ assert_lcg_port <- function(min = 1024L, max = 65535L, subset = NULL, seed = 0L)
 message("lcg_port() draws uniformly from {1024, ..., 65535}")
 assert_lcg_port()
 
+message("lcg_port() draws uniformly from {1024, ..., 65535} regardless of seed")
+assert_lcg_port(seed = 1L)
+assert_lcg_port(seed = 42L)
+assert_lcg_port(seed = 65535L)
+
 message("lcg_port(min = 1) draws uniformly from {1, ..., 65535}")
 assert_lcg_port(min = 1)
 
