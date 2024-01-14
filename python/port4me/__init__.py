@@ -114,24 +114,21 @@ def port4me_gen_unfiltered(tool=None, user=None, prepend=None):
         yield port
 
 
-def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
+def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None):
     if include is None:
         include = get_env_ports("PORT4ME_INCLUDE")
     elif isinstance(include, str):
         include = parse_ports(include)
+    if not include:
+        include = range(1024, 65536)
 
     if exclude is None:
         exclude = get_env_ports("PORT4ME_EXCLUDE")
     elif isinstance(exclude, str):
         exclude = parse_ports(exclude)
 
-    ## TODO: Make 'min_port' and 'max_port' agile to 'include' and 'exclude'
-    ## https://github.com/HenrikBengtsson/port4me/issues/60
-    
     for port in port4me_gen_unfiltered(tool, user, prepend):
-        if ((min_port <= port <= max_port)
-                and (not include or port in include)
-                and (not exclude or port not in exclude)):
+        if (port in include) and (not exclude or port not in exclude):
             yield port
 
 
