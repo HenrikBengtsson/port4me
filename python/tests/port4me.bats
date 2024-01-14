@@ -111,6 +111,20 @@ setup() {
     assert_output "10451"
 }
 
+@test "<CLI call> --user=alice --include=1-1023 works" {
+    local -i port
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
+    run "${cli_call[@]}" --user=alice --include=1-1023
+    assert_success
+    assert_output --regexp "[[:digit:]]+"
+    echo "Output:"
+    printf "%s\n" "${lines[@]}"
+    
+    port=${lines[0]}
+    [[ ${port} -ge 1 ]]
+    [[ ${port} -le 1023 ]]
+}
+
 @test "<CLI call> --user=alice --tool=jupyter-notebook" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run "${cli_call[@]}" --user=alice --tool=jupyter-notebook
