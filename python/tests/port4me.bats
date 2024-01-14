@@ -125,6 +125,14 @@ setup() {
     [[ ${port} -le 1023 ]]
 }
 
+@test "<CLI call> --user=alice --prepend=2000-2009 --include=1-1023 returns 2000" {
+    local -i port
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
+    run "${cli_call[@]}" --user=alice --prepend=2000-2009 --include=1-1023
+    assert_success
+    assert_output "2000"
+}
+
 @test "<CLI call> --user=alice --tool=jupyter-notebook" {
     export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
     run "${cli_call[@]}" --user=alice --tool=jupyter-notebook
