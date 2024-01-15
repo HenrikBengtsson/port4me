@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  coverage:
     if: "! contains(github.event.head_commit.message, '[ci skip]')"
 
     timeout-minutes: 5
