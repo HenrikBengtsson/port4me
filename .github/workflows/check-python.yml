@@ -79,7 +79,6 @@ jobs:
         make check-cli
 
     - name: Lint with flake8
-      if: matrix.config.python == '3.10'
       run: |
         pip install flake8
         cd python/

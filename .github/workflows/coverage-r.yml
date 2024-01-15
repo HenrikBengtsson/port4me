@@ -8,7 +8,7 @@ on:
       - 'r/**/*'
       - .github/workflows/check-r.yml
 
-name: "R checks"
+name: "R test coverage"
 
 jobs:
   check:
