@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0-9014"
+__version__ = "0.7.0"
 __all__ = ["port4me", "port4me_gen"]
 
 

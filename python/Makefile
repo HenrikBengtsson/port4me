@@ -46,4 +46,6 @@ pypi-build:
 	python3 -m build --sdist
 
 pypi-upload: dist/port4me-*.tar.gz
+	[[ -f ~/.pypirc ]]
+	grep -qE "^username = __token__$$" ~/.pypirc
 	python3 -m twine upload --user __token__ dist/port4me-*.tar.gz
