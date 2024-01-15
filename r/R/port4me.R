@@ -59,6 +59,13 @@ parse_ports <- function(ports) {
     }
   })
   ports <- unlist(ports, use.names = FALSE)
+
+  ## Ignore '0':s. The is required, because on MS Windows, we cannot
+  ## distinguish from set and unset environment variables, meaning we
+  ## need to use PORT4ME_EXCLUDE_UNSAFE="0", because "" would trigger
+  ## the default value.
+  ports <- setdiff(ports, 0L)
+  
   stopifnot(!anyNA(ports))
   if (is.null(ports)) ports <- integer(0L)
   ports
@@ -164,6 +171,7 @@ port4me_test <- function() {
 #' The default values of the arguments can be controlled via environment
 #' variables.  See [port4me.settings] for details.
 #'
+#' @importFrom utils str
 #' @export
 port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, exclude = NULL, skip = NULL, list = NULL, test = NULL, max_tries = 65535L, must_work = TRUE) {
   if (is.null(tool)) tool <- port4me_tool()
@@ -178,7 +186,7 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
   stopifnot(is.null(tool) || is.character(tool), !anyNA(tool))
   stopifnot(length(user) == 1L, is.character(user), !is.na(user))
   if (!is.null(list)) {
-    stopifnot(is.numeric(list), length(list) == 1L, !is.na(list), list >= 0)
+    stopifnot(is.numeric(list), length(list) == 1L, !is.na(list), list >= 1)
   }
   stopifnot(length(max_tries) == 1L, is.numeric(max_tries), !is.na(max_tries), max_tries > 0, is.finite(max_tries))
   max_tries <- as.integer(max_tries)
@@ -202,19 +210,31 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
   lcg_set_seed(port4me_seed(user = user, tool = tool))
 
   if (!is.null(test)) {
-    return(can_port_be_opened(test))
+    return(is_tcp_port_available(test))
   }
 
   if (!is.null(list)) max_tries <- list + skip
 
   if (isTRUE(as.logical(Sys.getenv("PORT4ME_DEBUG", "false")))) {
-    utils::str(list(
+    str(list(
       include = include,
       exclude = exclude,
       prepend = prepend
     ))
   }
 
+  ## Subset of ports to draw from
+  min <- 1024L
+  max <- 65535L
+  if (length(include) > 0 || length(exclude) > 0) {
+    if (length(exclude) > 0 && length(include) == 0) {
+      include <- min:max  ## default
+    }
+    subset <- unique(setdiff(include, exclude))
+  } else {
+    subset <- NULL
+  }
+  
   ports <- integer(0)
   count <- 0L
   tries <- 0L
@@ -223,15 +243,13 @@ port4me <- function(tool = NULL, user = NULL, prepend = NULL, include = NULL, ex
       port <- prepend[1]
       prepend <- prepend[-1]
     } else {
-      port <- lcg_port()
+      port <- lcg_port(min = min, max = max, subset = subset)
     }
-    if (port %in% exclude) next
-    if (length(include) > 0 && (! port %in% include)) next
     tries <- tries + 1L
     count <- count + 1L
     if (count <= skip) next
     if (is.null(list)) {
-      if (can_port_be_opened(port)) return(port)
+      if (is_tcp_port_available(port)) return(port)
     } else {
       ports <- c(ports, port)
       if (length(ports) == list) return(ports)

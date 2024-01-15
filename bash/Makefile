@@ -1,14 +1,22 @@
 SHELL=bash
 
-test: shellcheck check
+test: check
 
-check:
-	module load CBI bats-core bats-assert bats-file; \
-	(cd tests/; bats *.bats)
+check: shellcheck check-cli
+
+assert_bats:
+	command -v "bats"
+	echo "BATS_SUPPORT_HOME=$${BATS_SUPPORT_HOME:?}"
+	echo "BATS_ASSERT_HOME=$${BATS_ASSERT_HOME:?}"
+
+check-cli: assert_bats
+	(cd tests/; PATH="..:$${PATH}" PORT4ME_CLI_CALL="port4me" bats *.bats)
 
 shellcheck:
+	shellcheck completions/*.bash
 	shellcheck incl/*.bash
-	shellcheck -x port4me
+	shellcheck port4me
+	(cd tests; shellcheck -x *.bats)
 
 install:
 	@[[ -n "$$PREFIX" ]] || { >&2 echo "ERROR: Installation folder 'PREFIX' is not set"; exit 1; }

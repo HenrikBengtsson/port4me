@@ -12,11 +12,13 @@
 #'
 #'  --user=<string>    User name (default: $USER)
 #'  --tool=<string>    Name of software tool
+#'
 #'  --include=<ports>  Set of ports to be included
 #'                     (default: 1024-65535)
 #'  --exclude=<ports>  Set of ports to be excluded
 #'  --prepend=<ports>  Set of ports to be considered first
 #'
+#'  --skip=<n>         Number of ports to skip
 #'  --list=<n>         List the first 'n', available or not, ports
 #'
 #'  --test=<port>      Return 0 if port is available, otherwise 1
@@ -34,8 +36,15 @@
 #'
 #' port4me --test=8087 && echo "free" || echo "taken"
 #'
-#' Version: 0.6.0
-#' Copyright: Henrik Bengtsson (2022-2023)
+#' Warning:
+#' Then smaller the set of ports that --include=<ports> and
+#' --exclude=<ports> define, the longer the run time will be.
+#'
+#' Requirements:
+#' * Bash (>= 4)
+#'
+#' Version: 0.7.0
+#' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 
 this="${BASH_SOURCE%/}"
@@ -59,7 +68,7 @@ function _p4me_help {
     local what res
 
     what=$1
-    res=$(grep "^#'" "$0" | cut -b 3-)
+    res=$(grep "^#'" "$0" | cut -b 4-)
 
     if [[ $what == "full" ]]; then
         res=$(echo "$res" | sed '/^---/d')
@@ -76,7 +85,7 @@ function _p4me_help {
 # -------------------------------------------------------------------------
 action=port
 PORT4ME_DEBUG=${PORT4ME_DEBUG:-false}
-is_first=true
+tool_specified=false
 
 _p4me_parse_cli_args() {
     local key value
@@ -100,7 +109,8 @@ _p4me_parse_cli_args() {
             if [[ "${key}" == "user" ]]; then
                 PORT4ME_USER=${value}
             elif [[ "${key}" == "tool" ]]; then
-                PORT4ME_TOOL=${value}
+                PORT4ME_TOOL=${value} 
+                tool_specified=true
             elif [[ "${key}" == "exclude" ]]; then
                 PORT4ME_EXCLUDE=${value}
             elif [[ "${key}" == "include" ]]; then
@@ -116,13 +126,13 @@ _p4me_parse_cli_args() {
             else
                 _p4m_error "Unknown option: $1"
             fi
-        elif $is_first; then
+        elif ! $tool_specified; then
             PORT4ME_TOOL=${1}
+            tool_specified=true
         else
-            _p4m_error "An unnamed \"--tool\" option is only allowed in the first position: $1"
+            _p4m_error "The \"--tool\" option has already been specified: $1"
         fi
         shift
-        is_first=false
     done
 }
 

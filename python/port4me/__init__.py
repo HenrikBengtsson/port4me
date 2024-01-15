@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -28,10 +28,20 @@ def uint_hash(s):
 
 
 def is_port_free(port):
+    if port < 1 or port > 65535:
+        raise ValueError("port out of range [1,65535]: " + str(port))
+
+    if getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"):
+        if getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_") == "any":
+            return True
+        raise ValueError("unknown value of environment variable '_PORT4ME_CHECK_AVAILABLE_PORTS_': " + getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"))
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.bind(("", port))
-        except PermissionError:
+        except PermissionError:   ## Lack of permission to bind to port
+            return False
+        except OSError:           ## Fail to bind port, e.g. already taken
             return False
         return True
 
@@ -88,14 +98,7 @@ def lcg(seed, a=75, c=74, modulus=65537):
     return seed_next
 
 
-def port4me_gen_unfiltered(tool=None, user=None, prepend=None):
-    if prepend is None:
-        prepend = get_env_ports("PORT4ME_PREPEND")
-    elif isinstance(prepend, str):
-        prepend = parse_ports(prepend)
-
-    yield from prepend
-
+def port4me_gen_unfiltered(tool=None, user=None):
     if not user:
         user = getenv("PORT4ME_USER", getuser())
     if tool is None:
@@ -107,21 +110,28 @@ def port4me_gen_unfiltered(tool=None, user=None, prepend=None):
         yield port
 
 
-def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None, min_port=1024, max_port=65535):
+def port4me_gen(tool=None, user=None, prepend=None, include=None, exclude=None):
+    if prepend is None:
+        prepend = get_env_ports("PORT4ME_PREPEND")
+    elif isinstance(prepend, str):
+        prepend = parse_ports(prepend)
+
+    yield from prepend
+    
     if include is None:
         include = get_env_ports("PORT4ME_INCLUDE")
     elif isinstance(include, str):
         include = parse_ports(include)
+    if not include:
+        include = range(1024, 65536)
 
     if exclude is None:
         exclude = get_env_ports("PORT4ME_EXCLUDE")
     elif isinstance(exclude, str):
         exclude = parse_ports(exclude)
 
-    for port in port4me_gen_unfiltered(tool, user, prepend):
-        if ((min_port <= port <= max_port)
-                and (not include or port in include)
-                and (not exclude or port not in exclude)):
+    for port in port4me_gen_unfiltered(tool, user):
+        if (port in include) and (not exclude or port not in exclude):
             yield port
 
 
@@ -129,7 +139,7 @@ _list = list  # necessary to avoid conflicts with list() and the parameter which
 
 
 def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip=None,
-            list=None, test=None, max_tries=65536, must_work=True, min_port=1024, max_port=65535):
+            list=None, test=None, max_tries=65535, must_work=True):
     """
     Find a free TCP port using a deterministic sequence of ports based on the current username.
 
@@ -158,26 +168,30 @@ def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip
         Raise a TimeoutError if it takes more than this many tries to find a port. Default is 65536.
     must_work : bool, optional
         If True, then an error is produced if no port could be found. If False, then `-1` is returned.
-    min_port : int, optional
-        Skips any ports that are smaller than this
-    max_port : int, optional
-        Skips any ports that are larger than this
     """
-    if test:
+    if test != None:
         return is_port_free(test)
 
     tries = 1
 
-    gen = port4me_gen(tool, user, prepend, include, exclude, min_port, max_port)
-
+    gen = port4me_gen(tool, user, prepend, include, exclude)
+    
     if skip is None:
-        skip = getenv("PORT4ME_SKIP", 0)
+        skip = getenv("PORT4ME_SKIP", "0")
         skip = int(skip)
-    gen = islice(gen, skip, None)
+    assert skip >= 0, "Argument 'skip' must be at least zero: " + str(skip)
 
     if list is None:
-        list = getenv("PORT4ME_LIST", 0)
-        list = int(list)
+        list = getenv("PORT4ME_LIST", "")
+        if list == "":
+            list = None
+        else:
+            list = int(list)
+            assert list >= 1, "PORT4ME_LIST must be at least one: " + str(list)
+    else:
+        assert list >= 1, "Argument 'list' must be at least one: " + str(list)
+
+    gen = islice(gen, skip, None)
 
     if list:
         return _list(islice(gen, list))

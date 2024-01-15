@@ -1,3 +1,44 @@
+# Version 0.7.0 [2024-01-15]
+
+## Significant Changes
+
+ * `port4me` now defaults to `ss` for checking if a port is available
+   or not.  If that's not available, it falls back to `netstat`, and
+   then `ncat`.  The `nc` tool is no longer used, because it differs
+   between Linux distribution, e.g. on Rocky 8 `nc` is the same as
+   `ncat`, whereas on Ubuntu 22.04 it is the same as `nc.openbsd`.
+
+## New Features
+
+ * Add Bash completion.
+ 
+ * Now `port4me` gives an informative error message if Bash is older
+   than v4. For example, macOS only has Bash v3.2.
+   
+ * Now `port4me --user=<user> <tool>` works. Previously it was only
+   possible to specify an unnamed `--tool=<tool>` option if it was the
+   first option specified.
+
+## Miscellaneous
+
+ * Add unit test asserting that a bound port is detected as such.
+
+ * Remove unnecessary whitespace prefix from the CLI help output.
+
+## Bug Fixes
+
+ * `port4me` failed to identified some TCP ports as occupied.
+
+ * `port4me --list=<n>` did not respect `PORT4ME_SKIP`.
+
+ * `port4me --test=0` would output a random port, instead of giving an
+   out-of-range error.
+
+ * `port4me --prepend=<ports>` would sort `<ports>`.
+ 
+ * `port4me --skip=<invalid>` would not given an error.
+ 
+
 # Version 0.6.0 [2023-07-13]
 
 ## Significant Changes

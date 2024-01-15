@@ -1,4 +1,12 @@
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'bash/**/*'
+      - .github/workflows/check-bash.yml
+  pull_request:
+    paths:
+      - 'bash/**/*'
+      - .github/workflows/check-bash.yml
 
 name: "Bash checks"
 
@@ -9,41 +17,51 @@ jobs:
   check:
     if: "! contains(github.event.head_commit.message, '[ci skip]')"
 
-    timeout-minutes: 10
+    timeout-minutes: 5
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+#          - {os: macOS-latest  }
+          - {os: ubuntu-latest }
+          - {os: ubuntu-20.04 }
 
     steps:
     - name: Checkout git repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
-    - name: Install dependencies
+    - name: ShellCheck
+      if: runner.os == 'Linux'
       run: |
-        curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.7.0.tar.gz && tar xf v1.7.0.tar.gz
-        curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
-        curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.0.0.tar.gz && tar xf v2.0.0.tar.gz
         curl -L -O https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.xz
         tar Jxf shellcheck-v0.9.0.linux.x86_64.tar.xz
         mv shellcheck-v0.9.0/shellcheck .
-
-    - name: Session information
-      run: |
-        PATH="$PWD:$PATH" shellcheck --version
-        BATS_SUPPORT_HOME=bats-support-0.3.0 BATS_ASSERT_HOME=bats-assert-2.0.0 PATH="bats-core-1.7.0/bin:$PATH" bats --version
-
-    - name: ShellCheck
-      run: |
         export PATH="$PWD:$PATH"
         cd bash/
         shellcheck --version
         shellcheck incl/*.bash
         shellcheck -x port4me
-
-    - name: Check with Bats
+        (cd tests; shellcheck -x *.bats)
+        
+    - name: Check
       run: |
+        echo "SHELL=${SHELL}"
+        bash --version
+        command -v bash
+        command -v kill || true
+        command -v timeout || true
+        curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.10.0.tar.gz && tar xf v1.10.0.tar.gz
+        curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
+        curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.1.0.tar.gz && tar xf v2.1.0.tar.gz
         export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
-        export BATS_ASSERT_HOME=$PWD/bats-assert-2.0.0
-        export PATH=$PWD/bats-core-1.7.0/bin:$PATH
+        export BATS_ASSERT_HOME=$PWD/bats-assert-2.1.0
+        export PATH=$PWD/bats-core-1.10.0/bin:$PATH
+        export PATH=$PWD/bash:$PATH
         bats --version
-        cd bash/tests/
-        bats *.bats
+        cd bash/
+        make check-cli

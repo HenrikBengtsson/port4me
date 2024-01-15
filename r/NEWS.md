@@ -1,3 +1,27 @@
+# Version 0.7.0 [2023-01-15]
+
+## Significant Changes
+
+ * Now package works also on R (< 4.0.0).
+
+## Miscellaneous
+
+ * Add unit test asserting that a bound port is detected as such.
+ 
+ * Remove unnecessary whitespace prefix from the CLI help output.
+
+## Bug Fixes
+
+ * `port4me()` would only verify that it was possible to listen to 
+   port. Now it also verifies that the port can be bound.
+ 
+ * The command-line interface gave an error if special R option
+   `--args` was used as in `Rscript -e port4me::port4me --args
+   --list=5`.
+
+ * Now `port4me(list = n)` gives an error for `n < 1`.
+
+
 # Version 0.6.0 [2023-07-13]
 
 ## New Features

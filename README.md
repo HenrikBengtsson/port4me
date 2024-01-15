@@ -1,18 +1,15 @@
 [![Bash checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-bash.yml)
-[![Python checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)
-[![R checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/R-CMD-check.yaml)
+
 [![PyPI version](https://img.shields.io/pypi/v/port4me)](https://pypi.org/project/port4me/)
+[![Python checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-python.yml)
+[![Python Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/branch/develop/graph/badge.svg?flag=r)](https://app.codecov.io/gh/HenrikBengtsson/port4me?flags%5B0%5D=python)
+
 [![R-CRAN check status](https://www.r-pkg.org/badges/version/port4me)](https://CRAN.R-project.org/web/checks/check_results_port4me.html)
+[![R checks](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-r.yml/badge.svg)](https://github.com/HenrikBengtsson/port4me/actions/workflows/check-r.yml)
+[![R Code Coverage](https://codecov.io/gh/HenrikBengtsson/port4me/branch/develop/graph/badge.svg?flag=r)](https://app.codecov.io/gh/HenrikBengtsson/port4me?flags%5B0%5D=r)
 
 
 # port4me - Get the Same, Personal, Free TCP Port over and over
-
-_Note, although stable and well tested, consider this project to be
-under development. Feel free to kick the tires using the Bash, the
-Python, or the R implementations. Feedback is appreciated. /Henrik
-2023-06-21_
-
-## Features
 
 The **[port4me]** tool:
 
@@ -28,7 +25,7 @@ The **[port4me]** tool:
 
 * requires no configuration
 
-* implemented in Bash, Python, and R
+* is implemented in Bash, Python, and R
 
 * can be reproduced perfectly on all operating systems and in all
   common programming languages
@@ -254,7 +251,7 @@ that Chrome blocks], and `{firefox}` expands to to the value of
 that Firefox blocks].
 
 
-Analogously to excluding a set of ports, one can limit the range of
+Analogously to excluding a set of ports, one can limit the set of
 ports to be scanned by specifying command-line option `--include`,
 e.g.
 
@@ -324,7 +321,7 @@ error (stderr), which can be seen in the terminal. For example,
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.6.0
+VERSION=0.7.0
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me/   ## must be an absolute path to a folder
@@ -336,7 +333,7 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.6.0
+0.7.0
 ```
 
 ### R package
@@ -347,12 +344,6 @@ from within R:
 
 ```r
 install.packages("port4me")
-```
-
-To install the development version, do:
-
-```r
-remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 ```
 
 To try it out, call:

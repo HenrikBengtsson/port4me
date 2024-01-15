@@ -3,7 +3,11 @@
 setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
-    source ../incl/port4me.bash
+    
+    path="$(dirname "${BATS_TEST_FILENAME}")"
+
+    # shellcheck source=../incl/port4me.bash
+    source "${path}/../incl/port4me.bash"
 }
 
 @test "_p4m_string_to_uint" {

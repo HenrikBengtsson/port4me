@@ -1,11 +1,15 @@
 parse_cli_args <- function() {
   ## Parse command-line arguments
   cli_args <- commandArgs(trailingOnly = TRUE)
+  ## Allow for testing different CLI options
+  cli_args <- getOption(".port4me.commandArgs", cli_args)
   
   args <- list()
   while (length(cli_args) > 0) {
     arg <- cli_args[1]
-    if (grepl(pattern <- "^--([[:alnum:]]+)=(.*)$", arg)) {
+    if (grepl(pattern <- "^--args$", arg)) {
+      ## Ignore --args
+    } else if (grepl(pattern <- "^--([[:alpha:]][[:alnum:]]*)=(.*)$", arg)) {
       name <- gsub(pattern, "\\1", arg)
       value <- gsub(pattern, "\\2", arg)
       if (grepl("^[+-]?[[:digit:]]+$", value)) {
@@ -13,7 +17,7 @@ parse_cli_args <- function() {
         if (!is.na(value_int)) value <- value_int
       }
       args[[name]] <- value
-    } else if (grepl(pattern <- "^--([[:alnum:]]+)$", arg)) {
+    } else if (grepl(pattern <- "^--([[:alpha:]][[:alnum:]]*)$", arg)) {
       name <- gsub(pattern, "\\1", arg)
       args[[name]] <- I(TRUE)
     } else if (grepl(pattern <- "^--", arg)) {
@@ -29,47 +33,48 @@ parse_cli_args <- function() {
 
 
 cli_help_string <- '
- port4me: Get the Same, Personal, Free TCP Port over and over
- 
- Usage:
-  Rscript -e port4me::port4me [options]
- 
- Options:  
-  --help             Display the full help page with examples
-  --version          Output version of this software
-  --debug            Output detailed debug information
+{{ package }}: {{ title }}
 
-  --user=<string>    User name (default: $USER)
-  --tool=<string>    Name of software tool
-  --include=<ports>  Set of ports to be included
-                     (default: 1024-65535)
-  --exclude=<ports>  Set of ports to be excluded
-  --prepend=<ports>  Set of ports to be considered first
+Usage:
+ Rscript -e port4me::port4me [options]
 
-  --list=<n>         List the first \'n\', available or not, ports
+Options:  
+ --help             Display the full help page with examples
+ --version          Output version of this software
+ --debug            Output detailed debug information
 
-  --test=<port>      Return 0 if port is available, otherwise 1
+ --user=<string>    User name (default: $USER)
+ --tool=<string>    Name of software tool
+ --include=<ports>  Set of ports to be included
+                    (default: 1024-65535)
+ --exclude=<ports>  Set of ports to be excluded
+ --prepend=<ports>  Set of ports to be considered first
 
- Examples:
- Rscript -e port4me::port4me --version
+ --skip=<n>         Number of ports to skip
+ --list=<n>         List the first \'n\', available or not, ports
 
- Rscript -e port4me::port4me
- Rscript -e port4me::port4me --tool=rstudio
- Rscript -e port4me::port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
- Rscript -e port4me::port4me rstudio    ## short for --tool=rstudio
+ --test=<port>      Return 0 if port is available, otherwise 1
 
- rserver --www-port "$(Rscript -e port4me::port4me rstudio)"
- jupyter notebook --port "$(Rscript -e port4me::port4me jupyter-notebook)"
+Examples:
+Rscript -e port4me::port4me --version
 
- Rscript -e port4me::port4me --test=8087 && echo "free" || echo "taken"
+Rscript -e port4me::port4me
+Rscript -e port4me::port4me --tool=rstudio
+Rscript -e port4me::port4me --include=11000-11999 --exclude=11500,11509 --tool=rstudio
+Rscript -e port4me::port4me rstudio    ## short for --tool=rstudio
 
- Version: {{ version }}
- Copyright: Henrik Bengtsson (2022-2023)
- License: MIT
+rserver --www-port "$(Rscript -e port4me::port4me rstudio)"
+jupyter notebook --port "$(Rscript -e port4me::port4me jupyter-notebook)"
+
+Rscript -e port4me::port4me --test=8087 && echo "free" || echo "taken"
+
+Version: {{ version }}
+Copyright: Henrik Bengtsson (2022-2024)
+License: MIT
 '
 
 
-#' @importFrom utils packageVersion
+#' @importFrom utils packageDescription packageVersion
 #' @export
 print.cli_function <- function(x, ..., envir = parent.frame()) {
   if (interactive()) return(NextMethod())
@@ -85,10 +90,12 @@ print.cli_function <- function(x, ..., envir = parent.frame()) {
     cat(as.character(packageVersion(.packageName)), "\n", sep = "")
   } else if (isTRUE(args$help)) {
     msg <- cli_help_string
+    msg <- sub("{{ package }}", .packageName, msg, fixed = TRUE)
+    msg <- sub("{{ title }}", packageDescription(.packageName)[["Title"]], msg, fixed = TRUE)
     msg <- sub("{{ version }}", packageVersion(.packageName), msg, fixed = TRUE)
     cat(msg)
   } else {
-    res <- withVisible(do.call(port4me, args = args, envir = envir))
+    res <- withVisible(do.call(x, args = args, envir = envir))
     
     # Should the result be printed?
     if (res$visible) {

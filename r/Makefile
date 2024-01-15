@@ -1,5 +1,7 @@
 SHELL=bash
 
+BROWSER=google-chrome
+
 all:
 
 requirements:
@@ -12,13 +14,24 @@ build:
 	mkdir -p ".local"
 	cd ".local" && R CMD build ..
 
-check:
+check: shellcheck build
 	cd ".local" && R CMD check --as-cran port4me_*.tar.gz
 	cd ".local" && R CMD INSTALL port4me_*.tar.gz
 
-check-cli:
-	module load CBI bats-core bats-assert bats-file; \
-	(cd tests/; bats *.bats)
+shellcheck:
+	(cd tests; shellcheck -x *.bats)
+
+assert_bats:
+	command -v "bats"
+	echo "BATS_SUPPORT_HOME=$${BATS_SUPPORT_HOME:?}"
+	echo "BATS_ASSERT_HOME=$${BATS_ASSERT_HOME:?}"
+
+check-cli: assert_bats
+	(cd tests/; PORT4ME_CLI_CALL="Rscript -e port4me::port4me --args" bats *.bats)
+
+coverage-html:
+	tf=$$(mktemp --suffix="-report.html"); \
+	Rscript -e "c <- covr::package_coverage(quiet = FALSE); print(c); r <- covr::report(c, file='$${tf}'); utils::browseURL(r, browser = '$(BROWSER)')"
 
 incl/OVERVIEW.md: vignettes/port4me-overview.Rmd
 	Rscript -e "rmarkdown::render('vignettes/port4me-overview.Rmd', rmarkdown::md_document(), output_dir = '$(@D)', output_file = '$(@F)')"

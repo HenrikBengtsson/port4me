@@ -1,4 +1,12 @@
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'python/**/*'
+      - .github/workflows/check-python.yml
+  pull_request:
+    paths:
+      - 'python/**/*'
+      - .github/workflows/check-python.yml
 
 name: "Python checks"
 
@@ -9,29 +17,36 @@ jobs:
   check:
     if: "! contains(github.event.head_commit.message, '[ci skip]')"
 
-    timeout-minutes: 10
+    timeout-minutes: 5
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (Python ${{ matrix.config.python }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest,  python: '3.7'  }
+          - {os: ubuntu-latest,  python: '3.8'  }
+          - {os: ubuntu-latest,  python: '3.9'  }
+          - {os: ubuntu-latest,  python: '3.10' }
+          - {os: ubuntu-latest,  python: '3.11' }
+          - {os: ubuntu-latest,  python: '3.12' }
+          - {os: macOS-latest,   python: '3.11' }
+          - {os: windows-latest, python: '3.11' }
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
-    - name: Set up Python 3.10
+    - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: "3.10"
+        python-version: ${{ matrix.config.python }}
         
     - name: Install dependencies
       run: |
-        curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.7.0.tar.gz && tar xf v1.7.0.tar.gz
-        curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
-        curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.0.0.tar.gz && tar xf v2.0.0.tar.gz
-        curl -L -O https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.xz
         python -m pip install --upgrade pip
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        tar Jxf shellcheck-v0.9.0.linux.x86_64.tar.xz
-        mv shellcheck-v0.9.0/shellcheck .
 
     - name: Install port4me
       run: |
@@ -40,28 +55,35 @@ jobs:
         
     - name: Session information
       run: |
-        PATH="$PWD:$PATH" shellcheck --version
+        python -c "import os; print('EUID='+str(os.geteuid()))"
         python --version
         python -m port4me --version
 
+    - name: Test with pytest
+      run: |
+        pip install pytest
+        pytest
+
+    - name: Check CLI
+      if: runner.os != 'Windows'
+      run: |
+        curl -L -O https://github.com/bats-core/bats-core/archive/refs/tags/v1.10.0.tar.gz && tar xf v1.10.0.tar.gz
+        curl -L -O https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz && tar xf v0.3.0.tar.gz
+        curl -L -O https://github.com/bats-core/bats-assert/archive/refs/tags/v2.1.0.tar.gz && tar xf v2.1.0.tar.gz
+        export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
+        export BATS_ASSERT_HOME=$PWD/bats-assert-2.1.0
+        export PATH=$PWD/bats-core-1.10.0/bin:$PATH
+        bash --version
+        bats --version
+        cd python/
+        make check-cli
+
     - name: Lint with flake8
       run: |
+        pip install flake8
         cd python/
         flake8 --version
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-        
-    - name: Test with pytest
-      run: |
-        pytest
-
-    - name: Check with Bats
-      run: |
-        export BATS_SUPPORT_HOME=$PWD/bats-support-0.3.0
-        export BATS_ASSERT_HOME=$PWD/bats-assert-2.0.0
-        export PATH=$PWD/bats-core-1.7.0/bin:$PATH
-        bats --version
-        cd python/tests/
-        bats *.bats

@@ -15,6 +15,7 @@ vignette: >
 
 ```{r, echo=FALSE}
 Sys.setenv(PORT4ME_USER = "alice")
+Sys.setenv("_PORT4ME_CHECK_AVAILABLE_PORTS_" = "any")
 ```
 
 The **port4me** tool:
@@ -311,12 +312,6 @@ To install the R **port4me** package, do:
 
 ```r
 install.packages("port4me")
-```
-
-To install the development version, do:
-
-```r
-remotes::install_github("HenrikBengtsson/port4me", subdir = "r")
 ```
 
 To try it out, call:
