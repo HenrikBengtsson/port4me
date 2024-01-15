@@ -123,7 +123,25 @@ setup() {
     port=${lines[0]}
     [[ ${port} -ge 1 ]]
     [[ ${port} -le 1023 ]]
+    assert_output "470"
 }
+
+
+@test "<CLI call> --user=alice --include=1-1023 --exclude=470,403 works" {
+    local -i port
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_=any
+    run "${cli_call[@]}" --user=alice --include=1-1023 --exclude=470,403
+    assert_success
+    assert_output --regexp "[[:digit:]]+"
+    echo "Output:"
+    printf "%s\n" "${lines[@]}"
+    
+    port=${lines[0]}
+    [[ ${port} -ge 1 ]]
+    [[ ${port} -le 1023 ]]
+    assert_output "859"
+}
+
 
 @test "<CLI call> --user=alice --prepend=2000-2009 --include=1-1023 returns 2000" {
     local -i port
@@ -182,18 +200,34 @@ setup() {
     [[ "${lines[*]}" == "${truth[*]}" ]]
 }
 
-@test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' works" {
-    _PORT4ME_CHECK_AVAILABLE_PORTS_="any" "${cli_call[@]}" --test=80
+@test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' --test=80 works" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_="any"
+    run "${cli_call[@]}" --test=80
+    assert_success
+}
+
+@test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' --test=0 fails" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_="any"
+    run "${cli_call[@]}" --test=0
+    assert_failure
+}
+
+@test "_PORT4ME_CHECK_AVAILABLE_PORTS_='any' --test=65536 fails" {
+    export _PORT4ME_CHECK_AVAILABLE_PORTS_="any"
+    run "${cli_call[@]}" --test=65536
+    assert_failure
 }
 
 @test "<CLI call> --test=80 fail" {
     [[ $(uname -s) == "Linux" ]] || skip "Privileged ports are only blocked on Linux: $(uname -s)"
     
+    unset _PORT4ME_CHECK_AVAILABLE_PORTS
     run "${cli_call[@]}" --test=80
     assert_failure
 }
 
 @test "<CLI call> --test=<BUSY_PORT> works" {
+    unset _PORT4ME_CHECK_AVAILABLE_PORTS_
     assert_busy_port "${cli_call[@]}"
 }
 

@@ -16,6 +16,9 @@
  * `port4me(list = 0)` would behave like `list = 1`.  Now it gives an
    error.
 
+ * `port4me(test = 0)` would ignore the `test` argument, effectively
+   returning `port4me()`.  Now it gives a port-out-of-range error.
+
 
 # Version 0.6.0 [2023-07-13]
 

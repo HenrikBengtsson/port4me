@@ -7,7 +7,7 @@ from getpass import getuser
 from os import getenv
 
 
-__version__ = "0.6.0-9013"
+__version__ = "0.6.0-9014"
 __all__ = ["port4me", "port4me_gen"]
 
 
@@ -28,10 +28,13 @@ def uint_hash(s):
 
 
 def is_port_free(port):
+    if port < 1 or port > 65535:
+        raise ValueError("port out of range [1,65535]: " + str(port))
+
     if getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"):
         if getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_") == "any":
             return True
-        raise ValueError("unknown value of environment variable '_PORT4ME_CHECK_AVAILABLE_PORTS_': "+ getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"))
+        raise ValueError("unknown value of environment variable '_PORT4ME_CHECK_AVAILABLE_PORTS_': " + getenv("_PORT4ME_CHECK_AVAILABLE_PORTS_"))
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
@@ -166,7 +169,7 @@ def port4me(tool=None, user=None, prepend=None, include=None, exclude=None, skip
     must_work : bool, optional
         If True, then an error is produced if no port could be found. If False, then `-1` is returned.
     """
-    if test:
+    if test != None:
         return is_port_free(test)
 
     tries = 1
