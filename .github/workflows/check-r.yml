@@ -64,8 +64,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           working-directory: r
-          extra-packages: any::rcmdcheck any::covr any::jsonlite
-          needs: check coverage
+          extra-packages: any::rcmdcheck any::jsonlite
 
       - name: Install port4me
         run: |
@@ -123,13 +122,3 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
-
-      - name: Test coverage
-        if: matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release'
-        run: |
-          setwd("r")
-          ## relative_path = ".." => reported files r/R/*.R, r/src/*.{c,h}
-          coverage <- covr::package_coverage(relative_path = "..", quiet = FALSE)
-          print(coverage)
-          covr::codecov(coverage = coverage, flags = "r", quiet = FALSE)  ## Upload to codecov
-        shell: Rscript {0}
