@@ -321,7 +321,7 @@ error (stderr), which can be seen in the terminal. For example,
 To install the Bash version of **portme**, do:
 
 ```sh
-VERSION=0.6.0
+VERSION=0.7.0
 curl -L -O https://github.com/HenrikBengtsson/port4me/archive/refs/tags/"${VERSION}.tar.gz"
 tar -x -f "${VERSION}.tar.gz"
 export PREFIX=/path/to/port4me/   ## must be an absolute path to a folder
@@ -333,7 +333,7 @@ Then run it as:
 ```sh
 $ export PATH=/path/to/port4me/bin:$PATH
 $ port4me --version
-0.6.0
+0.7.0
 ```
 
 ### R package
