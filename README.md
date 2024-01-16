@@ -25,10 +25,10 @@ The **[port4me]** tool:
 
 * requires no configuration
 
-* is implemented in Bash, Python, and R
-
 * can be reproduced perfectly on all operating systems and in all
   common programming languages
+
+* Available for Bash, Python, and R
 
 
 ## Introduction
