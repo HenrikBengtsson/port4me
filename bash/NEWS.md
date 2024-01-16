@@ -1,3 +1,11 @@
+# Version 0.7.1 [2024-01-16]
+
+## Bug Fixes
+
+ * `port4me` could generate error `port4me.bash: line 275: 3: Bad file
+   descriptor`. This was due to left-over debugging code.
+ 
+
 # Version 0.7.0 [2024-01-15]
 
 ## Significant Changes
