@@ -38,7 +38,7 @@
 #' Requirements:
 #' * Bash (>= 4)
 #'
-#' Version: 0.7.0
+#' Version: 0.7.0-9001
 #' Copyright: Henrik Bengtsson (2022-2024)
 #' License: MIT
 #' Source code: https://github.com/HenrikBengtsson/port4me
@@ -293,11 +293,11 @@ _p4m_lcg_port() {
         has_subset=true
     fi
 
-    if ${PORT4ME_DEBUG}; then
+    if ${PORT4ME_DEBUG:-false}; then
         {
             echo "(min,max): ($min,$max)"
             echo "subset: [n=${#subset[@]}]"
-        } >&3
+        }
     fi
     
     ## Sample values in [0,m-2] (sic!), but reject until in [min,max],

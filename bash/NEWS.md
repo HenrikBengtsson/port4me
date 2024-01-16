@@ -1,3 +1,10 @@
+# Version (development version)
+
+## Bug Fixes
+
+ * ...
+ 
+
 # Version 0.7.0 [2024-01-15]
 
 ## Significant Changes
