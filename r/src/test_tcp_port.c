@@ -8,6 +8,12 @@
 #include <netinet/in.h>
 #endif
 
+#ifdef __APPLE__
+  #ifndef u_int32_t
+    typedef uint32_t u_int32_t;
+  #endif
+#endif
+
 // Adopted from https://github.com/ropensci/ssh/blob/master/src/tunnel.c
 // which is released under the MIT license
 static int test_tcp_port(int port) {
