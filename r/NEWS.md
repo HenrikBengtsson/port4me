@@ -1,3 +1,10 @@
+# Version (development version)
+
+## Bug Fixes
+
+ * The package gave compilation errors on some macOS platforms.
+
+
 # Version 0.7.0 [2023-01-15]
 
 ## Significant Changes
@@ -73,4 +80,3 @@
 ## Significant Changes
 
  * Created R package based on a set of prototypical R scripts.
-
