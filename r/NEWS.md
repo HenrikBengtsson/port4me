@@ -2,6 +2,8 @@
 
 ## Bug Fixes
 
+ * Version 0.7.0 would not install on FreeBSD.
+
  * The package gave compilation errors on some macOS platforms.
 
 
