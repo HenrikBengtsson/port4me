@@ -27,7 +27,7 @@ assert_bats:
 	echo "BATS_ASSERT_HOME=$${BATS_ASSERT_HOME:?}"
 
 check-cli: assert_bats
-	(cd tests/; PORT4ME_CLI_CALL="Rscript -e port4me::port4me --args" bats *.bats)
+	(cd tests/; PORT4ME_CLI_CALL="Rscript --no-init-file -e port4me::port4me --args" bats *.bats)
 
 coverage-html:
 	tf=$$(mktemp --suffix="-report.html"); \
