@@ -5,7 +5,14 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #else
+#include <sys/socket.h>  /* socket(), listen(), bind(), AF_INET, ... */
 #include <netinet/in.h>
+#endif
+
+#ifdef __APPLE__
+  #ifndef u_int32_t
+    typedef uint32_t u_int32_t;
+  #endif
 #endif
 
 // Adopted from https://github.com/ropensci/ssh/blob/master/src/tunnel.c
